@@ -1,0 +1,29 @@
+{
+  "name": "cssweng_project_grp1",
+  "version": "1.0.0",
+  "description": "- public (folder)\r - routes (folder)\r - views (folder)\r - models (folder)\r - packages (json file)\r - app.js",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "devStart": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dredredre20/CSSWENG_Project_GRP1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dredredre20/CSSWENG_Project_GRP1/issues"
+  },
+  "homepage": "https://github.com/dredredre20/CSSWENG_Project_GRP1#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.2",
+    "nodemon": "^3.1.10"
+  }
+}
