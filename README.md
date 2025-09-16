@@ -1,5 +1,9 @@
 # CSSWENG_Project_GRP1
 
+# Google Docs File
+https://docs.google.com/document/d/1Fgavhv-k0hGTn9a4mNWctkZ9iq3LAYFJ0ToaCgguA-E/edit?usp=sharing
+
+
 ## Whole Program Structure *(Example only so far)*
 - public (folder)
 - routes (folder)
