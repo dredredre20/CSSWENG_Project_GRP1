@@ -16,7 +16,7 @@ registerRouter.post('/', (req, res) => {
         //same as with the login router, there will be db operation here
         // initally just log input for now
         console.log(`(REGISTER) Name: ${name}, Email: ${email}, Password: ${password}, Usertype: ${type}`);
-        res.redirect('/register'); // for now just reload the page again
+        res.redirect('/login'); // redirect to login page
     } catch(err){
         console.error(err);
     }
