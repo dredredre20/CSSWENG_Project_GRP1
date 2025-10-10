@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Home Page</title>
+    </head>
+    <body>
+        <h1>Welcome, <%= user.usertype %>!</h1>
+        <% if(user.usertype === 'Admin') { %>
+            <li><a href="/register">Create an Account</a></li>
+        <% } %>
+        <form action="/logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </body>
+</html>

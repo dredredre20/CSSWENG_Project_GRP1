@@ -35,9 +35,15 @@ loginRouter.post('/', async (req, res) => {
 
         // if an account is returned
         if(account){
+            //store the user in the session
+            req.session.logged_user = account;
+
             // for now, initiallyt just log input for testing (validate in console)
             console.log(`(LOGIN) Email: ${email} Password: ${password}`);
-            return res.send(`<h1>Welcome ${account.usertype}!<h1>`);
+
+            // using a single home route for cleaner file directory
+            //tho we can define routes for each user, it would be tedious
+            return res.redirect('/home'); 
         } else{
             console.log('No account found');
         }
