@@ -1,19 +1,17 @@
-# CSSWENG_Project_GRP1 - Reports Digitalization
+PACKAGES AND DEPENDENCIES:
+    requires node and npm
+    express 5
 
-# Google Docs File
-https://docs.google.com/document/d/1Fgavhv-k0hGTn9a4mNWctkZ9iq3LAYFJ0ToaCgguA-E/edit?usp=sharing
+    FOR DEVS:
+        nodemon -- the website refreshes each time you change the code
+                -- use 'npm run devStart' to use this script for testing
 
+        dotenv  -- environment variables for machine based variables
+                -- STORE ALL OF YOUR MYSQL CREDENTIALS IN .env
+                -- Create local .env file for environment variables
 
-## Whole Program Structure
-Root Folder:
-  - routers folder
-  - views folder
-- app.js
-- packages
+    'npm i express ejs nodemon dotenv'
 
-
-## Developer Rules
-- Any changes done in the code should be communicated with the group
-- Make sure to fix all merge conflicts
-- 
-
+FOR DESIGNERS:
+    decide on what front end framework
+    for now backend views use static html and ejs
