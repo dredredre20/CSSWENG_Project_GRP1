@@ -10,6 +10,9 @@ import logoutRouter from './routers/logout.js';
 import registerRouter from './routers/register.js';
 import homeRouter from './routers/home.js'
 
+// dummy users
+import insert_dummy_users from './seed_db.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -36,6 +39,10 @@ app.use(session({
 app.get('/', (req,res) => {
     res.redirect('/login');
 });
+
+
+// insert dummy users
+insert_dummy_users();
 
 // mount routers
 app.use(express.static(path.join(__dirname, 'public')));
