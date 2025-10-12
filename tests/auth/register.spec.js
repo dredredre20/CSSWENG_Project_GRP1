@@ -1,9 +1,11 @@
-const {test, expect} = require('@playwright/test');
+// const {test, expect} = require('@playwright/test');
+
+import {test, expect} from '@playwright/test';
 
 
 test.describe ('Register Page', () => {
     test.beforeEach(async ({page}) => {
-        await page.goto('/register.ejs');
+        await page.goto('http://localhost:3000/register');
     });
 
     test('Having all required fields', async ({page}) => {
@@ -11,13 +13,15 @@ test.describe ('Register Page', () => {
         const passwordInput = page.locator('input[name="password"]');
         const typeSelect = page.locator('select[name="type"]');
 
-        await expect (emailInput).toHavaveAttribute('required', '');
+        await expect (emailInput).toHaveAttribute('required', '');
         await expect (passwordInput).toHaveAttribute('required', '');
         await expect (typeSelect).toHaveAttribute('required', '');  
     });
 
     test('Register with empty fields', async ({page}) => {
         await page.click('button[type="submit"]');
+        await expect(page).toHaveURL('http://localhost:3000/register'); // assuming successful login redirects to /dashboard
+        
         // await expect(page.locator('.error-message')).toHaveText('Email, password, and type are required'); // assuming error message has this class
     });
 
@@ -31,8 +35,13 @@ test.describe ('Register Page', () => {
         await expect(typeSelect).toHaveValue('SDW');
     });
 
-
-
+    test('Register with valid details', async ({page}) => {
+        await page.fill('input[name="email"]', 'new_acc12@gmail.com');
+        await page.fill('input[name="password"]', 'new_pass');
+        await page.selectOption('select[name="type"]', 'SDW');
+        await page.click('button[type="submit"]');
+        await expect(page).toHaveURL('http://localhost:3000/home'); // assuming successful registration redirects to /home
+    });
 
 
 });
