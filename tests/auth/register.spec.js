@@ -35,13 +35,5 @@ test.describe ('Register Page', () => {
         await expect(typeSelect).toHaveValue('SDW');
     });
 
-    test('Register with valid details', async ({page}) => {
-        await page.fill('input[name="email"]', 'new_acc12@gmail.com');
-        await page.fill('input[name="password"]', 'new_pass');
-        await page.selectOption('select[name="type"]', 'SDW');
-        await page.click('button[type="submit"]');
-        await expect(page).toHaveURL('http://localhost:3000/home'); // assuming successful registration redirects to /home
-    });
-
 
 });

@@ -22,8 +22,9 @@ test.describe ('Authentication Flow', () => {
         await expect (page).toHaveURL('http://localhost:3000/register');
 
         // Fill out the registration form
-        await page.fill('input[name="email"]', 'new_acc@gmail.com');
-        await page.fill('input[name="password"]', 'new_pass');
+        // Change values here as needed (this values are in my local database already)
+        await page.fill('input[name="email"]', 'new_acc2@gmail.com');
+        await page.fill('input[name="password"]', 'new2_pass');
         await page.selectOption('select[name="type"]', 'SDW');
         await page.click('button[type="submit"]');
 
@@ -34,7 +35,22 @@ test.describe ('Authentication Flow', () => {
     });
 
 
+    test('Logout after login', async ({page}) => {
 
+        // Go to Login Page
+        await page.goto('http://localhost:3000/login');
+        await expect (page).toHaveURL('http://localhost:3000/login'); 
+
+        // Login as Admin, if successful, redirected to /home
+        await page.fill('input[name="email"]', 'admin1@gmail.com');
+        await page.fill('input[name="password"]', 'password123');
+        await page.click('button[type="submit"]');
+        await expect(page).toHaveURL('http://localhost:3000/home'); 
+
+        // Click the logout button, if successful, redirected to /login
+        await page.getByRole('button', { name: 'Logout' }).click();
+        await expect(page).toHaveURL('http://localhost:3000/login'); 
+    });
 
 
 });

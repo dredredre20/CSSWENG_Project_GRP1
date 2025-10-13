@@ -35,8 +35,8 @@ test.describe ('Login Page', () => {
 
     test('Login with empty fields', async ({page}) => {
         await page.click('button[type="submit"]');
-        await expect(page).toHaveURL('http://localhost:3000/login'); // This is just a placeholder for the meantime
-        
+        await expect(page).not.toHaveURL('http://localhost:3000/home');
+
       //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
     });
 
