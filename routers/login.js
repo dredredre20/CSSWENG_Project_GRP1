@@ -22,7 +22,7 @@ loginRouter.post('/', async (req, res) => {
         // find user in the database
         try{
             // use prepared statements
-            const statement = 'SELECT * FROM users WHERE email = ? AND passkey = ?';
+            const statement = 'SELECT * FROM staffinfo WHERE email = ? AND password = ?';
             // email/password as parameters to validate --then execute query
             const [rows] = await connection.execute(statement, [email, password]); 
             account = rows[0];
