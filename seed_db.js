@@ -4,12 +4,12 @@ import db_connection_pool from "./connections.js";
 async function insert_dummy_users(){
     // here are the list of dummy users, feel free to change and/or add more users
     const samples = [
-        {usertype: "Admin", email: "admin1@gmail.com", password: "password123", created_by: "admin1@gmail.com"},
-        {usertype: "Admin", email: "admin2@gmail.com", password: "password123", created_by: "admin2@gmail.com"},
-        {usertype: "Supervisor", email: "visor1@gmail.com", password: "password123", created_by: "admin1@gmail.com"},
-        {usertype: "Supervisor", email: "visor2@gmail.com", password: "password123", created_by: "admin2@gmail.com"},
-        {usertype: "SDW", email: "sdw1@gmail.com", password: "password123", created_by: "admin1@gmail.com"},
-        {usertype: "SDW", email: "sdw2@gmail.com", password: "password123", created_by: "admin2@gmail.com"}
+        {staffid: 10000, stafftype: "A", Name:"John Doe", email: "admin1@gmail.com", password: "password123"},
+        {staffid: 10001, stafftype: "A", Name:"Jane Beck", email: "admin2@gmail.com", password: "password123"},
+        {staffid: 10002, stafftype: "S", Name:"Jenny Parker", email: "visor1@gmail.com", password: "password123"},
+        {staffid: 10003, stafftype: "S", Name:"Wesley Ang", email: "visor2@gmail.com", password: "password123"},
+        {staffid: 10004, stafftype: "D", Name:"Angelo Perdo", email: "sdw1@gmail.com", password: "password123"},
+        {staffid: 10005, stafftype: "D", Name:"Jane Newbabel", email: "sdw2@gmail.com", password: "password123"}
     ]
 
     //get connection
@@ -17,10 +17,10 @@ async function insert_dummy_users(){
 
     try{
         // pre_check is statement for checking existence ofd account beforehand
-        const pre_check = 'SELECT * FROM reports_db.users WHERE email = ? AND passkey = ?';
+        const pre_check = 'SELECT * FROM new_reports_db.staffinfo WHERE email = ? AND password = ?';
 
         // actual INSERT
-        const insert = 'INSERT INTO reports_db.users (usertype, email, passkey, created_by)  VALUES(?, ?, ?, ?)'
+        const insert = 'INSERT INTO new_reports_db.staffinfo (staffid, stafftype, Name, email, password)  VALUES(?, ?, ?, ?, ?)'
         
         //iterate through each user account object in `samples`
         console.log("\nUsers:");
@@ -29,11 +29,11 @@ async function insert_dummy_users(){
             const [rows] = await connection.execute(pre_check, [user.email, user.password]); 
             
             if(rows.length > 0){
-                console.log(`(${user.usertype}) email: ${user.email}, password: ${user.password}`);
+                console.log(`(${user.stafftype}) email: ${user.email}, password: ${user.password}`);
             } else{
                 // ..only then INSERT when account not found
-                await connection.execute(insert, [user.usertype, user.email, user.password, user.created_by]); 
-                console.log(`(${user.usertype}) email: ${user.email}, password: ${user.password}`);
+                await connection.execute(insert, [user.staffid, user.stafftype, user.Name, user.email, user.password]); 
+                console.log(`(${user.stafftype}) email: ${user.email}, password: ${user.password}`);
             }
         }
         console.log("\n");

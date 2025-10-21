@@ -14,17 +14,17 @@ homeRouter.get('/', (req, res) => {
         const user = req.session.logged_user;
   
         //here just pass stuff to render in the page based on role
-        if(user.usertype === 'Admin'){
+        if(user.stafftype === 'A'){
             res.render('home', { 
                 user: user,
                 role: 'Admin Dashboard',
             });
-        } else if(user.usertype === 'Supervisor'){ 
+        } else if(user.stafftype === 'S'){ 
             res.render('home', { 
                 user: user,
                 role: 'User Dashboard',
             });
-        } else if(user.usertype === 'SDW'){
+        } else if(user.stafftype === 'D'){
             res.render('home', { 
                 user: user,
                 role: 'User Dashboard',
