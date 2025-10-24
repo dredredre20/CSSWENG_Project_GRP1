@@ -24,19 +24,22 @@ async function insert_dummy_users(){
 
             switch(user.stafftype) {
                 case "admin":
-                    query = 'INSERT INTO admins (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, hashed];
+                    query = 'INSERT INTO admins (first_name, last_name, email) VALUES (?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email];
                     break;
                 case "supervisor":
-                    query = 'INSERT INTO supervisors (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, hashed];
+                    query = 'INSERT INTO supervisors (first_name, last_name, email) VALUES (?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email];
                     break;
                 case "sdw":
-                    query = 'INSERT INTO sdws (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, hashed];
+                    query = 'INSERT INTO sdws (first_name, last_name, email) VALUES (?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email];
                     break;
             }
             await connection.execute(query, values);
+            let query2 = 'INSERT INTO staff_info (staff_type, email, password) VALUES (?, ?, ?)';
+            let values2 = [user.stafftype, user.email, hashed]
+            await connection.execute(query2, values2);
         }
         console.log("Sucessfully seeded dummy users.")
 

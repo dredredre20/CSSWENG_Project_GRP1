@@ -1,5 +1,6 @@
 // login router
 import express from 'express';
+import bcrypt from 'bcrypt';
 import db_connection_pool from '../connections.js';
 
 const loginRouter = express.Router();
@@ -19,13 +20,14 @@ loginRouter.post('/', async (req, res) => {
         // get a connection to the db
         const connection = await db_connection_pool.getConnection();
 
-        // find user in the database
+        // find user in the database using email only
         try{
             // use prepared statements
-            const statement = 'SELECT * FROM staffinfo WHERE email = ? AND password = ?';
+            const statement = 'SELECT * FROM staff_info WHERE email = ?';
             // email/password as parameters to validate --then execute query
-            const [rows] = await connection.execute(statement, [email, password]); 
+            const [rows] = await connection.execute(statement, [email]); 
             account = rows[0];
+            console.log("Found email")
         } catch(err){
             console.log(err);
         }
@@ -33,8 +35,8 @@ loginRouter.post('/', async (req, res) => {
         // end connection
         connection.release();
 
-        // if an account is returned
-        if(account){
+        // if an account is returned and compare password hashes via bcrypt
+        if(account && await bcrypt.compare(password, account.password)){
             //store the user in the session
             req.session.logged_user = account;
 
