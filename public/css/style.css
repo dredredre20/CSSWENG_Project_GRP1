@@ -1,5 +1,10 @@
 body{
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-image: url('/login_design.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
 }
 
 img{
@@ -8,23 +13,71 @@ img{
 }
 
 #loginbox{
-    background-color:#FFF4F4;
-    padding-top: 30px;
-    padding-bottom: 40px;
-
+    background-color: #FFF4F4;
+    padding: 30px 40px 35px 40px;
     margin-left: 35%;
     margin-right: 35%;
     margin-top: 10%;
-
     border-style: solid;
     border-radius: 50px;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-#email{
-    margin:2%;
+#email, #password {
+    display: block;
+    margin: 20px auto;
+    text-align: left;
+    max-width: 280px;
 }
 
-#password{
-    margin:2%;
+#email label,
+#password label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px; 
+    font-weight: 500;
+    color: #333;
+    font-size: 17px;
+}
+
+#email input[type="email"],
+#password input[type="password"] {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    margin-top: -3px;
+}
+
+#email input[type="email"]:focus,
+#password input[type="password"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+#loginbox button[type="submit"] {
+    margin-top: 25px;
+    padding: 12px 60px; 
+    background-color: #6ebcc0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#loginbox button[type="submit"]:hover {
+    background-color: #6ebcc0;
+    transform: translateY(-1px);
+}
+
+#loginbox button[type="submit"]:active {
+    transform: translateY(0);
 }

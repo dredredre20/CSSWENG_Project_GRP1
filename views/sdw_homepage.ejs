@@ -10,7 +10,7 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <nav class="nav-menu">
-                <button class="nav-btn active">DSWD Annual Report</button>
+                <button class="nav-btn">DSWD Annual Report</button>
                 <button class="nav-btn">Community Profile</button>
                 <button class="nav-btn">Target Vs ACC & SE</button>
                 <button class="nav-btn">Caseload Masterlist</button>
@@ -40,6 +40,43 @@
                 <input type="file" id="fileInput" multiple hidden>
             </div>
         </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <p class="modal-text">You are uploading <strong id="fileName"></strong> (<span id="fileSize"></span>)</p>
+            <p class="modal-label">Upload to which report?</p>
+            <select class="modal-select" id="reportSelect">
+                <option value="DSWD Annual Report">DSWD Annual Report</option>
+                <option value="Community Profile">Community Profile</option>
+                <option value="Target Vs ACC & SE">Target Vs ACC & SE</option>
+                <option value="Caseload Masterlist">Caseload Masterlist</option>
+                <option value="Education Profile">Education Profile</option>
+                <option value="Assistance to Families">Assistance to Families</option>
+                <option value="Poverty Stoplight">Poverty Stoplight</option>
+                <option value="CNF Candidates">CNF Candidates</option>
+                <option value="Retirement Candidates">Retirement Candidates</option>
+                <option value="VM Accomplishments">VM Accomplishments</option>
+                <option value="Correspondence">Correspondence</option>
+                <option value="Leaders Directory">Leaders Directory</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-correct" id="correctBtn">Correct</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <p class="modal-text">Your file <strong id="successFileName"></strong> has successfully been uploaded to <strong id="successReport"></strong></p>
+            <div class="modal-buttons">
+                <button class="btn-continue" id="continueBtn">Continue</button>
+                <button class="btn-upload-another" id="uploadAnotherBtn">Upload Another File</button>
+            </div>
+        </div>
     </div>
 
     <!-- <script src="/upload"></script> Change this with the proper backend upload logic -->

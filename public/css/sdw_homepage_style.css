@@ -18,7 +18,7 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-    width: 280px;
+    width: 350px;
     background-color: #d3d3d3;
     padding: 60px 20px 20px;
     overflow-y: auto;
@@ -35,12 +35,13 @@ body {
     background-color: #f4b41a;
     border: none;
     border-radius: 8px;
+    width: 320px;
     padding: 16px 20px;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 500;
     color: #000;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -110,6 +111,132 @@ body {
     letter-spacing: 1px;
 }
 
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #87CEEB;
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #000;
+    text-align: center;
+}
+
+.modal-text strong {
+    font-weight: 600;
+}
+
+.modal-label {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #000;
+    font-weight: 500;
+}
+
+.modal-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 25px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-cancel {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #dc2626;
+}
+
+.btn-correct {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-correct:hover {
+    background-color: #16a34a;
+}
+
+.btn-continue {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-continue:hover {
+    background-color: #16a34a;
+}
+
+.btn-upload-another {
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-upload-another:hover {
+    background-color: #111827;
+}
+
 /* Scrollbar Styles */
 .sidebar::-webkit-scrollbar {
     width: 8px;
@@ -163,5 +290,17 @@ body {
 
     .upload-text {
         font-size: 24px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .modal-buttons button {
+        width: 100%;
     }
 }
