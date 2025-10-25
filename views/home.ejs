@@ -5,8 +5,8 @@
         <title>Home Page</title>
     </head>
     <body>
-        <h1>Welcome, <%= user.usertype %>!</h1>
-        <% if(user.usertype === 'Admin') { %>
+        <h1>Welcome, <%= user.staff_type %>!</h1>
+        <% if(user.staff_type == "admin") { %>
             <li><a href="/register">Create an Account</a></li>
         <% } %>
         <form action="/logout" method="POST">

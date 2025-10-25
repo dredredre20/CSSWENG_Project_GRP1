@@ -1,6 +1,7 @@
 // register router
 import express from 'express';
 import db_connection_pool from '../connections.js';
+import bcrypt from 'bcrypt';
 
 const registerRouter = express.Router();
 
@@ -21,10 +22,11 @@ registerRouter.post('/', async (req, res) => {
 
         // find user in the database
         try{
+            const hashed = await bcrypt.hash(password,10);
             // use prepared statements
-            const statement = 'INSERT INTO new_reports_db.staffinfo (stafftype, email, password)  VALUES(?, ?, ?)';
+            const statement = 'INSERT INTO reports_db.staff_info (staff_type, email, password)  VALUES(?, ?, ?)';
             // email/password as parameters to validate --then execute query
-            await connection.execute(statement, [type, email, password]); //req.session.logged_user.email - took this out for now 
+            await connection.execute(statement, [type, email, hashed]); //req.session.logged_user.email - took this out for now 
         } catch(err){
             console.log(err);
         }

@@ -7,7 +7,7 @@ const db_connection_pool = mysql2.createPool({ // create a connection pool for m
     // .createPool(config) flavor
     host: 'localhost',
     port: 3306,
-    database: 'new_reports_db',
+    database: 'reports_db',
     user: 'root',
     password: 'n~3Z6]tnZZ10' // -note: i just used this password initially --we can use another password !! 
 });
