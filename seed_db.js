@@ -15,22 +15,28 @@ async function insert_dummy_users(){
 
     //get connection
     const connection = await db_connection_pool.getConnection();
-    try {
-        const tablesToTruncate = [
-            "reports",
-            "staff_info",
-            "sdws",
-            "supervisors",
-            "spus",
-            "admins"
-        ];
+    const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
+    if (rows[0].count === 0) {
+            try {
+                const tablesToTruncate = [
+                    "reports",
+                    "staff_info",
+                    "sdws",
+                    "supervisors",
+                    "spus",
+                    "admins"
+                ];
 
-        for (const t of tablesToTruncate) {
-        await connection.execute(`TRUNCATE TABLE \`${t}\``);
-        }
-    } catch(err){
-        console.error("Error deleting existing seeded users:"+err);
+                for (const t of tablesToTruncate) {
+                await connection.execute(`TRUNCATE TABLE \`${t}\``);
+                }
+            } catch(err){
+                console.error("Error deleting existing seeded users:"+err);
+            }
+    } else {
+        console.log("Staff already exists, skipping seed.");
     }
+    
     try{
         for (const user of samples) {
             const hashed = await bcrypt.hash(user.password, 10);
