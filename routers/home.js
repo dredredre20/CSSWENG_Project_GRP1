@@ -1,11 +1,6 @@
 import express from 'express';
-import db_connection_pool from '../connections.js';
 
 const homeRouter = express.Router();
-
-const homePage = (req, res) => {
-    res.render('home');
-}
 
 homeRouter.get('/', (req, res) => {
     //if the user is in session,, only
@@ -25,7 +20,7 @@ homeRouter.get('/', (req, res) => {
                 role: 'Supervisor Dashboard',
             });
         } else if(user.staff_type === 'sdw'){
-            res.render('home', { 
+            res.render('sdw_homepage', {  // route to sdw_homepage.ejs page
                 user: user,
                 role: 'User Dashboard',
             });
@@ -35,5 +30,6 @@ homeRouter.get('/', (req, res) => {
         res.redirect('/login');
     }
 });
+
 
 export default homeRouter;

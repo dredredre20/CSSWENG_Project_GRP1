@@ -43,6 +43,11 @@ loginRouter.post('/', async (req, res) => {
             // for now, initiallyt just log input for testing (validate in console)
             console.log(`(LOGIN) Email: ${email} Password: ${password}`);
 
+            if(account.staff_type == "sdw"){
+                console.log("sadfasdfa");
+                return res.redirect('/sdw_homepage');
+            }
+
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
             return res.redirect('/home'); 

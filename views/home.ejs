@@ -11,10 +11,6 @@
             <li><a href="/register">Create an Account</a></li>
         <% } %>
 
-        <% if(user.staff_type == "sdw") { %>
-            <li><a href="/upload">Upload a Report</a></li>
-        <% } %>
-        
         <form action="/logout" method="POST">
             <button type="submit">Logout</button>
         </form>

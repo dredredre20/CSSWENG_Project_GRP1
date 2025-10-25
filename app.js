@@ -10,6 +10,7 @@ import logoutRouter from './routers/logout.js';
 import registerRouter from './routers/register.js';
 import homeRouter from './routers/home.js'
 
+
 // dummy users
 import insert_dummy_users from './seed_db.js';
 
@@ -49,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/home', homeRouter);
+app.use('/sdw_homepage', homeRouter);
 app.use('/logout', logoutRouter);
 
 app.listen(port, () => {
