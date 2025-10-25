@@ -2,42 +2,8 @@
 import bcrypt from "bcrypt";
 import db_connection_pool from "./connections.js";
 
-async function insert_dummy_users(){
-    // here are the list of dummy users, feel free to change and/or add more users
-    const samples = [
-        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123" },
-        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123" },
-        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123" },
-        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123" },
-        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123" },
-        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123" }
-    ];
-
-    //get connection
-    const connection = await db_connection_pool.getConnection();
-    const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
-    if (rows[0].count === 0) {
-            try {
-                const tablesToTruncate = [
-                    "reports",
-                    "staff_info",
-                    "sdws",
-                    "supervisors",
-                    "spus",
-                    "admins"
-                ];
-
-                for (const t of tablesToTruncate) {
-                await connection.execute(`TRUNCATE TABLE \`${t}\``);
-                }
-            } catch(err){
-                console.error("Error deleting existing seeded users:"+err);
-            }
-    } else {
-        console.log("Staff already exists, skipping seed.");
-    }
-    
-    try{
+async function insert(connection, samples){
+  try{
         for (const user of samples) {
             const hashed = await bcrypt.hash(user.password, 10);
             let query = "";
@@ -68,6 +34,45 @@ async function insert_dummy_users(){
         console.error("Error seeding users: " + err);
     } finally{
         connection.release();
+    }
+}
+
+async function insert_dummy_users(){
+    // here are the list of dummy users, feel free to change and/or add more users
+    const samples = [
+        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123" },
+        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123" },
+        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123" },
+        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123" },
+        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123" },
+        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123" }
+    ];
+
+    //get connection
+    const connection = await db_connection_pool.getConnection();
+    const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
+    if (rows[0].count === 0) {
+            try {
+                const tablesToTruncate = [
+                    "reports",
+                    "staff_info",
+                    "sdws",
+                    "supervisors",
+                    "spus",
+                    "admins"
+                ];
+
+                for (const t of tablesToTruncate) {
+                    await connection.execute(`TRUNCATE TABLE \`${t}\``);
+                }
+
+                await insert(connection, samples);
+
+            } catch(err){
+                console.error("Error deleting existing seeded users:"+err);
+            }
+    } else {
+        console.log("Staff already exists, skipping seed.");
     }
 }
 

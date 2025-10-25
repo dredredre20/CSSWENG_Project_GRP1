@@ -6,9 +6,15 @@
     </head>
     <body>
         <h1>Welcome, <%= user.staff_type %>!</h1>
+        
         <% if(user.staff_type == "admin") { %>
             <li><a href="/register">Create an Account</a></li>
         <% } %>
+
+        <% if(user.staff_type == "sdw") { %>
+            <li><a href="/upload">Upload a Report</a></li>
+        <% } %>
+        
         <form action="/logout" method="POST">
             <button type="submit">Logout</button>
         </form>

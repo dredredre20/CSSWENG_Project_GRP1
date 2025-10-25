@@ -9,7 +9,8 @@ const db_connection_pool = mysql2.createPool({ // create a connection pool for m
     port: 3306,
     database: 'reports_db',
     user: 'root',
-    password: 'n~3Z6]tnZZ10' // -note: i just used this password initially --we can use another password !! 
+    password: 'sweng333' // -note: i just used this password initially --we can use another password !! 
+    //        'n~3Z6]tnZZ10'
 });
 
 export default db_connection_pool;
