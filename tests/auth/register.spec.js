@@ -35,5 +35,32 @@ test.describe ('Register Page', () => {
         await expect(typeSelect).toHaveValue('SDW');
     });
 
+    test('Register with inputs of special characters: /<>[]{}+_-=!@#$%^&*()', async ({page}) => {
+        await page.fill('input[name="email"]', '#$%^{[()]}@gmail.com');
+        await page.fill('input[name="password"]', '""&&^^##');
+        const typeSelect = page.locator('select[name="type"]');
+        await typeSelect.selectOption('SDW');
+    });
+
+    test('Register with inputs of all numbers', async ({page}) => {
+        await page.fill('input[name="email"]', '6701830@gmail.com');
+        await page.fill('input[name="password"]', '9704631');
+        const typeSelect = page.locator('select[name="type"]');
+        await typeSelect.selectOption('Supervisor'); 
+    });
+
+
+    /*
+        ~~~~~ EDIT THIS Register ~~~~~
+        User logs in as an administrator and attempts to register multiple
+    */
+    test('Concurrent Logins', async ({page}) => {
+        await page.fill('input[name="email"]', '6701830');
+        await page.fill('input[name="password"]', '9704631');
+        await page.click('button[type="submit"]');
+        await expect(page).not.toHaveURL('http://localhost:3000/home');
+
+      //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
+    });
 
 });

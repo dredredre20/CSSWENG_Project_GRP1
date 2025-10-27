@@ -40,6 +40,37 @@ test.describe ('Login Page', () => {
       //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
     });
 
+    // Logging in with special character inputs
+    test('Logging with inputs of special characters: /<>[]{}+_-=!@#$%^&*()', async ({page}) => {
+        await page.fill('input[name="email"]', '#$%^{[()]}');
+        await page.fill('input[name="password"]', '""&&^^##');
+        await page.click('button[type="submit"]');
+        await expect(page).not.toHaveURL('http://localhost:3000/home');
+
+      //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
+    });
+
+    test('Logging with inputs of all numbers', async ({page}) => {
+        await page.fill('input[name="email"]', '6701830');
+        await page.fill('input[name="password"]', '9704631');
+        await page.click('button[type="submit"]');
+        await expect(page).not.toHaveURL('http://localhost:3000/home');
+
+      //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
+    });
+
+
+    /*
+        ~~~~~ EDIT THIS LATER ~~~~~
+    */
+    test('Concurrent Logins', async ({page}) => {
+        await page.fill('input[name="email"]', '6701830');
+        await page.fill('input[name="password"]', '9704631');
+        await page.click('button[type="submit"]');
+        await expect(page).not.toHaveURL('http://localhost:3000/home');
+
+      //  await expect(page.locator('.error-message')).toHaveText('Email and password are required'); // assuming error message has this class
+    });
      
 
     
