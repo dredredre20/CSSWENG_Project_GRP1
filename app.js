@@ -10,7 +10,7 @@ import logoutRouter from './routers/logout.js';
 import registerRouter from './routers/register.js';
 import homeRouter from './routers/home.js'
 import reportRouter from './routers/sdw_reports.js';
-
+import uploadRouter from './routers/upload.js';
 
 // dummy users
 import insert_dummy_users from './seed_db.js';
@@ -54,6 +54,7 @@ app.use('/home', homeRouter);
 app.use('/sdw_homepage', homeRouter);
 app.use('/sdw_reports', reportRouter);
 app.use('/logout', logoutRouter);
+app.use('/upload', uploadRouter);
 
 app.listen(port, () => {
     console.log('Server is running on http://localhost:3000');

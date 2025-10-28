@@ -11,6 +11,23 @@ const loginPage = (req, res) => {
 
 loginRouter.get('/', loginPage);
 
+// fetch the user account by querying `sdws` table
+async function get_sdw_info(connection, account){
+    try{
+        // just experimenting with JOIN since both tables are accessed
+        const statement = `SELECT sdws.* FROM sdws 
+                           JOIN staff_info ON sdws.email = staff_info.email 
+                           WHERE staff_info.email = ?`;
+        const [rows] = await connection.execute(statement, [account.email]);
+        const sdw_account = rows[0];
+
+        return sdw_account || null;
+    } catch(err){
+        console.error("ERROR FROM: login.js get_sdw_info() " + err);
+        return null;
+    }
+}
+
 loginRouter.post('/', async (req, res) => {
     try{
         // get the inputs from the form
@@ -29,7 +46,7 @@ loginRouter.post('/', async (req, res) => {
             account = rows[0];
             console.log("Found email")
         } catch(err){
-            console.log(err);
+            console.error("ERROR FROM: login.js loginRouter database operation " + err);
         }
         
         // end connection
@@ -44,8 +61,10 @@ loginRouter.post('/', async (req, res) => {
             console.log(`(LOGIN) Email: ${email} Password: ${password}`);
 
             if(account.staff_type == "sdw"){
-                console.log("sadfasdfa");
-                return res.redirect('/sdw_homepage');
+                const sdw_info = await get_sdw_info(connection, account);
+                return res.render('sdw_homepage', {
+                    user: sdw_info
+                });
             }
 
             // using a single home route for cleaner file directory
@@ -56,7 +75,7 @@ loginRouter.post('/', async (req, res) => {
         }
         res.redirect('/login');
     } catch(err){
-        console.error(err); 
+        console.error("ERROR FROM: login.js loginRouter POST " + err);
     }
 })
 

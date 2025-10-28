@@ -2,6 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSWD File Manager</title>
+    </title>
     <link rel="stylesheet" href="/css/sdw_homepage_style.css">
 </head>
 
@@ -79,9 +80,12 @@
                 <button class="btn-upload-another" id="uploadAnotherBtn">Upload Another File</button>
             </div>
         </div>
-    </div>E
+    </div>
 
-    <!-- <script src="/upload"></script> Change this with the proper backend upload logic -->
+    <script>
+        const loggedUser = <%- JSON.stringify(user) %>;
+    </script>
+    <script src="/js/sdw_upload_handler.js"></script>
 
 </body>
 </html>
