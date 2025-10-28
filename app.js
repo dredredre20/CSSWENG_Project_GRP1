@@ -9,6 +9,7 @@ import loginRouter from './routers/login.js';
 import logoutRouter from './routers/logout.js';
 import registerRouter from './routers/register.js';
 import homeRouter from './routers/home.js'
+import reportRouter from './routers/sdw_reports.js';
 
 
 // dummy users
@@ -51,6 +52,7 @@ app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/home', homeRouter);
 app.use('/sdw_homepage', homeRouter);
+app.use('/sdw_reports', reportRouter);
 app.use('/logout', logoutRouter);
 
 app.listen(port, () => {
