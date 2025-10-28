@@ -36,7 +36,6 @@ document.querySelectorAll('.report-card').forEach(card => {
         currentReport = {
                 id: this.dataset.reportId,
                 name: this.dataset.reportName,
-                path: this.dataset.reportPath,
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader

@@ -52,7 +52,7 @@ app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/home', homeRouter);
 app.use('/sdw_homepage', homeRouter);
-app.use('/sdw_reports', reportRouter);
+app.use('/reports', reportRouter);
 app.use('/logout', logoutRouter);
 app.use('/upload', uploadRouter);
 
