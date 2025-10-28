@@ -4,20 +4,67 @@ import db_connection_pool from '../connections.js';
 const reportRouter = express.Router();
 
 reportRouter.get('/:category', async (req, res) => {
+    let connection;
     try {
         const category = req.params.category;
-        const account = req.session.logged_user; // should contain staff_info
-        const connection = await db_connection_pool.getConnection();
+        let categoryId;
+        switch (category) {
+            case "DSWD Annual Report":
+                categoryId = 1;
+                break;
+            case "Community Profile":
+                categoryId = 2;
+                break;
+            case "Target Vs ACC & SE":
+                categoryId = 3;
+                break;
+            case "Caseload Masterlist":
+                categoryId = 4;
+                break;
+            case "Education Profile":
+                categoryId = 5;
+                break;
+            case "Assistance to Families":
+                categoryId = 6;
+                break;
+            case "Poverty Stoplight":
+                categoryId = 7;
+                break;
+            case "CNF Candidates":
+                categoryId = 8;
+                break;
+            case "Retirement Candidates":
+                categoryId = 9;
+                break;
+            case "VM Accomplishments":
+                categoryId = 10;
+                break;
+            case "Correspondence":
+                categoryId = 11;
+                break;
+            case "Leaders Directory":
+                categoryId = 12;
+                break;
+            default:
+                    categoryId = 0; // fallback
+        }
+        let account;
+        if (req.session.logged_user){
+            account = req.session.logged_user; // should contain staff_info
+        } else {
+            res.redirect('/login');
+        }
+
+        connection = await db_connection_pool.getConnection();
 
         let sdw_id_query = `SELECT sdw_id
                             FROM sdws s
-                            JOIN staff_info si ON si.staff_info_id = s.
+                            JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
         const sdw_id = await connection.execute(sdw_id_query, [account.staff_id]);
 
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
-                                    r.file_path as path,
                                     r.file_size as size,
                                     r.upload_date as date,
                                     CONCAT(s.first_name, ' ', s.last_name) AS uploader
@@ -25,13 +72,15 @@ reportRouter.get('/:category', async (req, res) => {
                              JOIN sdws s ON r.sdw_id = s.sdw_id
                              WHERE r.sdw_id = ?
                              AND r.type = ?`;
-        const [rows] = await connection.execute(reports_query, [sdw_id, report_type]); // access this as [rows],[fields]
+        const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
 
         res.render('sdw_reports', { reports: rows, currentCategory: category });
 
     } catch (err){
         console.log(err);
         res.status(500).send('Server error from view_report.js');
+    } finally {
+        connection.release();
     }
 });
 
