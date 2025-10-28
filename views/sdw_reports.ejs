@@ -1,0 +1,129 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= currentCategory %> Reports</title>
+    <link rel="stylesheet" href="/css/sdw_reports_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="nav-menu">      <!-- Go back here to check if proper referencing-->
+                <button class="nav-btn" onclick="window.location.href='/sdw_homepage'">Back to Upload Page</button>
+                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
+                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
+                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
+                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
+                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
+                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
+                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
+                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
+                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
+                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
+                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
+                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="report-view-container">
+                <div class="report-header">
+                    <h1 class="report-title"><%= currentCategory %></h1>
+                    <div class="sort-container">
+                        <label for="sort-by">Sort By:</label>
+                        <!-- Add here further options for sorting-->
+                        <select id="sort-by" class="sort-select">
+                            <option value="latest">Latest</option>
+                            <option value="file-size">File Size</option>
+                            <option value="alphabetical">Alphabetically</option>
+                        </select>
+                    </div>
+                </div>
+
+                <% if (reports.length === 0) { %>
+                    <div class="empty-state">
+                        <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>
+                        <p class="upload-subtext">Start by uploading a file on the <a href="/sdw_homepage">homepage</a>.</p>
+                    </div>
+
+                <% } else { %>
+                    <div class="report-grid">
+                        <% reports.forEach(report => { %>
+                            <div class="report-card" 
+                                 data-report-id="<%= report.report_id %>"
+                                 data-report-name="<%= report.sdw_id %>"
+                                 data-report-date="<%= report.upload_date %>"
+                                 data-report-type="<%= report.type || 'Unknown' %>"
+
+                                 <%# For the report id, we can probably join to the sdw table to show name instead %>
+                                 
+                                <div class="report-thumbnail">
+                                    <div class="thumbnail-placeholder">
+                                        <span>📄</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="report-info">
+                                    <span class="report-icon">📊</span>
+                                    <span class="report-name"><%= report.name %></span>
+                                    <button class="report-options-btn" onclick="event.stopPropagation()">⋮</button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+
+                
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- Change this later to correctly print the file name-->
+                <h2 class="modal-title" id="modalFileName"> <%= reports.file_path %> </h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-placeholder">
+                        <!-- Also change this-->
+                        <div>📄</div>
+                        <p>Preview not available</p>
+                        <small>Click download to view the file</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="file-info" id="fileInfo">
+                    <!-- Change this further tor proper file information -->
+                    <strong>Uploaded:</strong> <span id="uploadDate">-</span> | 
+                    <strong>Size:</strong> <span id="fileSize">-</span> | 
+                    <strong>By:</strong> <span id="uploader">-</span>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-download" id="btnDownload">
+                        <span>⬇</span>
+                        Download
+                    </button>
+                    <button class="btn-delete" id="btnDelete">
+                        <span>🗑</span>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Access the srcipt for the functionalities for the reports-->
+    <script src="/js/sdw_reports_functionality"></script>
+
+
+</body>
+</html>
