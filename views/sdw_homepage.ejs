@@ -82,10 +82,22 @@
         </div>
     </div>
 
+    <!-- File Selection Modal-->
+    <div class="modal" id="fileTypeModal">
+        <div class="modal-content">
+            <p class="modal-text">What type of file will you be uploading?</p>
+            <div class="file-type-buttons"> 
+                <!-- Should be just excel-->
+                <button class="btn-file-type" data-type="excel">Excel File</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const loggedUser = <%- JSON.stringify(user) %>;
     </script>
     <script src="/js/sdw_upload_handler.js"></script>
 
 </body>
+
 </html>
