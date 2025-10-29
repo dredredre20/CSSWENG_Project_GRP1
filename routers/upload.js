@@ -11,12 +11,13 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         const connection = await db_connection_pool.getConnection();
 
         try{
-            const statement = 'INSERT INTO reports (sdw_id, spu_id, file_size, upload_date, type) VALUES(?, ?, ?, ?, ?)';
+            const statement = 'INSERT INTO reports (sdw_id, spu_id, report_name, file_size, upload_date, type) VALUES(?, ?, ?, ?, ?, ?)';
             
             const now = new Date();
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
 
-            (await connection).execute(statement, [upload_info.sdw_id, 0, upload_info.file_size, dateTime, upload_info.type]);
+            // spu_id attrib is currently 0, since there is no db relations yet
+            await connection.execute(statement, [upload_info.sdw_id, 0, upload_info.report_name, upload_info.file_size, dateTime, upload_info.type]);
             
             res.json({ success: true });
         } catch(err){

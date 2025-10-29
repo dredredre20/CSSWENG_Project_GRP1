@@ -32,6 +32,10 @@ function report_type(){
     }
 }
 
+function handleUploadAreaEvent(event){
+
+}
+
 document.addEventListener("DOMContentLoaded", ()=>{
     const uploadArea = document.getElementById("uploadArea");
 
@@ -82,6 +86,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         // prepare the data to be fetched over the /upload route
         const formData = new FormData();
         formData.append("file", currentFile);
+        formData.append("report_name", currentFile.name); // added the file name for report_name db attrib
         formData.append("file_size", currentFile.size);
         formData.append("sdw_id", loggedUser.sdw_id);
         formData.append("type", report_type());
@@ -124,6 +129,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
         fileSize.textContent = "";
         currentFile = null;
         uploadModal.classList.add("show");
+    });
+
+    uploadArea.addEventListener("click", (event) => {
+        event.preventDefault();
     });
 
     // if the user drops a file to the upload box
