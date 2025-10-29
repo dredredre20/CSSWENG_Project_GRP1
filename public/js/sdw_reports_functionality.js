@@ -97,7 +97,7 @@ btnDownload.addEventListener('click', () => {
     if (currentReport) {
         // Marker: this needs more validation
         const link = document.createElement('a');
-        link.href = currentReport.path || `/api/download/${currentReport.id}`;
+        link.href = currentReport.path || `/download/${currentReport.id}`;
         link.download = currentReport.name;
         document.body.appendChild(link);
         link.click();

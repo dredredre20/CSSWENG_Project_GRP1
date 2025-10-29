@@ -51,10 +51,11 @@
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
                             <div class="report-card" 
-                                 data-report-id="<%= report.report_id %>"
-                                 data-report-name="<%= report.sdw_id %>"
-                                 data-report-date="<%= report.upload_date %>"
-                                 data-report-type="<%= report.type || 'Unknown' %>"
+                                 data-report-id="<%= report.id %>"
+                                 data-report-name="<%= report.name %>"
+                                 data-report-size="<%= report.size %>"
+                                 data-report-date="<%= report.date %>"
+                                 data-report-uploader="<%= report.uploader || 'Unknown' %>"
 
                                  <%# For the report id, we can probably join to the sdw table to show name instead %>
                                  
