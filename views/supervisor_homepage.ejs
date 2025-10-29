@@ -15,7 +15,7 @@
 
         <div class="content">
             <div class="content-main">
-                <h2>Welcome, <span id="supervisorName"><%= supervisorName %></span>!</h2>
+                <h2>Welcome, Supervisor <span id="supervisorName"><%= supervisorName %></span>!</h2>
                 
                 <div class="content-bar">
                     <h1>SDWs Assigned:</h1>
@@ -39,8 +39,6 @@
                     <div class="divButtons" id="sdwContainer">
                         <% sdws.forEach(sdw => { %>
                             <button onclick="navigateToSDW('<%= sdw.id %>')">
-                                <!-- We might not need to render the sdw profile itself but
-                                 I'll leave these here for the meantime-->
                                 <img src="/sdw_icon.png" alt="SDW Icon">
                                 <span><%= sdw.name %></span>
                             </button>

@@ -19,12 +19,16 @@
         <div class="content">
             <div class="content-main">
 
-                <h2> Welcome, <span id="supervisorName">*SupervisorName*!</span> </h2> <!-- Replace with supervisor name here! -->
+                <h2>Welcome, Supervisor <span id="supervisorName"><%= supervisorName %></span>!</h2>
+                
                 <div class="content-bar">
-                    <h1> <span id="SDWName">*SDW*</span>'s Records: </h1>
+
+                    <h1> SDW - <span id="SDWName"> <%= sdw_name%> </span>'s Records: </h1>
                     
                     <div class="dropdown" style="position:absolute; right:30px">
                         <label>Sort by: </label>
+                        <!-- Sorting here seems useless since these are just the reports folder
+                         but i'll leave it just in case-->
                         <select id="sortMenu">
                             <option value="alphabetical">Alphabetical</option>
                             <option value="lastupdated">Last Updated</option>
@@ -36,18 +40,18 @@
                 <div class="divButtons">
                         <!-- Add buttons here -->
                         <!-- Add IDs to buttons and the like when needed -->
-                    <button ><span>DSWD Annual Report</span></button>
-                    <button ><span>Community Profile</span></button>
-                    <button ><span>Target Vs ACC & SE</span></button>
-                    <button ><span>Caseload Masterlist</span></button>
-                    <button ><span>Education Profile</span></button>
-                    <button ><span>Assistance to Families</span></button>
-                    <button ><span>Poverty Stoplight</span></button>
-                    <button ><span>CNF Candidates</span></button>
-                    <button ><span>Retirement Candidates</span></button>
-                    <button ><span>VM Accomplishments</span></button>
-                    <button ><span>Correspondence</span></button>
-                    <button ><span>Leaders Directory</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>DSWD Annual Report</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Community Profile</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Target Vs ACC & SE</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Caseload Masterlist</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Education Profile</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Assistance to Families</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Poverty Stoplight</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>CNF Candidates</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Retirement Candidates</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>VM Accomplishments</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Correspondence</span></button>
+                    <button onclick="navigateToReports('<%= reports.type%>')"><span>Leaders Directory</span></button>
                         
                 </div>
                 
@@ -55,9 +59,6 @@
         </div>
     </main>
 
-
-    <script>
-        // insert script here
-    </script>
+    <script src="/js/supervisor_reports.js"> </script>
 </body>
 </html>

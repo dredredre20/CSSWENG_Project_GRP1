@@ -23,7 +23,8 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
     buttons.forEach(button => container.appendChild(button));
 });
 
-// Navigate to SDW page - might not be needed
+// Navigate to SDW page 
 function navigateToSDW(sdwId) {
+    // change url if incorrect
     window.location.href = `/sdw/${sdwId}`;
 }
