@@ -11,16 +11,16 @@ async function insert(connection, samples){
 
             switch(user.stafftype) {
                 case "admin":
-                    query = 'INSERT INTO admins (first_name, last_name, email) VALUES (?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email];
+                    query = 'INSERT INTO admins (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
                     break;
                 case "supervisor":
-                    query = 'INSERT INTO supervisors (first_name, last_name, email) VALUES (?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email];
+                    query = 'INSERT INTO supervisors (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
                     break;
                 case "sdw":
-                    query = 'INSERT INTO sdws (first_name, last_name, email) VALUES (?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email];
+                    query = 'INSERT INTO sdws (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
                     break;
             }
             await connection.execute(query, values);
@@ -40,12 +40,12 @@ async function insert(connection, samples){
 async function insert_dummy_users(){
     // here are the list of dummy users, feel free to change and/or add more users
     const samples = [
-        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123" },
-        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123" },
-        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123" },
-        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123" },
-        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123" },
-        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123" }
+        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123", staff_info_id: "1" },
+        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123", staff_info_id: "2" },
+        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123", staff_info_id: "3" },
+        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123", staff_info_id: "4" },
+        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123", staff_info_id: "5" },
+        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123", staff_info_id: "6" }
     ];
 
     //get connection
