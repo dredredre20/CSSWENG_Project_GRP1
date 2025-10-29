@@ -61,7 +61,14 @@ reportRouter.get('/:category', async (req, res) => {
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
-        const sdw_id = await connection.execute(sdw_id_query, [account.staff_id]);
+        const [sdw_rows] = await connection.execute(sdw_id_query, [account.staff_id]);
+        
+        if (sdw_rows.length === 0) {
+            console.log("No SDW found for staff_id:", account.staff_id);
+            return res.render('sdw_reports', { reports: [], currentCategory: category });
+        }
+
+        const sdw_id = sdw_rows[0].sdw_id;
 
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
@@ -73,7 +80,7 @@ reportRouter.get('/:category', async (req, res) => {
                              WHERE r.sdw_id = ?
                              AND r.type = ?`;
         const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
-
+        console.log(rows);
         res.render('sdw_reports', { reports: rows, currentCategory: category });
 
     } catch (err){
