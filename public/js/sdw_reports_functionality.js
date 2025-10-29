@@ -19,8 +19,6 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     // Navigate to category
     btn.addEventListener('click', () => {
         const category = btn.dataset.category;
-
-        //Marker - Not so sure about this
         window.location.href = `/reports/${encodeURIComponent(category)}`;
     });
 });

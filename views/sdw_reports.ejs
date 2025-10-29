@@ -9,7 +9,7 @@
     <div class="container">
         <aside class="sidebar">
             <nav class="nav-menu">      <!-- Go back here to check if proper referencing-->
-                <button class="nav-btn" onclick="window.location.href='/sdw_homepage'">Back to Upload Page</button>
+                <button class="nav-btn" onclick="window.location.href='/home'">Back to Upload Page</button>
                 <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
                 <button class="nav-btn" data-category="Community Profile">Community Profile</button>
                 <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
@@ -44,7 +44,7 @@
                 <% if (reports.length === 0) { %>
                     <div class="empty-state">
                         <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>
-                        <p class="upload-subtext">Start by uploading a file on the <a href="/sdw_homepage">homepage</a>.</p>
+                        <p class="upload-subtext">Start by uploading a file on the <a href="/home">homepage</a>.</p>
                     </div>
 
                 <% } else { %>
