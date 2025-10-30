@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const uploadArea = document.getElementById("uploadArea");
 
     const uploadModal = document.getElementById("uploadModal");
+    const fileTypeModal = document.getElementById("fileTypeModal");
     const successModal = document.getElementById("successModal");
 
     const fileName = document.getElementById("fileName");
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const correctBtn = document.getElementById("correctBtn");
     const continueBtn = document.getElementById("continueBtn");
     const uploadAnotherBtn = document.getElementById("uploadAnotherBtn");
+    const fileTypeBtn = document.getElementById("fileTypeBtn");
 
     let currentFile = null; //so all listeners see the file
 
@@ -119,6 +121,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
     });
 
+    fileTypeBtn.addEventListener("click", () =>{
+        fileTypeModal.classList.remove("show");
+    });
+
     // if the user wants to upload another file
     //  currently only considers the recent file inputted
     //  since listeners are only for drag/drop events
@@ -128,11 +134,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
         fileName.textContent = "";
         fileSize.textContent = "";
         currentFile = null;
-        uploadModal.classList.add("show");
+        fileTypeModal.classList.add("show");
     });
 
     uploadArea.addEventListener("click", (event) => {
         event.preventDefault();
+        fileTypeModal.classList.add("show");
     });
 
     // if the user drops a file to the upload box
