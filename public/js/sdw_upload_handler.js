@@ -32,6 +32,19 @@ function report_type(){
     }
 }
 
+// Sidebar navigation - Make dynamic
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    // Highlight active category
+    if (btn.dataset.category === '<%= currentCategory %>') {
+        btn.classList.add('active');
+    }
+    // Navigate to category
+    btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+        window.location.href = `/reports/${encodeURIComponent(category)}`;
+    });
+});
+
 function handleUploadAreaEvent(event){
 
 }
