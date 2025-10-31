@@ -59,11 +59,14 @@ async function insert_dummy_users(){
                     "sdws",
                     "supervisors",
                     "spus",
-                    "admins"
+                    "admins",
+                    "spus_has_admins"
                 ];
 
                 for (const t of tablesToTruncate) {
+                    await connection.execute(`SET FOREIGN_KEY_CHECKS = 0`);
                     await connection.execute(`TRUNCATE TABLE \`${t}\``);
+                    await connection.execute(`SET FOREIGN_KEY_CHECKS = 1`);
                 }
 
                 await insert(connection, samples);
