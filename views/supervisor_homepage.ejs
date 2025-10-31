@@ -15,7 +15,7 @@
 
         <div class="content">
             <div class="content-main">
-                <h2>Welcome, Supervisor <span id="supervisorName"><%= supervisorName %></span>!</h2>
+                <h2>Welcome, Supervisor <span id="supervisorName"><%= user.first_name %> <%=user.last_name%></span>!</h2>
                 
                 <div class="content-bar">
                     <h1>SDWs Assigned:</h1>
@@ -29,10 +29,10 @@
                         </select>
                     </div>
                 </div>
-                
-                <% if (sdws.length === 0) { %>
+                <%sdws = null%>
+                <% if (sdws == null) { %>
                     <div class="empty-state">
-                        <p class="upload-text">No SDWs assigned for <%= supervisorName %></p>
+                        <p class="upload-text">No SDWs assigned for <%= user.first_name %></p>
                     </div>
 
                 <% } else { %>
@@ -40,7 +40,7 @@
                         <% sdws.forEach(sdw => { %>
                             <button onclick="navigateToSDW('<%= sdw.id %>')">
                                 <img src="/sdw_icon.png" alt="SDW Icon">
-                                <span><%= sdw.name %></span>
+                                <span><%= sdws.first_name %></span>
                             </button>
                         <% }); %>
                     </div>
@@ -50,6 +50,6 @@
         </div>
     </main>
 
-    <script src="/js/supervisor_homepage.js"></script>
+    <script src="/public/js/supervisor_homepage.js"></script>
 </body>
 </html>

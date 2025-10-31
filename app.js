@@ -43,7 +43,6 @@ app.get('/', (req,res) => {
     res.redirect('/login');
 });
 
-
 // insert dummy users
 insert_dummy_users();
 

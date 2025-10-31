@@ -32,7 +32,8 @@ loginRouter.post('/', async (req, res) => {
     try{
         // get the inputs from the form
         const {email, password} = req.body;
-        var account;
+        var account, firstName, lastName;
+        
         
         // get a connection to the db
         const connection = await db_connection_pool.getConnection();
@@ -40,7 +41,8 @@ loginRouter.post('/', async (req, res) => {
         // find user in the database using email only
         try{
             // use prepared statements
-            const statement = 'SELECT * FROM staff_info WHERE email = ?';
+            const statement = 'SELECT * FROM staff_info WHERE email = ?;';
+            
             // email/password as parameters to validate --then execute query
             const [rows] = await connection.execute(statement, [email]); 
             account = rows[0];
@@ -50,12 +52,12 @@ loginRouter.post('/', async (req, res) => {
         }
         
         // end connection
-        connection.release();
+        
 
         // if an account is returned and compare password hashes via bcrypt
         if(account && await bcrypt.compare(password, account.password)){
             //store the user in the session
-            req.session.logged_user = account;
+            //req.session.logged_user = account;
 
             // for now, initiallyt just log input for testing (validate in console)
             console.log(`(LOGIN) Email: ${email} Password: ${password}`);
@@ -69,9 +71,31 @@ loginRouter.post('/', async (req, res) => {
 
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
+
+            if(account.staff_type == "sdw"){
+
+            }
+            else if (account.staff_type == "supervisor"){
+                
+                try{
+
+                const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
+                const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
+                const supervisorAccount = rowsSupervisor[0];
+                req.session.logged_user = {staff_type: account.staff_type, first_name: supervisorAccount.first_name, last_name: supervisorAccount.last_name};
+            }catch(err){
+                console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
+            }
+            }
+            else if(account.staff_type == "admin"){
+
+            }
+
+            connection.release();
             return res.redirect('/home'); 
         } else{
             console.log('No account found');
+            connection.release();
         }
         res.redirect('/login');
     } catch(err){

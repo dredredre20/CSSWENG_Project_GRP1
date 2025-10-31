@@ -19,8 +19,8 @@ async function insert(connection, samples){
                     values = [user.first_name, user.last_name, user.email, user.staff_info_id];
                     break;
                 case "sdw":
-                    query = 'INSERT INTO sdws (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
+                    query = 'INSERT INTO sdws (first_name, last_name, email, supervisor_id, staff_info_id) VALUES (?, ?, ?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email, user.supervisorid, user.staff_info_id];
                     break;
             }
             await connection.execute(query, values);
@@ -44,8 +44,8 @@ async function insert_dummy_users(){
         { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123", staff_info_id: "2" },
         { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123", staff_info_id: "3" },
         { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123", staff_info_id: "4" },
-        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123", staff_info_id: "5" },
-        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123", staff_info_id: "6" }
+        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123", staff_info_id: "5", supervisorid: "1" },
+        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123", staff_info_id: "6", supervisorid: "2" }
     ];
 
     //get connection
