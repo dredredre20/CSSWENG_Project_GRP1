@@ -2,6 +2,7 @@ import express from 'express';
 import db_connection_pool from '../connections.js';
 
 const reportRouter = express.Router();
+const redirectRouter = express.Router();
 
 reportRouter.get('/:category', async (req, res) => {
     let connection;
@@ -9,6 +10,10 @@ reportRouter.get('/:category', async (req, res) => {
         const category = req.params.category;
         let categoryId;
         switch (category) {
+            case "Upload Page":
+                res.redirect('/home');
+                categoryId = -1;
+                break;
             case "DSWD Annual Report":
                 categoryId = 1;
                 break;
@@ -45,15 +50,26 @@ reportRouter.get('/:category', async (req, res) => {
             case "Leaders Directory":
                 categoryId = 12;
                 break;
+            case "Logout":
+                res.redirect('/');
+                categoryId = -1;
+                break;
             default:
                     categoryId = 0; // fallback
         }
+        
+        if(categoryId == -1){
+            return
+        }
+        
         let account;
         if (req.session.logged_user){
             account = req.session.logged_user; // should contain staff_info
         } else {
             res.redirect('/login');
         }
+
+        
 
         connection = await db_connection_pool.getConnection();
 

@@ -136,6 +136,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
     fileTypeBtn.addEventListener("click", () =>{
         fileTypeModal.classList.remove("show");
+        currentFile = document.getElementById("fileInputByClick").files[0];
+        fileName.textContent = currentFile.name;
+        fileSize.textContent = currentFile.size + " Bytes";
+        uploadModal.classList.add("show");
+        console.log(currentFile.type);
+        
     });
 
     // if the user wants to upload another file
