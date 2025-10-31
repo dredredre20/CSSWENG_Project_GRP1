@@ -89,7 +89,9 @@ loginRouter.post('/', async (req, res) => {
             }
             }
             else if(account.staff_type == "admin"){
-
+                req.session.logged_user = account;
+                connection.release();
+                return res.redirect('/home');
             }
             
             connection.release(); 
