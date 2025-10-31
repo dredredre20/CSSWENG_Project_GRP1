@@ -71,9 +71,10 @@ loginRouter.post('/', async (req, res) => {
 
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
-
             if(account.staff_type == "sdw"){
-
+                req.session.logged_user = account;
+                connection.release();
+                return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
                 
@@ -90,13 +91,14 @@ loginRouter.post('/', async (req, res) => {
             else if(account.staff_type == "admin"){
 
             }
-
-            connection.release();
-            return res.redirect('/home'); 
+            
+            connection.release(); 
+            return res.redirect('/home');
         } else{
             console.log('No account found');
             connection.release();
         }
+        
         res.redirect('/login');
     } catch(err){
         console.error("ERROR FROM: login.js loginRouter POST " + err);
