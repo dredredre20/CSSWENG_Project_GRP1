@@ -12,15 +12,17 @@ const reportGrid = document.querySelector('.report-grid');
 
 // Sidebar navigation - Make dynamic
 document.querySelectorAll('.nav-btn').forEach(btn => {
-    // Highlight active category
-    if (btn.dataset.category === '<%= currentCategory %>') {
-        btn.classList.add('active');
+    // Only process buttons with data-category attribute
+    if (btn.dataset.category) {
+        if (btn.dataset.category === '<%= currentCategory %>') {
+            btn.classList.add('active');
+        }
+        // Navigate to category
+        btn.addEventListener('click', () => {
+            const category = btn.dataset.category;
+            window.location.href = `/reports/${encodeURIComponent(category)}`;
+        });
     }
-    // Navigate to category
-    btn.addEventListener('click', () => {
-        const category = btn.dataset.category;
-        window.location.href = `/reports/${encodeURIComponent(category)}`;
-    });
 });
     
 // Open modal when clicking on report card
