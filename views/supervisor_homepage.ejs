@@ -9,9 +9,24 @@
 
 <body>
     <main>
-        <div class="sidebar">
-            <img src="/logo.png" style="scale:55%; margin: auto;">
-        </div>
+        <aside class="sidebar">
+            <img src="/logo.png" style="scale:55%; margin: auto; ">
+            <nav class="nav-menu">      <!-- Go back here to check if proper referencing-->
+                <button class="nav-btn" onclick="window.location.href='/supervisor_reports'">Back to Reports Folder Page</button>
+                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
+                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
+                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
+                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
+                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
+                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
+                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
+                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
+                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
+                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
+                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
+                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
+            </nav>
+        </aside>
 
         <div class="content">
             <div class="content-main">
@@ -32,7 +47,7 @@
                 <%sdws = null%>
                 <% if (sdws == null) { %>
                     <div class="empty-state">
-                        <p class="upload-text">No SDWs assigned for <%= user.first_name %></p>
+                        <p class="upload-text">No SDWs Assigned For <%= user.first_name %></p>
                     </div>
 
                 <% } else { %>
