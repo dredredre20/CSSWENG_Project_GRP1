@@ -13,9 +13,9 @@ main {
 }
 
 .sidebar {
-    width: 350px;
+    width: 340px;
     background-color: #d3d3d3;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
@@ -23,7 +23,7 @@ main {
 
 .sidebar img {
     display: block;
-    width: 80%;
+    scale: 55%;
     margin: 0 auto 20px;
 }
 
@@ -72,12 +72,13 @@ main {
 
 .content-main {
     padding: 30px;
+    padding-top: 15px;
     height: 100%;
 }
 
 h2 {
     padding: 0;
-    margin: 80px 0 20px 0;
+    margin: 5px 0 15px 0;
     font-family: Inter, sans-serif;
     font-weight: 300;
     font-size: 45px;
@@ -186,4 +187,22 @@ h1 {
 
 .dropdown select:hover {
     border-color: #999;
+}
+
+.logout-btn{
+    background-color: #f05a50;
+    border: none;
+    border-radius: 8px;
+    width: 100px;
+    padding: 8px 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position:fixed;
+    bottom: 8px;
+    right: 8px;
 }

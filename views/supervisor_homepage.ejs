@@ -11,11 +11,12 @@
     <main>
         <aside class="sidebar">
             <img src="/logo.png" style="scale:55%; margin: auto; ">
+            
         </aside>
 
         <div class="content">
             <div class="content-main">
-                <h2>Welcome, Supervisor <span id="supervisorName"><%= user.first_name %> <%=user.last_name%></span>!</h2>
+                <h2>Welcome, Supervisor <span id="supervisorName" style="font-weight:bold;"><%= user.first_name %> <%=user.last_name%></span>!</h2>
                 
                 <div class="content-bar">
                     <h1>SDWs Assigned:</h1>
@@ -47,7 +48,9 @@
                 <% } %>
                 
             </div>
+            
         </div>
+    <button class="logout-btn" onclick="window.location.href='/login'">Logout</button>    
     </main>
 
     <script src="/public/js/supervisor_homepage.js"></script>
