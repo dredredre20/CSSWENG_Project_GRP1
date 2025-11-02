@@ -9,24 +9,27 @@ async function insert(connection, samples){
             let query = "";
             let values = [];
 
+            // fill `staff_info` first, then get the inserted row to obtain the ID to be inserted in the other user tables
+            const [staff_info_inserted] = await connection.execute(
+                'INSERT INTO reports_db.staff_info (staff_type, email, password) VALUES(?, ?, ?)',
+                [user.stafftype, user.email, hashed]
+            );
+
             switch(user.stafftype) {
                 case "admin":
                     query = 'INSERT INTO admins (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
+                    values = [user.first_name, user.last_name, user.email, staff_info_inserted.insertId];
                     break;
                 case "supervisor":
-                    query = 'INSERT INTO supervisors (first_name, last_name, email, staff_info_id) VALUES (?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, user.staff_info_id];
+                    query = 'INSERT INTO supervisors (first_name, last_name, email, spu_id, staff_info_id) VALUES (?, ?, ?, ?, ?)';
+                    values = [user.first_name, user.last_name, user.email, user.spu_id, staff_info_inserted.insertId];
                     break;
                 case "sdw":
                     query = 'INSERT INTO sdws (first_name, last_name, email, supervisor_id, staff_info_id) VALUES (?, ?, ?, ?, ?)';
-                    values = [user.first_name, user.last_name, user.email, user.supervisorid, user.staff_info_id];
+                    values = [user.first_name, user.last_name, user.email, user.supervisorid, staff_info_inserted.insertId];
                     break;
             }
             await connection.execute(query, values);
-            let query2 = 'INSERT INTO staff_info (staff_type, email, password) VALUES (?, ?, ?)';
-            let values2 = [user.stafftype, user.email, hashed]
-            await connection.execute(query2, values2);
         }
         console.log("Sucessfully seeded dummy users.")
 
@@ -40,12 +43,12 @@ async function insert(connection, samples){
 async function insert_dummy_users(){
     // here are the list of dummy users, feel free to change and/or add more users
     const samples = [
-        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123", staff_info_id: "1" },
-        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123", staff_info_id: "2" },
-        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123", staff_info_id: "3" },
-        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123", staff_info_id: "4" },
-        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123", staff_info_id: "5", supervisorid: "1" },
-        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123", staff_info_id: "6", supervisorid: "2" }
+        { stafftype: "admin", first_name: "John", last_name: "Doe", email: "admin1@gmail.com", password: "password123" },
+        { stafftype: "admin", first_name: "Jane", last_name: "Beck", email: "admin2@gmail.com", password: "password123"},
+        { stafftype: "supervisor", first_name: "Jenny", last_name: "Parker", email: "visor1@gmail.com", password: "password123", spu_id: 1},
+        { stafftype: "supervisor", first_name: "Wesley", last_name: "Ang", email: "visor2@gmail.com", password: "password123", spu_id: 2},
+        { stafftype: "sdw", first_name: "Angelo", last_name: "Perdo", email: "sdw1@gmail.com", password: "password123", supervisorid: 1},
+        { stafftype: "sdw", first_name: "Jane", last_name: "Newbabel", email: "sdw2@gmail.com", password: "password123", supervisorid: 2}
     ];
 
     //get connection
@@ -53,13 +56,17 @@ async function insert_dummy_users(){
     const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
     if (rows[0].count === 0) {
             try {
+                await connection.execute('SET FOREIGN_KEY_CHECKS = 0'); // since there are foreign key constraints, 
+                                                                        // TRUNCATE fails everytime, so we don't check the foreign keys so it executes
+                                                                        // this isn't good for actual deployment, but it should be fine for testing purposes
                 const tablesToTruncate = [
                     "reports",
-                    "staff_info",
                     "sdws",
                     "supervisors",
+                    "admins",
+                    "spus_has_admins",
                     "spus",
-                    "admins"
+                    "staff_info"
                 ];
 
                 for (const t of tablesToTruncate) {
@@ -69,7 +76,7 @@ async function insert_dummy_users(){
                 await insert(connection, samples);
 
             } catch(err){
-                console.error("Error deleting existing seeded users:"+err);
+                console.error("Error deleting existing seeded users: "+err);
             }
     } else {
         console.log("Staff already exists, skipping seed.");

@@ -29,7 +29,6 @@
                         </select>
                     </div>
                 </div>
-                <%sdws = null%>
                 <% if (sdws == null) { %>
                     <div class="empty-state">
                         <p class="upload-text">No SDWs assigned for <%= user.first_name %></p>
@@ -38,7 +37,7 @@
                 <% } else { %>
                     <div class="divButtons" id="sdwContainer">
                         <% sdws.forEach(sdw => { %>
-                            <button onclick="navigateToSDW('<%= sdw.id %>')">
+                            <button onclick="navigateToSDW('<%= sdw.sdw_id %>')">
                                 <img src="/sdw_icon.png" alt="SDW Icon">
                                 <span><%= sdws.first_name %></span>
                             </button>
@@ -50,6 +49,6 @@
         </div>
     </main>
 
-    <script src="/public/js/supervisor_homepage.js"></script>
+    <script src="/js/supervisor_homepage.js"></script>
 </body>
 </html>

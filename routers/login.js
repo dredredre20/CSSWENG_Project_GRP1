@@ -62,13 +62,6 @@ loginRouter.post('/', async (req, res) => {
             // for now, initiallyt just log input for testing (validate in console)
             console.log(`(LOGIN) Email: ${email} Password: ${password}`);
 
-            /*if(account.staff_type == "sdw"){
-                const sdw_info = await get_sdw_info(connection, account);
-                return res.render('sdw_homepage', {
-                    user: sdw_info
-                });
-            }*/
-
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
             if(account.staff_type == "sdw"){
@@ -77,26 +70,25 @@ loginRouter.post('/', async (req, res) => {
                 return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
-                
                 try{
-
-                const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
-                const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
-                const supervisorAccount = rowsSupervisor[0];
-                req.session.logged_user = {staff_type: account.staff_type, first_name: supervisorAccount.first_name, last_name: supervisorAccount.last_name};
-            }catch(err){
-                console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
-            }
+                    const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
+                    const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
+                    const supervisorAccount = rowsSupervisor[0];
+                    // add the id as well for the /sdw route
+                    req.session.logged_user = {id: supervisorAccount.supervisor_id, staff_type: account.staff_type, first_name: supervisorAccount.first_name, last_name: supervisorAccount.last_name};
+                }catch(err){
+                    console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
+                }
             }
             else if(account.staff_type == "admin"){
-
+                // future work
             }
             
-            connection.release(); 
+            await connection.release(); 
             return res.redirect('/home');
         } else{
             console.log('No account found');
-            connection.release();
+            await connection.release();
         }
         
         res.redirect('/login');
