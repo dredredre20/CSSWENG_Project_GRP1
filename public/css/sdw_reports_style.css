@@ -500,3 +500,37 @@ body {
         gap: 16px;
     }
 }
+
+.logout-btn{
+    background-color: #f05a50;
+    border: none;
+    border-radius: 8px;
+    width: 100px;
+    padding: 8px 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position:fixed;
+    bottom: 8;
+    right: 8;
+}
+
+.upload-btn{
+    background-color: #6bb17f;
+    border: none;
+    border-radius: 8px;
+    width: 150px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
