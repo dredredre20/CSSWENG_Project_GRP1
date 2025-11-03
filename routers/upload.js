@@ -30,13 +30,13 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         const sdw_id = sdw_rows[0].sdw_id;
 
         try{
-            const statement = 'INSERT INTO reports (sdw_id, spu_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?, ?)';
+            const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
             
             const now = new Date();
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
 
             // spu_id attrib is currently 0, since there is no db relations yet
-            await connection.execute(statement, [sdw_id, 0, upload_info.report_name, upload_info.file_size, dateTime, upload_info.type, file.path]);
+            await connection.execute(statement, [sdw_id, upload_info.report_name, upload_info.file_size, dateTime, upload_info.type, file.path]);
             console.log(file.path);
             res.json({ success: true });
         } catch(err){
