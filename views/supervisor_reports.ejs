@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Supervisor Reports</title>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-    <link rel="stylesheet" href="css/supervisor_reports_style.css">
+    <link rel="stylesheet" href="/css/supervisor_reports_style.css">
 </head>
 
 <body>
@@ -17,7 +17,7 @@
         <div class="content">
             <div class="content-main">
 
-                <h2>Welcome, Supervisor <span id="supervisorName"><%= supervisor.first_name %> <%= supervisor.last_name %></span>!</h2>
+                <h2>Welcome, Supervisor <span id="supervisorName" style="font-weight:bold;"><%= supervisor.first_name %> <%= supervisor.last_name %></span>!</h2>
                 
                 <div class="content-bar">
 
@@ -33,24 +33,25 @@
                             <!-- Add more options here if needed -->
                         </select>
                     </div>
+                    
                 </div>
-                
+                <button class="back-btn" onclick="window.location.href='/home'">Back to SDWs Page</button>
                 <div class="divButtons">
                         <!-- Add buttons here -->
                         <!-- Add IDs to buttons and the like when needed -->
                         <!-- hardcoded the report types instead, since they're fixed anyway -->
-                    <button onclick="navigateToReports('DSWD Annual Report')"     id="1"><span>DSWD Annual Report</span></button>
-                    <button onclick="navigateToReports('Community Profile')"      id="2"><span>Community Profile</span></button>
-                    <button onclick="navigateToReports('Target Vs ACC & SE')"     id="3"><span>Target Vs ACC & SE</span></button>
-                    <button onclick="navigateToReports('Caseload Masterlist')"    id="4"><span>Caseload Masterlist</span></button>
-                    <button onclick="navigateToReports('Education Profile')"      id="5"><span>Education Profile</span></button>
-                    <button onclick="navigateToReports('Assistance to Families')" id="6"><span>Assistance to Families</span></button>
-                    <button onclick="navigateToReports('Poverty Stoplight')"      id="7"><span>Poverty Stoplight</span></button>
-                    <button onclick="navigateToReports('CNF Candidates')"         id="8"><span>CNF Candidates</span></button>
-                    <button onclick="navigateToReports('Retirement Candidates')"  id="9"><span>Retirement Candidates</span></button>
-                    <button onclick="navigateToReports('VM Accomplishments')"     id="10"><span>VM Accomplishments</span></button>
-                    <button onclick="navigateToReports('Correspondence')"         id="11"><span>Correspondence</span></button>
-                    <button onclick="navigateToReports('Leaders Directory')"      id="12"><span>Leaders Directory</span></button>
+                    <button class="report-btn" onclick="navigateToReports('DSWD Annual Report')"     id="1"><span>DSWD Annual Report</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Community Profile')"      id="2"><span>Community Profile</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Target Vs ACC & SE')"     id="3"><span>Target Vs ACC & SE</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Caseload Masterlist')"    id="4"><span>Caseload Masterlist</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Education Profile')"      id="5"><span>Education Profile</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Assistance to Families')" id="6"><span>Assistance to Families</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Poverty Stoplight')"      id="7"><span>Poverty Stoplight</span></button>
+                    <button class="report-btn" onclick="navigateToReports('CNF Candidates')"         id="8"><span>CNF Candidates</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Retirement Candidates')"  id="9"><span>Retirement Candidates</span></button>
+                    <button class="report-btn" onclick="navigateToReports('VM Accomplishments')"     id="10"><span>VM Accomplishments</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Correspondence')"         id="11"><span>Correspondence</span></button>
+                    <button class="report-btn" onclick="navigateToReports('Leaders Directory')"      id="12"><span>Leaders Directory</span></button>
             
                 </div>
                 
