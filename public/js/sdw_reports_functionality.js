@@ -48,7 +48,7 @@ document.querySelectorAll('.report-card').forEach(card => {
 function openModal(report) {
     document.getElementById('modalFileName').textContent = report.name;
     document.getElementById('uploadDate').textContent = report.date;
-    document.getElementById('fileSize').textContent = report.size;
+    document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
     document.getElementById('uploader').textContent = report.uploader;
 
 

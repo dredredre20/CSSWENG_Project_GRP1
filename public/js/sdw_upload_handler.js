@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         //display it on the modal as well
         // also, the modal might need to wrap text
         fileName.textContent = currentFile.name; 
-        fileSize.textContent = currentFile.size / 1000 + " KB";
+        fileSize.textContent = (currentFile.size / 1000).toFixed(0) + " KB";
 
         // do the DB op
         try{
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
         currentFile = file;
         fileName.textContent = file.name;
-        fileSize.textContent = file.size / 1000 + " KB";
+        fileSize.textContent = (currentFile.size / 1000).toFixed(0) + " KB";
 
         uploadModal.classList.add("show");
     });
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         currentFile = file;
         
         fileName.textContent = file.name;
-        fileSize.textContent = file.size/1000 + " KB";
+        fileSize.textContent = (currentFile.size / 1000).toFixed(0) + " KB";
 
         uploadModal.classList.add("show");
     });
