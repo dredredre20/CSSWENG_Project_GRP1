@@ -68,6 +68,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const uploadAnotherBtn = document.getElementById("uploadAnotherBtn");
     const fileTypeBtn = document.getElementById("fileTypeBtn");
 
+    const fileInput = document.getElementById("fileInput");
+
     let currentFile = null; //so all listeners see the file
 
     // to allow file drop
@@ -109,7 +111,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         //display it on the modal as well
         // also, the modal might need to wrap text
         fileName.textContent = currentFile.name; 
-        fileSize.textContent = currentFile.size + " Bytes";
+        fileSize.textContent = currentFile.size / 1000 + " KB";
 
         // do the DB op
         try{
@@ -134,31 +136,44 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
     });
 
-    fileTypeBtn.addEventListener("click", () =>{
-        fileTypeModal.classList.remove("show");
-        currentFile = document.getElementById("fileInputByClick").files[0];
-        fileName.textContent = currentFile.name;
-        fileSize.textContent = currentFile.size + " Bytes";
-        uploadModal.classList.add("show");
-        console.log(currentFile.type);
-        
-    });
+    // fileTypeBtn.addEventListener("click", () =>{
+    //     fileTypeModal.classList.remove("show");
+    //     currentFile = document.getElementById("fileInputByClick").files[0];
+    //     fileName.textContent = currentFile.name;
+    //     fileSize.textContent = currentFile.size / 1000 + " KB";
+    //     fileTypeModal.classList.remove("show");
+    //     uploadModal.classList.add("show");
+    //     console.log(currentFile.type);
+    // });
 
     // if the user wants to upload another file
     //  currently only considers the recent file inputted
     //  since listeners are only for drag/drop events
     uploadAnotherBtn.addEventListener("click", () => {
-        uploadModal.classList.remove("show");
-        successModal.classList.remove("show");
-        fileName.textContent = "";
-        fileSize.textContent = "";
-        currentFile = null;
-        fileTypeModal.classList.add("show");
+        fileInput.value = "";
+        successModal.classList.remove("show"); // remove the success modal so when file selection is cancelled, we just go back to the page
+        fileInput.click();
     });
 
-    uploadArea.addEventListener("click", (event) => {
-        event.preventDefault();
-        fileTypeModal.classList.add("show");
+    // for when the upload is clicked instead of dragged a file
+    uploadArea.addEventListener("click", () => {
+        fileInput.value = "";
+        fileInput.click();
+    });
+
+    // when user selects a file
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];//get the first file user selected
+
+        if(!file){ //user cancelled
+            return;
+        }
+
+        currentFile = file;
+        fileName.textContent = file.name;
+        fileSize.textContent = file.size / 1000 + " KB";
+
+        uploadModal.classList.add("show");
     });
 
     // if the user drops a file to the upload box
@@ -175,7 +190,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         currentFile = file;
         
         fileName.textContent = file.name;
-        fileSize.textContent = file.size + " Bytes";
+        fileSize.textContent = file.size/1000 + " KB";
 
         uploadModal.classList.add("show");
     });
