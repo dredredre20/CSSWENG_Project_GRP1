@@ -17,9 +17,9 @@ body {
 }
 
 .sidebar {
-    width: 350px;
+    width: 340px;
     background-color: #d3d3d3;
-    padding: 60px 20px 20px;
+    padding: 10px;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -499,4 +499,38 @@ body {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 16px;
     }
+}
+
+.logout-btn{
+    background-color: #f05a50;
+    border: none;
+    border-radius: 8px;
+    width: 100px;
+    padding: 8px 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position:fixed;
+    bottom: 8;
+    right: 8;
+}
+
+.upload-btn{
+    background-color: #6bb17f;
+    border: none;
+    border-radius: 8px;
+    width: 150px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }

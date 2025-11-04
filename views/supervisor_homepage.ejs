@@ -11,11 +11,12 @@
     <main>
         <aside class="sidebar">
             <img src="/logo.png" style="scale:55%; margin: auto; ">
+            
         </aside>
 
         <div class="content">
             <div class="content-main">
-                <h2>Welcome, Supervisor <span id="supervisorName"><%= user.first_name %> <%=user.last_name%></span>!</h2>
+                <h2>Welcome, Supervisor <span id="supervisorName" style="font-weight:bold;"><%= user.first_name %> <%=user.last_name%></span>!</h2>
                 
                 <div class="content-bar">
                     <h1>SDWs Assigned:</h1>
@@ -29,7 +30,6 @@
                         </select>
                     </div>
                 </div>
-                <%sdws = null%>
                 <% if (sdws == null) { %>
                     <div class="empty-state">
                         <p class="upload-text">No SDWs Assigned For <%= user.first_name %></p>
@@ -38,7 +38,7 @@
                 <% } else { %>
                     <div class="divButtons" id="sdwContainer">
                         <% sdws.forEach(sdw => { %>
-                            <button onclick="navigateToSDW('<%= sdw.id %>')">
+                            <button onclick="navigateToSDW('<%= sdw.sdw_id %>')">
                                 <img src="/sdw_icon.png" alt="SDW Icon">
                                 <span><%= sdws.first_name %></span>
                             </button>
@@ -47,9 +47,11 @@
                 <% } %>
                 
             </div>
+            
         </div>
+    <button class="logout-btn" onclick="window.location.href='/login'">Logout</button>    
     </main>
 
-    <script src="/public/js/supervisor_homepage.js"></script>
+    <script src="/js/supervisor_homepage.js"></script>
 </body>
 </html>
