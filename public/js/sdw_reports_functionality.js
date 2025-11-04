@@ -1,5 +1,6 @@
 // Store current report data
 let currentReport = null;
+let deleteConfirmModal = null;
 
 
 // Get DOM elements
@@ -105,27 +106,65 @@ btnDownload.addEventListener('click', () => {
     }
 });
 
+
 // Delete button
 btnDelete.addEventListener('click', () => {
     if (currentReport) {
-        if (confirm(`Are you sure you want to delete "${currentReport.name}"?`)) {
-            // TODO: Implement delete API call
-            // Marker: This needs more validation
-            fetch(`/api/reports/${currentReport.id}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Report deleted successfully!');
-                closeModal();
-                location.reload(); // Refresh the page
-            })
-            .catch(error => {
-                alert('Error deleting report: ' + error.message);
-            });
-        }
+        showDeleteConfirmation();
     }
 });
+
+// Custom delete confirmation modal
+function showDeleteConfirmation() {
+    deleteConfirmModal = document.createElement('div');
+    deleteConfirmModal.className = 'delete-modal';
+    // Create dive here for confirmation again
+    deleteConfirmModal.innerHTML = `
+        <div class="delete-modal-content">
+            <h3>Delete Report</h3>
+            <p>Are you sure you want to delete "<strong>${currentReport.name}</strong>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="delete-modal-buttons">
+                <button class="btn-cancel" onclick="closeDeleteConfirmation()">Cancel</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(deleteConfirmModal);
+    setTimeout(() => deleteConfirmModal.classList.add('active'), 10);
+}
+
+function closeDeleteConfirmation() {
+    if (deleteConfirmModal) {
+        deleteConfirmModal.classList.remove('active');
+        setTimeout(() => {
+            document.body.removeChild(deleteConfirmModal);
+            deleteConfirmModal = null;
+        }, 300);
+    }
+}
+
+// Route to the delete router
+function confirmDelete() {
+    closeDeleteConfirmation();
+    
+    fetch(`/delete/${currentReport.id}`, {  
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete report');
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message || 'Report deleted successfully!');
+        closeModal();
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        alert('Error deleting report: ' + error.message);
+    });
+}
 
 // Sorting functionality
 sortSelect.addEventListener('change', () => {
