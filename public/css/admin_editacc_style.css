@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f5;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 20%;
+    background-color: #d3d3d3;
+    padding: 60px 20px 20pxx;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position:relative;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    
+}
+
+.nav-btn {
+    background-color: #f4b41a;
+    border: none;
+    border-radius: 60px;
+    width: 50%;
+    padding: 16px 22px;
+    margin-left:auto;
+    margin-right:auto;
+    font-size: 20px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn:hover {
+    background-color: #e5a610;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn.active {
+    background-color: #d9a010;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#logout{
+    position: absolute;
+    bottom: 10px;
+
+    left:25%;
+    background-color: #f05a50;
+
+}
+
+#logout:hover {
+    background-color: #d04d44;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar img {
+    display: block;
+    width: 50%;
+    margin: 0 auto 20px;
+}
+
+.content{
+    width: calc(100% - 300px);
+    height: 100%
+}
+
+.content-main {
+    padding: 15px 30px;
+    height: 100%;
+}
+
+h2 {
+    padding: 0;
+    margin: 5px 0 15px 0;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 45px;
+}
+
+.content-bar {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.content-area {
+    width:100%;
+    height:calc(100% - 135px);
+}
+
+.inputs-area{
+    display:grid;
+    column-gap:30px;
+    row-gap:80px;
+    grid-template-columns: 27% 27% 27%;
+    grid-auto-rows: 10%;
+    height:50%;
+}
+
+.label-and-input{
+    display:flex;
+    flex-direction: column;
+    height:fit-content;
+}
+
+.textbox{
+    margin-top:5px;
+    height:7%;
+    padding: 10px 7px;
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
+select{
+    margin-top:5px;
+    height:7%;
+    padding: 10px 7px;
+    border:1px solid #ddd;
+    border-radius:5px;
+    
+}
+
+.fileupload{
+    margin-top:5px;
+}
+
+.content-area img{
+    margin-top: -10px;
+    height:100%;
+    width:100%;
+    max-width:200px;
+    max-height:200px
+}
+
+.bottom-bar{
+    width:100%;
+    position: absolute;
+    bottom:15px;
+    
+}
+
+.bottom-bar button{
+    
+    border-radius: 5px;
+    width: 15%;
+    padding: 16px 22px;
+    margin-left:auto;
+    margin-right:auto;
+    font-size: 20px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right:30px;
+}
+
+.confirm-btn{
+    background-color: #07bf00;
+    border: none;
+}
+
+.confirm-btn:hover {
+    background-color: #08b003;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.confirm-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.confirm-btn.active {
+    background-color: #09a504;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-btn{
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+}
+
+.cancel-btn:hover {
+    background-color: #c9c9c9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cancel-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-btn.active {
+    background-color: #c2c2c2;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Scrollbar Styles */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #b8b8b8;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+

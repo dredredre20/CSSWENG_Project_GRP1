@@ -1,0 +1,67 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Homepage</title>
+    </title>
+    <link rel="stylesheet" href="admin_spu_style.css"> <!--TODO change this -->
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a><img src="logo.png" id=logo style="scale:55%; margin: auto; "></a>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn"> Create New Account</button>
+                <button class="nav-btn" id="back-btn"> Back to SPUs</button>
+                <button class="nav-btn" id="logout"> Logout</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-main">
+                <h2> Welcome to AMP Supervisor Suite! </h2>
+                <h3 style="position:absolute; left:22%"> SDWs Assigned: </h3>
+
+                <div class="dropdown" style="position:absolute; right:30px">
+                        <label>Sort by: </label>
+                        <!-- Sorting here seems useless since these are just the reports folder
+                         but i'll leave it just in case-->
+                        <select id="sortMenu">
+                            <option value="alphabetical">Alphabetical</option>
+                            <option value="lastupdated">Last Updated</option>
+                            <!-- Add more options here if needed -->
+                        </select>
+                </div>
+
+                <div class="users">
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+            
+                
+                </div>
+                
+                                
+
+        </div>
+        </main>
+    </div>
+
+ 
+    
+
+    <script>
+        
+    </script>
+    <script ></script>
+
+</body>
+
+</html>

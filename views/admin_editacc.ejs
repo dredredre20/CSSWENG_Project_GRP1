@@ -1,0 +1,107 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Create Account</title>
+    </title>
+    <link rel="stylesheet" href="admin_editacc_style.css"> <!--TODO change this -->
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a><img src="logo.png" id=logo style="scale:55%; margin: auto; "></a>
+            
+                
+            <nav class="nav-menu">
+                
+                <button class="nav-btn" data-category="Logout" id="logout">Logout</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-main">
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;">[AdminName]</span>!</h2>
+                <div class="content-bar"><h1>Edit [SDW]'s account</h1></div>
+                <div class="content-area">
+                    <div class="inputs-area">
+                        <!-- needs script to get default values -->
+                        <div class="label-and-input">
+                            <label for="firstname">First Name</label>
+                            <input class="textbox" id="firstname" value="[SDW's First Name]">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="middlename">Middle Name</label>
+                            <input class="textbox" id="middlename" value="[SDW's Middle Name]">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="lastname">Last Name</label>
+                            <input class="textbox" id="lastname" value="[SDW's Last Name]">
+                        </div>
+
+
+                        <div class="label-and-input">
+                            <label for="email">Email Address</label>
+                            <input class="textbox" id="email" value="[SDW's Email]">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="password">Password</label>
+                            <input class="textbox" id="password" value="[SDW's Password]">
+                        </div>
+                        
+                        <div class="label-and-input">
+                            <label for="spu">SPU</label>
+                            <select id="spu" selected="MS">
+                                <option>AMP</option>
+                                <option>FDQ</option>
+                                <option>MPH</option>
+                                <option>MS</option>
+                            </select>
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="input">User Image</label>
+                            <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
+                            
+                        </div>
+                    </div>
+                    <img id="preview" src="sdw_icon.png">
+
+                    <div class="bottom-bar">
+                        <button class="cancel-btn" id="cancel">Cancel</button>
+                        <button class="confirm-btn" id="confirm">Confirm Edits</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </main>
+    </div>
+
+ 
+    
+
+    <script>
+        function preview(file){
+            if (file) {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    document.getElementById("preview").src = reader.result;
+                }
+            }
+        }
+  
+        
+    </script>
+    
+
+</body>
+
+</html>
