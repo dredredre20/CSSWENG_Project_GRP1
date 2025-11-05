@@ -42,7 +42,8 @@
                 <p class="upload-text">drop files here</p>
                 <input type="file" id="fileInput" multiple hidden>
             </div>
-            <button class="logout-btn" data-category="Logout" onclick="window.location.href='/login'">Logout</button>
+           <!-- <button class="logout-btn" data-category="Logout" onclick="window.location.href='/login'">Logout</button>--> 
+            <a href="/logout" class="logout-btn">Logout</a>
         </main>
     </div>
 
@@ -65,10 +66,12 @@
                 <option value="Correspondence">Correspondence</option>
                 <option value="Leaders Directory">Leaders Directory</option>
             </select>
+
             <div class="modal-buttons">
                 <button class="btn-cancel" id="cancelBtn">Cancel</button>
                 <button class="btn-correct" id="correctBtn">Yes</button>
             </div>
+
         </div>
     </div>
 

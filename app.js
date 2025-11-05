@@ -15,6 +15,7 @@ import downloadRouter from './routers/download.js';
 import sdwRouter from './routers/sdw.js';
 import deleteRouter from './routers/delete.js';
 
+import { protectRoutes, redirectIfAuthenticated, requireRole } from './middleware/auth.js';
 
 // dummy users
 import insert_dummy_users from './seed_db.js';
@@ -25,14 +26,14 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = 3000;
 
-//CSS
+// CSS and static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, 'views'));
 
-//session middleware
+// session middleware
 app.use(session({
     secret: 'you_know_what',
     resave: false,
@@ -40,7 +41,7 @@ app.use(session({
     cookie: {
         secure: false // HTTP only
     }
-}))
+}));
 
 app.get('/', (req,res) => {
     res.redirect('/login');
@@ -49,17 +50,21 @@ app.get('/', (req,res) => {
 // insert dummy users
 insert_dummy_users();
 
-// mount routers
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/login', loginRouter);
-app.use('/register', registerRouter);
-app.use('/home', homeRouter);
-app.use('/reports', reportRouter);
+// Don't protect the logout route, so users can log out
 app.use('/logout', logoutRouter);
-app.use('/upload', uploadRouter);
-app.use('/download', downloadRouter);
-app.use('/delete', deleteRouter);
-app.use('/', sdwRouter);
+
+// Apply global protection middleware to all routes
+app.use(protectRoutes);
+
+// Proper route handling with role type checking
+app.use('/login', redirectIfAuthenticated, loginRouter);
+app.use('/register', requireRole('admin'), registerRouter);
+app.use('/home', homeRouter);
+app.use('/reports', requireRole('sdw'), reportRouter);
+app.use('/upload', requireRole('sdw'), uploadRouter);
+app.use('/download', requireRole('sdw', 'supervisor'), downloadRouter);
+app.use('/delete', requireRole('supervisor', 'admin'), deleteRouter);
+app.use('/', requireRole('supervisor'), sdwRouter); // This handles /sdw/:sdw_id
 
 app.listen(port, () => {
     console.log('Server is running on http://localhost:3000');
