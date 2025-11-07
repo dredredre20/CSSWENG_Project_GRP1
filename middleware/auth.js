@@ -75,10 +75,11 @@ export function protectRoutes(req, res, next) {
     
     // If we found a matching route but user doesn't have permission
     if (matchedRoute && !hasPermission) {
-        return res.status(403).render('error', {
-            message: `Access denied. ${userRole}s cannot access ${matchedRoute}.`,
-            user: req.session.logged_user
-        });
+        //return res.status(403).render('error', {
+        //    message: `Access denied. ${userRole}s cannot access ${matchedRoute}.`,
+        //    user: req.session.logged_user
+        //});
+        return res.redirect('/home'); // Temporary fix to redirect to home, error page is not working
     }
     
     next();
