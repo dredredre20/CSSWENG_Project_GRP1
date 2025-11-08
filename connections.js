@@ -1,5 +1,8 @@
 import mysql2 from 'mysql2/promise'
+import dotenv from 'dotenv'
+//import db from 'db'
 
+dotenv.config();
 //----------------CONNECT TO DATABASE-----------------
 
 // SEE MYSQL2 DOCUMENTATION FOR MORE INFO: https://sidorares.github.io/node-mysql2/docs
@@ -12,4 +15,13 @@ const db_connection_pool = mysql2.createPool({ // create a connection pool for m
     password: 'n~3Z6]tnZZ10'
 });
 
-export default db_connection_pool;
+/*
+const db_azure_connection = db.connect({
+    host: process.env.HOSTNAME,
+    port: process.env.PORT,
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE_NAME
+}); */
+
+export default {db_connection_pool/*, db_azure_connection*/};
