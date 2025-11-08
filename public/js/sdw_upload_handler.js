@@ -169,6 +169,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
             return;
         }
 
+        // Valid file type
+        const validTypes = [
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+            "application/vnd.ms-excel" // .xls
+        ]
+
+        // Test if file type is valid
+        if(!validTypes.includes(file.type)){
+            alert("Users can only upload excel files (.xlsx, .xls).");
+            fileInput.value = "";
+            return;
+        }
+
         currentFile = file;
         fileName.textContent = file.name;
         fileSize.textContent = (currentFile.size / 1000).toFixed(0) + " KB";
@@ -183,6 +196,18 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const file = event.dataTransfer.files[0];
 
         if(file == null){
+            return;
+        }
+
+        // Valid file type
+        const validTypes = [
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+            "application/vnd.ms-excel" // .xls
+        ]
+
+        // Test if file type is valid
+        if(!validTypes.includes(file.type)){
+            alert("Users can only upload excel files (.xlsx, .xls).");
             return;
         }
 
