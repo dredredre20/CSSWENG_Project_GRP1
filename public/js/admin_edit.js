@@ -1,5 +1,5 @@
-const cancelBtn = document.getElementById("cancel-btn");
-const confirmBtn = document.getElementById("confirm-btn");
+const cancelBtn = document.getElementById("cancel");
+const confirmBtn = document.getElementById("confirm");
 let originalData = {};
 
 
@@ -27,14 +27,14 @@ confirmBtn.addEventListener("click", ()=> {
     const spuAssignedTo = document.getElementById("spu").value;
 
     // Check if required fields are filled
-    if (!firstname || !lastname || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
         alert("Please fill in all required fields.");
         return;
     }
 
     // Gmail regex assuming that clients will use gmail only
     const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!gmailPattern.test(getEmail)) {
+    if (!gmailPattern.test(email)) {
         alert("Please enter a valid Gmail address.");
         return;
     }

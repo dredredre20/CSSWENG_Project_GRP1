@@ -13,9 +13,7 @@
         <aside class="sidebar">
             <a><img src="logo.png" id=logo style="scale:55%; margin: auto; "></a>
             
-                
             <nav class="nav-menu">
-                
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </aside>
@@ -23,35 +21,38 @@
         <!-- Main Content Area -->
         <main class="content">
             <div class="content-main">
-                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;">[AdminName]</span>!</h2>
-                <div class="content-bar"><h1>Edit [SDW]'s account</h1></div>
+                                                                                        <!-- Render Name in the backend-->
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= AdminName %></span>!</h2>
+                                                    <!-- Change this if incorrect-->
+                <div class="content-bar"><h1>Edit <%=sdw.firstname %> <%=sdw.lastname%>'s account</h1></div>
                 <div class="content-area">
                     <div class="inputs-area">
                         <!-- needs script to get default values -->
                         <div class="label-and-input">
                             <label for="firstname">First Name</label>
-                            <input class="textbox" id="firstname" value="[SDW's First Name]">
+                                                                            <!-- Render values to be shown in the backend-->
+                            <input class="textbox" id="firstname" value="<%= sdw.firstname %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="middlename">Middle Name</label>
-                            <input class="textbox" id="middlename" value="[SDW's Middle Name]">
+                            <input class="textbox" id="middlename" value="<%= sdw.middlename %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="lastname">Last Name</label>
-                            <input class="textbox" id="lastname" value="[SDW's Last Name]">
+                            <input class="textbox" id="lastname" value="<%= sdw.lastname %>">
                         </div>
 
 
                         <div class="label-and-input">
                             <label for="email">Email Address</label>
-                            <input class="textbox" id="email" value="[SDW's Email]">
+                            <input class="textbox" id="email" value="<%= sdw.email %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="password">Password</label>
-                            <input class="textbox" id="password" value="[SDW's Password]">
+                            <input class="textbox" id="password" value="<%= sdw.password %>">
                         </div>
                         
                         <div class="label-and-input">
