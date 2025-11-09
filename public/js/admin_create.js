@@ -1,5 +1,5 @@
-const cancelBtn = document.getElementById("cancel-btn");
-const confirmBtn = document.getElementById("confirm-btn");
+const cancelBtn = document.getElementById("cancel");
+const confirmBtn = document.getElementById("confirm");
 
 confirmBtn.addEventListener("click", ()=> {
     // Get current values 
@@ -11,7 +11,7 @@ confirmBtn.addEventListener("click", ()=> {
     const spuAssignedTo = document.getElementById("spu").value;
 
     // Check if required fields are filled
-    if (!firstname || !lastname || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
         alert("Please fill in all required fields.");
         return;
     }

@@ -15,15 +15,16 @@
             
                 
             <nav class="nav-menu">
-                
-                <button class="nav-btn" data-category="Logout" id="logout">Logout</button>
+                <!-- Fixed logout reference-->
+                <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </aside>
 
         <!-- Main Content Area -->
         <main class="content">
             <div class="content-main">
-                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;">[AdminName]</span>!</h2>
+                                                                                    <!-- Render Name in the backend-->
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= AdminName %></span>!</h2>
                 <div class="content-bar"><h1>Create a new account</h1></div>
                 <div class="content-area">
                     <div class="inputs-area">
