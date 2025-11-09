@@ -23,13 +23,12 @@
         <!-- Main Content Area -->
         <main class="content">
             <div class="content-main">
-                <h2> Welcome to AMP Supervisor Suite! </h2>
+                                <!-- Render this dynamically to avoid repetition of the same code-->
+                <h2> Welcome to <%= spuPage %> Supervisor Suite! </h2>
                 <h3 style="position:absolute; left:22%"> SDWs Assigned: </h3>
 
                 <div class="dropdown" style="position:absolute; right:30px">
                         <label>Sort by: </label>
-                        <!-- Sorting here seems useless since these are just the reports folder
-                         but i'll leave it just in case-->
                         <select id="sortMenu">
                             <option value="alphabetical">Alphabetical</option>
                             <option value="lastupdated">Last Updated</option>
@@ -37,6 +36,7 @@
                         </select>
                 </div>
 
+                <!--
                 <div class="users">
                 <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
                 <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
@@ -44,24 +44,28 @@
                 <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
                 <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
                 <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
+                -->
+                <% if (sdws == null) { %>
+                    <div class="empty-state">
+                        <p class="upload-text">No SDWs Assigned For <%= user.first_name %></p>
+                    </div>
+                <% } else { %>
+                    <div class="users" id="sdwContainer"> 
+                        <% sdws.forEach(sdw => { %>
+                            <button class="user-btn" onclick="navigateToSDW('<%= sdw.sdw_id %>')">
+                                <img src="sdw_icon.png" class="sdw-icon" alt="SDW Icon">
+                                <span><%= sdw.first_name %></span>
+                                <div class="kebab-wrapper"><img src="kebab.png" class="kebab" alt="Kebab Menu"></div>
+                            </button>
+                        <% }); %>
+                    </div>
+                <% } %>
             
-                
-                </div>
-                
-                                
-
-        </div>
+            </div>
         </main>
     </div>
 
- 
-    
-
-    <script>
-        
-    </script>
-    <script ></script>
+    <script src="admin_spu.js"></script>
 
 </body>
 
-</html>
