@@ -20,12 +20,14 @@ import { protectRoutes, redirectIfAuthenticated, requireRole } from './middlewar
 
 // dummy users
 import insert_dummy_users from './seed_db.js';
+import testing from './testing.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const port = 3000;
+const ip = '74.220.52.12';
 
 // CSS and static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,7 +51,10 @@ app.get('/', (req,res) => {
 });
 
 // insert dummy users
-insert_dummy_users();
+testing();
+//insert_dummy_users();
+
+
 
 // Don't protect the logout route, so users can log out
 app.use('/logout', logoutRouter);

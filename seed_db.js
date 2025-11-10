@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import db_connection_pool from "./connections.js";
 
+
 async function insert(connection, samples){
   try{
         for (const user of samples) {
@@ -53,7 +54,7 @@ async function insert_dummy_users(){
 
     //get connection
     const connection = await db_connection_pool.getConnection();
-    
+
     const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
     if (rows[0].count === 0) {
             try {
