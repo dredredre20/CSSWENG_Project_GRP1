@@ -40,7 +40,7 @@
                         <% sdws.forEach(sdw => { %>
                             <button onclick="navigateToSDW('<%= sdw.sdw_id %>')">
                                 <img src="/sdw_icon.png" alt="SDW Icon">
-                                <span><%= sdws.first_name %></span>
+                                <span>  <%= sdw.first_name %> <%= sdw.last_name %></span>
                             </button>
                         <% }); %>
                     </div>
