@@ -4,64 +4,126 @@
     <meta charset="utf-8">
     <title>Supervisor Reports Folder</title>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-    <link rel="stylesheet" href="admin_reports_folder_style.css">
+    <link rel="stylesheet" href="/css/admin_reports_folder_style.css">
 </head>
-
-
 
 <body>
 
     <main>
         <div class="container">
         <div class="sidebar">
-            <img src="logo.png" style="scale:55%; margin: auto; ">
+            <img src="/logo.png" style="scale:55%; margin: auto; ">
             <nav class="nav-menu">
-                <button class="nav-btn" id="back-btn"> Back to SPUs</button>
+                <button class="nav-btn" id="back-btn" onclick="window.location.href='/admin_reports'"> Back to SDW Reports</button>
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </div>
 
         <div class="content">
             <div class="content-main">
-
-                <h2> Welcome, <span id="supervisorName">*SupervisorName*!</span> </h2> <!-- Replace with supervisor name here! -->
-                <div class="content-bar">
-                    <h1><span id="SDWName">*SDW*'s</span> <span id="ReportName">*ReportName*</span></h1>
-                    
-                    <div class="dropdown" style="position:absolute; right:30px">
-                        <label>Sort by: </label>
-                        <select id="sortMenu">
-                            <option value="alphabetical">Alphabetical</option>
-                            <option value="lastupdated">Last Updated</option>
-                            <!-- Add more options here if needed -->
+                
+                <div class="report-view-container">
+                <div class="report-header">
+                    <h1 class="report-title"><%= currentCategory %></h1>
+                    <div class="sort-container">
+                        <label for="sort-by">Sort By:</label>
+                        <!-- Add here further options for sorting-->
+                        <select id="sort-by" class="sort-select">
+                            <option value="latest">Latest</option>
+                            <option value="file-size">File Size</option>
+                            <option value="alphabetical">Alphabetically</option>
                         </select>
                     </div>
                 </div>
-                
-                <div class="divFiles">
-                        <!-- Add buttons here -->
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                        <div class="file"><span>Filename</span><img src="file_preview.png"><span style="text-align:right"><button>File Details</button></span></div>
-                    
-                        
-                </div>
+
+                <% if (reports.length === 0) { %>
+                    <div class="empty-state">
+                        <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>
+                        <p class="upload-subtext">Start by uploading a file on the <a href="/sdw_homepage">homepage</a>.</p>
+                    </div>
+
+                <% } else { %>
+                    <div class="report-grid">
+                        <% reports.forEach(report => { %>
+                            <div class="report-card" 
+                                 data-report-id="<%= report.report_id %>"
+                                 data-report-name="<%= report.sdw_id %>"
+                                 data-report-date="<%= report.upload_date %>"
+                                 data-report-type="<%= report.type || 'Unknown' %>"
+
+                                 <%# For the report id, we can probably join to the sdw table to show name instead %>
+                                 
+                                <div class="report-thumbnail">
+                                    <div class="thumbnail-placeholder">
+                                        <span>📄</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="report-info">
+                                    <span class="report-icon">📊</span>
+                                    <span class="report-name"><%= report.name %></span>
+                                    <button class="report-options-btn" onclick="event.stopPropagation()">⋮</button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+
                 
             </div>
-        </div>
+
+
+
+
+
+
+
+            </div>
         </div>
     </main>
 
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- Change this later to correctly print the file name-->
+                <h2 class="modal-title" id="modalFileName"> <%= reports.file_path %> </h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
 
-    <script>
-        // insert script here
-    </script>
+            <div class="modal-body">
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-placeholder">
+                        <!-- Also change this-->
+                        <div>📄</div>
+                        <p>Preview not available</p>
+                        <small>Click download to view the file</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="file-info" id="fileInfo">
+                    <!-- Change this further tor proper file information -->
+                    <strong>Uploaded:</strong> <span id="uploadDate">-</span> | 
+                    <strong>Size:</strong> <span id="fileSize">-</span> | 
+                    <strong>By:</strong> <span id="uploader">-</span>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-download" id="btnDownload">
+                        <span>⬇</span>
+                        Download
+                    </button>
+                    <button class="btn-delete" id="btnDelete">
+                        <span>🗑</span>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Access the srcipt for the functionalities for the reports-->
+    <script src="/js/admin_reports_functionality.js"></script>
 </body>
 </html>
