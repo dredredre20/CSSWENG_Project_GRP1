@@ -4,19 +4,17 @@
     <meta charset="utf-8">
     <title>Supervisor Reports</title>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-    <link rel="stylesheet" href="admin_reports_style.css">
+    <link rel="stylesheet" href="/css/admin_reports_style.css">
 </head>
-
-
 
 <body>
 
     <main>
         <div class="container">
         <div class="sidebar">
-            <img src="logo.png" style="scale:55%; margin: auto; ">
+            <img src="/logo.png" style="scale:55%; margin: auto; ">
             <nav class="nav-menu">
-                <button class="nav-btn" id="back-btn"> Back to SPUs</button>
+                <button class="nav-btn" id="back-btn" onclick="window.location.href='/home'" > Back to SPUs</button>
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </div>
@@ -24,9 +22,9 @@
         <div class="content">
             <div class="content-main">
 
-                <h2> Welcome, <span id="supervisorName">*SupervisorName*!</span> </h2> <!-- Replace with supervisor name here! -->
+                <h2> Welcome, <span id="adminName" style="font-weight:bold;"><%= admin.first_name %> <%= admin.last_name %></span> </h2> 
                 <div class="content-bar">
-                    <h1> <span id="SDWName">*SDW*</span>'s Records: </h1>
+                    <h1> SDW - <span id="SDWName"> <%= sdw.first_name%> <%= sdw.last_name%> </span>'s Records: </h1>
                     
                     <div class="dropdown" style="position:absolute; right:30px">
                         <label>Sort by: </label>
@@ -41,18 +39,18 @@
                 <div class="divButtons">
                         <!-- Add buttons here -->
                         <!-- Add IDs to buttons and the like when needed -->
-                    <button class="report-btn"><span>DSWD Annual Report</span></button>
-                    <button class="report-btn"><span>Community Profile</span></button>
-                    <button class="report-btn"><span>Target Vs ACC & SE</span></button>
-                    <button class="report-btn"><span>Caseload Masterlist</span></button>
-                    <button class="report-btn"><span>Education Profile</span></button>
-                    <button class="report-btn"><span>Assistance to Families</span></button>
-                    <button class="report-btn"><span>Poverty Stoplight</span></button>
-                    <button class="report-btn"><span>CNF Candidates</span></button>
-                    <button class="report-btn"><span>Retirement Candidates</span></button>
-                    <button class="report-btn"><span>VM Accomplishments</span></button>
-                    <button class="report-btn"><span>Correspondence</span></button>
-                    <button class="report-btn"><span>Leaders Directory</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'DSWD Annual Report')"     id="1"><span>DSWD Annual Report</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Community Profile')"      id="2"><span>Community Profile</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Target Vs ACC & SE')"     id="3"><span>Target Vs ACC & SE</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Caseload Masterlist')"    id="4"><span>Caseload Masterlist</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Education Profile')"      id="5"><span>Education Profile</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Assistance to Families')" id="6"><span>Assistance to Families</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Poverty Stoplight')"      id="7"><span>Poverty Stoplight</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'CNF Candidates')"         id="8"><span>CNF Candidates</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Retirement Candidates')"  id="9"><span>Retirement Candidates</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'VM Accomplishments')"     id="10"><span>VM Accomplishments</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Correspondence')"         id="11"><span>Correspondence</span></button>
+                    <button class="report-btn" onclick="navigateToReports(<%= sdw.sdw_id %>, 'Leaders Directory')"      id="12"><span>Leaders Directory</span></button>
                         
                 </div>
                 
@@ -62,8 +60,6 @@
     </main>
 
 
-    <script>
-        // insert script here
-    </script>
+    <script src="/js/admin_reports.js"> </script>
 </body>
 </html>

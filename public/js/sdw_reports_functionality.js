@@ -4,6 +4,7 @@ let deleteConfirmModal = null;
 
 
 // Get DOM elements
+const navbar = document.getElementById('navbar');
 const modal = document.getElementById('previewModal');
 const closeModalBtn = document.getElementById('closeModal');
 const btnDownload = document.getElementById('btnDownload');

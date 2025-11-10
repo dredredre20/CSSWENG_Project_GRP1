@@ -59,13 +59,15 @@ loginRouter.post('/', async (req, res) => {
             //store the user in the session
             //req.session.logged_user = account;
 
-            // for now, initiallyt just log input for testing (validate in console)
-            console.log(`(LOGIN) Email: ${email} Password: ${password}`);
-
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
             if(account.staff_type == "sdw"){
-                req.session.logged_user = account;
+                req.session.logged_user = {
+                    id: account.staff_id,
+                    staff_type: account.staff_type,
+                    first_name: account.first_name,
+                    last_name: account.last_name,
+                };
                 connection.release();
                 return res.redirect('/home');
             }
@@ -75,13 +77,19 @@ loginRouter.post('/', async (req, res) => {
                     const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
                     const supervisorAccount = rowsSupervisor[0];
                     // add the id as well for the /sdw route
-                    req.session.logged_user = {id: supervisorAccount.supervisor_id, staff_type: account.staff_type, first_name: supervisorAccount.first_name, last_name: supervisorAccount.last_name};
+                    req.session.logged_user = {
+                        id: supervisorAccount.supervisor_id, 
+                        staff_type: account.staff_type, 
+                        first_name: supervisorAccount.first_name, 
+                        last_name: supervisorAccount.last_name
+                    };
                 }catch(err){
                     console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
                 }
             }
             else if(account.staff_type == "admin"){
-                // future work
+                // not yet adjusted
+                req.session.logged_user = account;
             }
             
             await connection.release(); 
