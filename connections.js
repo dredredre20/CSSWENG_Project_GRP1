@@ -24,4 +24,4 @@ const db_azure_connection = db.connect({
     database: process.env.DATABASE_NAME
 }); */
 
-export default {db_connection_pool/*, db_azure_connection*/};
+export default db_connection_pool;

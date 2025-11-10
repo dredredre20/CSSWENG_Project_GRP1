@@ -53,7 +53,6 @@ async function insert_dummy_users(){
 
     //get connection
     const connection = await db_connection_pool.getConnection();
-    
     const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
     if (rows[0].count === 0) {
             try {
