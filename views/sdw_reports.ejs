@@ -11,20 +11,22 @@
 
             <img src="/logo.png" alt="Logo" class="logo" style="scale:55%; margin: auto; ">
 
-            <nav class="nav-menu">    
-                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
-                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
-                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
-                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
-                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
-                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
-                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
-                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
-                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
-                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
-                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
-                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
-            </nav>
+            <% if(staff_type === "sdw"){ %>
+                <nav class="nav-menu" id="navbar">    
+                    <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
+                    <button class="nav-btn" data-category="Community Profile">Community Profile</button>
+                    <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
+                    <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
+                    <button class="nav-btn" data-category="Education Profile">Education Profile</button>
+                    <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
+                    <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
+                    <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
+                    <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
+                    <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
+                    <button class="nav-btn" data-category="Correspondence">Correspondence</button>
+                    <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
+                </nav>
+            <% } %>
         </aside>
 
         <main class="main-content">
@@ -39,12 +41,18 @@
                         </select>
                     </div>
                 </div>
-                <button class="upload-btn" onclick="window.location.href='/home'">Back to Upload Page</button>
+                <% if(staff_type === "sdw"){ %>
+                    <button class="upload-btn" onclick="window.location.href='/home'">Back to Upload Page</button>
+                <% } else if(staff_type === "supervisor"){ %>
+                    <button class="upload-btn" onclick="window.location.href='/sdw/<%= sdw_id %>'">Back</button>
+                <% } %>
                 <!-- Dynamic Implementation Here, Adjust parts accrodingly-->
                 <% if (reports.length === 0) { %>
                     <div class="empty-state">
                         <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>
-                        <p class="upload-subtext">Start by uploading a file on the <a href="/home">homepage</a>.</p>
+                        <% if (staff_type === "sdw") { %>
+                            <p class="upload-subtext">Start by uploading a file on the <a href="/home">homepage</a>.</p>
+                        <% } %>
                     </div>
                 <% } else { %>
                     <div class="report-grid">

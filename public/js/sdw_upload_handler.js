@@ -45,10 +45,6 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     });
 });
 
-function handleUploadAreaEvent(event){
-
-}
-
 document.addEventListener("DOMContentLoaded", ()=>{
     const uploadArea = document.getElementById("uploadArea");
 
