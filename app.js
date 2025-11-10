@@ -14,6 +14,7 @@ import uploadRouter from './routers/upload.js';
 import downloadRouter from './routers/download.js';
 import sdwRouter from './routers/sdw.js';
 import deleteRouter from './routers/delete.js';
+import adminRouter from './routers/admin.js';
 
 import { protectRoutes, redirectIfAuthenticated, requireRole } from './middleware/auth.js';
 
@@ -66,6 +67,7 @@ app.use('/download', requireRole('sdw', 'supervisor'), downloadRouter);
 app.use('/', requireRole('supervisor'), supervisorSdwReportRouter);
 app.use('/delete', requireRole('supervisor', 'admin'), deleteRouter);
 app.use('/', requireRole('supervisor'), sdwRouter); // This handles /sdw/:sdw_id
+app.use('/admin', requireRole('admin'), adminRouter);
 
 app.listen(port, () => {
     console.log('Server is running on http://localhost:3000');

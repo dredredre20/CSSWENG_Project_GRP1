@@ -28,8 +28,9 @@ homeRouter.get('/', async (req, res) => {
         const user = req.session.logged_user;
         //here just pass stuff to render in the page based on role
         if(user.staff_type === 'admin'){
-            res.render('home', { 
-                user: user
+            res.render('admin_homepage', { 
+                user: user,
+                AdminName: 'Admin' // just a placeholder name
             });
         } else if(user.staff_type === 'supervisor'){ 
             // for supervisor, include the list of sdws under them for rendering
