@@ -51,7 +51,7 @@ app.get('/', (req,res) => {
 });
 
 // insert dummy users
-testing();
+testing(); //start here
 //insert_dummy_users();
 
 
