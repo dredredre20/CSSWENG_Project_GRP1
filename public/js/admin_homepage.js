@@ -8,7 +8,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         // Navigate to category
         btn.addEventListener('click', () => {
             const category = btn.dataset.category;
-            window.location.href = `/admin/${encodeURIComponent(category)}`;
+            window.location.href = `/admin/spu/${encodeURIComponent(category)}`;
         });
     }
 });
