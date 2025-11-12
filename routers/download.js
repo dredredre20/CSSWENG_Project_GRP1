@@ -2,6 +2,7 @@ import db_connection_pool from "../connections.js";
 import express from "express";
 import fs from "fs";
 import path from "path";
+import { oauth2Client, drive } from "../services/googleAuth.js";
 
 const downloadRouter = express.Router();
 
@@ -21,13 +22,30 @@ downloadRouter.get('/:report_id', async (req, res) => {
             return res.status(404).send("Report not found.");
         }
 
-        const filePath = rows[0].file_path; // temporary implementation for sprint 2, finds it in uploads folder
+        const filePath = rows[0].file_path; // this is now google drive id
         const fileName = rows[0].report_name; // includes the extension (.txt, .xlsx)
 
-        if (!fs.existsSync(filePath)) {
-            return res.status(404).send("File not found on server.");
+        //if (!fs.existsSync(filePath)) {
+        //    return res.status(404).send("File not found on server.");
+        //}
+        // res.download(path.resolve(filePath), fileName); OLD local method
+
+        try {
+            const response = await drive.files.get({
+                fileId: filePath,
+                alt: 'media',
+            }, { responseType: "stream" });
+
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${fileName}"`
+            );
+            response.data.pipe(res);
+
+            console.log("Downloaded from Google Drive");
+        } catch (err) {
+            console.error("Google Drive API Download Error: ",err);
         }
-        res.download(path.resolve(filePath), fileName);
 
     } catch (err) {
         console.error("ERROR in downloadRouter:", err);
