@@ -1,6 +1,6 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
-import { oauth2Client, drive } from "../services/googleAuth.js";
+import { oauth2Client, drive } from "../middleware/googleAuth.js";
 
 const deleteRouter = express.Router();
 

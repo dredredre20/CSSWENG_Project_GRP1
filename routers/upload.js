@@ -3,7 +3,7 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 
-import { oauth2Client, drive } from "../services/googleAuth.js";
+import { oauth2Client, drive } from "../middleware/googleAuth.js";
 
 const uploadRouter = express.Router();
 const upload = multer({dest: "uploads/"});
@@ -15,6 +15,7 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         const file = req.file;
         const connection = await db_connection_pool.getConnection();
         const account = req.session.logged_user;
+        console.log(account)
 
         if (!account) {
             return res.status(401).json({ success: false, message: "Please log in." });
@@ -24,7 +25,7 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
-        const [sdw_rows] = await connection.execute(sdw_id_query, [account.staff_id]);
+        const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.staff_id);

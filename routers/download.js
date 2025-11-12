@@ -2,7 +2,7 @@ import db_connection_pool from "../connections.js";
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { oauth2Client, drive } from "../services/googleAuth.js";
+import { oauth2Client, drive } from "../middleware/googleAuth.js";
 
 const downloadRouter = express.Router();
 

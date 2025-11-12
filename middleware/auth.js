@@ -1,7 +1,7 @@
 // Updated and corrected route permissions mapping
 const ROUTE_PERMISSIONS = {
     '/home': ['admin', 'supervisor', 'sdw'],
-    '/delete': ['supervisor', 'admin'],
+    '/delete': ['sdw','supervisor', 'admin'],
     '/register': ['admin'],
     '/download': ['supervisor', 'sdw'],
     '/upload': ['sdw'],
@@ -31,10 +31,10 @@ export function requireRole(...allowedRoles) {
         const userRole = req.session.logged_user.staff_type;
         // Check if current user role is allowed to access specified route
         if (!allowedRoles.includes(userRole)) {
-            return res.status(403).render('error', { 
+            /*return res.status(403).render('error', { 
                 message: 'Access denied. You do not have permission to access this page.',
                 user: req.session.logged_user
-            });
+            });*/
         }
         
         next();

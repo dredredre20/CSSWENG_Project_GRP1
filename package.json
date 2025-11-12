@@ -26,9 +26,10 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
+    "googleapis": "^166.0.0",
     "mssql": "^12.1.0",
     "multer": "^2.0.2",
-    "mysql2": "^3.15.1"
+    "mysql2": "^3.15.3"
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
