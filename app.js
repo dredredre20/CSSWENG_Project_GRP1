@@ -27,7 +27,6 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const port = 3000;
-const ip = '74.220.52.12';
 
 // CSS and static files
 app.use(express.static(path.join(__dirname, 'public')));
