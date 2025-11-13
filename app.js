@@ -33,6 +33,7 @@ const ip = '74.220.52.12';
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, 'views'));
 
@@ -52,7 +53,7 @@ app.get('/', (req,res) => {
 
 // insert dummy users
 testing();
-//insert_dummy_users();
+insert_dummy_users();
 
 
 

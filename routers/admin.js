@@ -1,4 +1,5 @@
 import db_connection_pool from "../connections.js";
+import bcrypt from "bcrypt";
 import express from "express";
 
 const adminRouter = express.Router();
@@ -88,11 +89,37 @@ adminRouter.get('/create', async (req, res) => {
 });
 
 adminRouter.post('/create', async (req, res) => {
+    const { firstName, lastName, middleName, email, password, spuAssignedTo } = req.body;
+    const hashed = await bcrypt.hash(password, 10);
+
+    let connection;
     try {
-        res.json({ success: true, message: 'Updated successfully' }); 
+        connection = await db_connection_pool.getConnection();
+
+        await connection.beginTransaction();
+
+        await connection.execute(
+        `INSERT INTO sdws (first_name, middle_name, last_name, email)
+        VALUES (?, ?, ?, ?);`,
+        [firstName, middleName, lastName, email]
+        );
+
+        await connection.execute(
+        `INSERT INTO staff_info (staff_type, email, password)
+        VALUES (?, ?);`,
+        ['sdw', email, hashed]
+        );
+
+        await connection.commit();
+
+        res.status(201).json({ success: true, message: 'SDW created successfully.' });
+
     } catch (err) {
-        console.error(err);
-        res.redirect('/admin');
+        console.error('Error creating SDW:', err);
+        if (connection) await connection.rollback();
+        res.status(500).json({ success: false, message: 'Error creating SDW.' });
+    } finally {
+        if (connection) connection.release();
     }
 });
 
