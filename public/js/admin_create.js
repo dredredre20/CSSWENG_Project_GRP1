@@ -34,7 +34,7 @@ confirmBtn.addEventListener("click", ()=> {
 
     // Not too sure about the fetch yet
     // Update with proper endpoint later
-    fetch("/api/admin/update", {
+    fetch("/admin/create", {
         method: "POST", 
         //not sure about this part
         headers: {
@@ -59,7 +59,7 @@ confirmBtn.addEventListener("click", ()=> {
 
 cancelBtn.addEventListener("click", ()=>{
     // change route later
-    window.locattion.href = "/admin/create";
+    window.location.href = "/admin/create";
 });
 
 function preview(file){
