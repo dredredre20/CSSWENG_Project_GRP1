@@ -103,16 +103,24 @@ adminRouter.post('/create', async (req, res) => {
 
         await connection.beginTransaction();
 
-        await connection.execute(
-        `INSERT INTO sdws (first_name, middle_name, last_name, email)
-        VALUES (?, ?, ?, ?);`,
-        [firstName, middleName, lastName, email]
+        const [staffResult] = await connection.execute(
+            `INSERT INTO staff_info (staff_type, email, password)
+             VALUES (?, ?, ?)`,
+            ['sdw', email, hashed]
         );
 
+        const staff_info_id = staffResult.insertId;
+
+        let spu_id;
+        if (spuAssignedTo === 'AMP') spu_id = 1;
+        else if (spuAssignedTo === 'FDQ') spu_id = 2;
+        else if (spuAssignedTo === 'MPH') spu_id = 3;
+        else if (spuAssignedTo === 'MS') spu_id = 4;
+
         await connection.execute(
-        `INSERT INTO staff_info (staff_type, email, password)
-        VALUES (?, ?);`,
-        ['sdw', email, hashed]
+        `INSERT INTO sdws (first_name, middle_name, last_name, email, spu_id, supervisor_id, staff_info_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        [firstName, middleName, lastName, email, spu_id, spu_id, staff_info_id] // supervisor_id should always be the same as spu_id
         );
 
         await connection.commit();
@@ -164,12 +172,20 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
 
         //const fullName = admin_firstname + " " + admin_lastname;
 
-        const { first_name: firstname, middle_name: middlename, last_name: lastname, email: email } = sdws[0];
+        const spuMap = {
+        1: "AMP",
+        2: "FDQ",
+        3: "MPH",
+        4: "MS"
+        };
+        const { first_name: firstname, middle_name: middlename, last_name: lastname, email: email, spu_id } = sdws[0];
+        const spu_name = spuMap[spu_id]; // this isnt being passed yet, need to make the ejs dropdown dynamic first
 
         res.render('admin_editacc', {
-            AdminName: 'Admin',
-            sdw: { firstname, middlename, lastname, email, password: ''}
+        AdminName: 'Admin',
+        sdw: { firstname, middlename, lastname, email, password: '' }
         });
+
     } catch (err) {
         console.error('Error editing SDW:', err);
         if (connection) await connection.rollback();
