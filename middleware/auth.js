@@ -7,7 +7,8 @@ const ROUTE_PERMISSIONS = {
     '/upload': ['sdw'],
     '/reports': ['sdw'], // This matches your router mounting
     '/sdw': ['supervisor'], // For /sdw/:sdw_id routes
-    '/logout': ['admin', 'supervisor', 'sdw']
+    '/logout': ['admin', 'supervisor', 'sdw'],
+    '/admin': ['admin'],
 
     // will admin routes here when ready
 };
