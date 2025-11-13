@@ -103,16 +103,24 @@ adminRouter.post('/create', async (req, res) => {
 
         await connection.beginTransaction();
 
-        await connection.execute(
-        `INSERT INTO sdws (first_name, middle_name, last_name, email)
-        VALUES (?, ?, ?, ?);`,
-        [firstName, middleName, lastName, email]
+        const [staffResult] = await connection.execute(
+            `INSERT INTO staff_info (staff_type, email, password)
+             VALUES (?, ?, ?)`,
+            ['sdw', email, hashed]
         );
 
+        const staff_info_id = staffResult.insertId;
+
+        let spu_id;
+        if (spuAssignedTo === 'AMP') spu_id = 1;
+        else if (spuAssignedTo === 'FDQ') spu_id = 2;
+        else if (spuAssignedTo === 'MPH') spu_id = 3;
+        else if (spuAssignedTo === 'MS') spu_id = 4;
+
         await connection.execute(
-        `INSERT INTO staff_info (staff_type, email, password)
-        VALUES (?, ?);`,
-        ['sdw', email, hashed]
+        `INSERT INTO sdws (first_name, middle_name, last_name, email, spu_id, supervisor_id, staff_info_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        [firstName, middleName, lastName, email, spu_id, spu_id, staff_info_id] // supervisor_id should always be the same as spu_id
         );
 
         await connection.commit();
@@ -164,12 +172,20 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
 
         //const fullName = admin_firstname + " " + admin_lastname;
 
-        const { first_name: firstname, middle_name: middlename, last_name: lastname, email: email } = sdws[0];
+        const spuMap = {
+        1: "AMP",
+        2: "FDQ",
+        3: "MPH",
+        4: "MS"
+        };
+        const { first_name: firstname, middle_name: middlename, last_name: lastname, email: email, spu_id } = sdws[0];
+        const spu_name = spuMap[spu_id]; // this isnt being passed yet, need to make the ejs dropdown dynamic first
 
         res.render('admin_editacc', {
-            AdminName: 'Admin',
-            sdw: { firstname, middlename, lastname, email, password: ''}
+        AdminName: 'Admin',
+        sdw: { firstname, middlename, lastname, email, password: '' }
         });
+
     } catch (err) {
         console.error('Error editing SDW:', err);
         if (connection) await connection.rollback();
@@ -249,14 +265,36 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
     }
 });
 
-
-adminRouter.get('/reports/', async (req, res) => {
+adminRouter.get('/delete/:staff_id', async (req, res) => {
+    const staff_id = req.params.staff_id;
+    let connection;
     try {
-        //temp values
-        res.render('admin_reports', {
-            admin: { first_name: 'Admin', last_name: 'User' },
-            sdw: { first_name: 'John', last_name: 'Doe', sdw_id: 123 }
-        });
+        connection = await db_connection_pool.getConnection();
+
+        await connection.execute(
+        "DELETE FROM sdws WHERE staff_info_id = ?",
+        [staff_id]
+        );
+
+        await connection.execute(
+        "DELETE FROM staff_info WHERE staff_id = ?",
+        [staff_id]
+        );
+        console.log('Sucessfully deleted sdw'); //temp, there should be smth displayed here
+        res.redirect('/admin')
+
+    } catch (err) {
+        console.error('Error deleting SDW:', err);
+        res.status(500).json({ success: false, message: 'Error deleting SDW.' });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
+adminRouter.get('/reports/:sdw_id/', async (req, res) => {
+    const sdw_id = req.params.sdw_id;
+    try {
+        res.render('admin_sdw_homepage', {sdw_id});
     } catch (err) {
         console.error(err);
         res.redirect('/admin');
@@ -275,8 +313,6 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
             "SELECT * FROM reports WHERE sdw_id = ? AND type = ?",
             [sdw_id,categoryId] // report type is 1 for now
         );
-
-        connection.release();
         res.render('admin_reports_folder', {
             reports: reports,
             currentCategory: category
@@ -284,6 +320,8 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.redirect('/admin');
+    } finally {
+        if (connection) connection.release();
     }
 });
 

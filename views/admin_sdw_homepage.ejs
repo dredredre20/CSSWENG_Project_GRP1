@@ -1,0 +1,44 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSWD File Manager</title>
+    </title>
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/sdw_homepage_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <img src="/logo.png" style="scale:55%; margin: auto; ">
+            <nav class="nav-menu">
+                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
+                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
+                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
+                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
+                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
+                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
+                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
+                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
+                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
+                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
+                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
+                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+           <!-- <button class="logout-btn" data-category="Logout" onclick="window.location.href='/login'">Logout</button>--> 
+            <a href="/logout" class="logout-btn">Logout</a>
+        </main>
+    </div>
+    <script>
+        const sdw_id = "<%= sdw_id %>";
+    </script>
+    <script src="/js/admin_sdw_homepage.js"></script>
+
+</body>
+
+</html>
