@@ -63,14 +63,7 @@ CREATE TABLE IF NOT EXISTS `reports_db`.`spus` (
   `spu_id` INT NOT NULL AUTO_INCREMENT,
 --   `supervisor_id` INT NULL DEFAULT NULL, -- already referenced by `supervisors`
   `spu_name` VARCHAR(150) NULL DEFAULT NULL,
-  `staff_info_id` INT NOT NULL,
-  PRIMARY KEY (`spu_id`),
-  INDEX `staff_info_id_idx` (`staff_info_id` ASC) VISIBLE,
-  CONSTRAINT `fk_spus_staff_info`
-	FOREIGN KEY (`staff_info_id`)
-    REFERENCES `reports_db`.`staff_info` (`staff_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`spu_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -111,6 +104,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `reports_db`.`sdws` (
   `sdw_id` INT NOT NULL AUTO_INCREMENT,
+  `spu_id` INT NOT NULL,
   `supervisor_id` INT NOT NULL,
   `staff_info_id` INT NOT NULL,
   `first_name` VARCHAR(45) NULL DEFAULT NULL,
@@ -120,6 +114,11 @@ CREATE TABLE IF NOT EXISTS `reports_db`.`sdws` (
   PRIMARY KEY (`sdw_id`),
   INDEX `fk_sdws_supervisors1_idx` (`supervisor_id` ASC) VISIBLE,
   INDEX `fk_sdws_staff_info1_idx` (`staff_info_id` ASC) VISIBLE,
+  CONSTRAINT `fk_sdws_spus1`
+    FOREIGN KEY (`spu_id`)
+    REFERENCES `reports_db`.`spus` (`spu_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_sdws_supervisors1`
     FOREIGN KEY (`supervisor_id`)
     REFERENCES `reports_db`.`supervisors` (`supervisor_id`)
