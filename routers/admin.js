@@ -38,26 +38,41 @@ function categoryOf(category){
         }
 }
 
+async function getSpus(connection, admin_id){
+    try{
+        const [spus] = await connection.execute(
+            `SELECT * FROM spus_has_admins WHERE admins_admin_id = ?`,
+            [admin_id]
+        );
+        return spus;
+    } catch(err){
+        console.error('ERROR in home.js getSpus() function: ' + err);
+    }
+}
+
 adminRouter.get('/spu/:spu_type', async (req, res) => {
-    const spu_type = req.params.spu_type;
     let connection;
     try {
+        const spu_type = req.params.spu_type;
         connection = await db_connection_pool.getConnection();
-        /*const [query1] = await connection.execute(
-            "SELECT supervisor_id FROM spus WHERE spu_name = ?",
-            [spu_type]
-        );
 
-        const sp_id = query1[0].supervisor_id
+        const [rows] = await connection.execute(
+            'SELECT * FROM spus WHERE spu_name = ?',
+            [spu_type]
+        )
+
+        const spu_id = rows[0].spu_id;
 
         const [sdws] = await connection.execute(
-            "SELECT * FROM sdws WHERE supervisors_supervisor_id = ?",
-            [sp_id]
-        );*/
-        connection.release();
+            'SELECT * FROM sdws where spu_id = ?',
+            [spu_id]
+        );
+
+        await connection.release();
+        
         res.render('admin_spu', {
             spuPage: null,
-            sdws: null,
+            sdws: sdws,
             user: 'user'
         });
     } catch (err) {
@@ -146,4 +161,27 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
         res.redirect('/admin');
     }
 });
+
+adminRouter.get('/', async (req, res) => {
+    try {
+        const connection = await db_connection_pool.getConnection();
+        const user = req.session.logged_user;
+
+        if(!user || user.staff_type !== 'admin'){
+            return res.redirect('/login');
+        }
+
+        const spus = await getSpus(connection, user.id);
+        await connection.release();
+
+        res.render('admin_homepage', {
+            user: user,
+            spus: spus
+        });
+    } catch (err) {
+        console.error("Error in adminRouter.get(): ", err);
+        res.redirect('/login');
+    }
+});
+
 export default adminRouter;

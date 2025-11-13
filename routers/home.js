@@ -16,7 +16,20 @@ async function getSdws(connection, supervisor_id){
         );
         return sdws;
     } catch(err){
-        console.error('ERROR in login.js getSdws() function: ' + err);
+        console.error('ERROR in home.js getSdws() function: ' + err);
+    }
+}
+
+// get all spus under the admin
+async function getSpus(connection, admin_id){
+    try{
+        const [spus] = await connection.execute(
+            `SELECT * FROM spus_has_admins WHERE admins_admin_id = ?`,
+            [admin_id]
+        );
+        return spus;
+    } catch(err){
+        console.error('ERROR in home.js getSpus() function: ' + err);
     }
 }
 
@@ -24,14 +37,12 @@ homeRouter.get('/', async (req, res) => {
     //if the user is in session,, only
     if(req.session.logged_user){
         const connection = await db_connection_pool.getConnection();
+        
         // obtain the logged user in the session
         const user = req.session.logged_user;
         //here just pass stuff to render in the page based on role
         if(user.staff_type === 'admin'){
-            res.render('admin_homepage', { 
-                user: user,
-                AdminName: 'Admin' // just a placeholder name
-            });
+            return res.redirect('/admin');
         } else if(user.staff_type === 'supervisor'){ 
             // for supervisor, include the list of sdws under them for rendering
             const sdws = await getSdws(connection, user.id);

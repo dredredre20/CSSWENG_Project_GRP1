@@ -88,11 +88,20 @@ loginRouter.post('/', async (req, res) => {
                 }
             }
             else if(account.staff_type == "admin"){
-                // not yet adjusted
-                req.session.logged_user = account;
+                const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
+                const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
+                const adminAccount = rowsAdmin[0];
+                
+                req.session.logged_user = {
+                    id: adminAccount.admin_id,
+                    staff_type: account.staff_type,
+                    first_name: adminAccount.first_name,
+                    last_name: adminAccount.last_name,
+                };
             }
             
-            await connection.release(); 
+            await connection.release();
+            
             return res.redirect('/home');
         } else{
             console.log('No account found');
