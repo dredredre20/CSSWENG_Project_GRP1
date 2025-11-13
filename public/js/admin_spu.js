@@ -26,5 +26,5 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
 // Navigate to SDW page 
 function navigateToSDW(sdw_id) {
     // change url if incorrect
-    window.location.href = `/sdw/${sdw_id}`;
+    window.location.href = `/admin/reports/${sdw_id}`;
 }

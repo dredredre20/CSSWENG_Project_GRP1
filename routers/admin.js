@@ -291,14 +291,10 @@ adminRouter.get('/delete/:staff_id', async (req, res) => {
     }
 });
 
-
-adminRouter.get('/reports/', async (req, res) => {
+adminRouter.get('/reports/:sdw_id/', async (req, res) => {
+    const sdw_id = req.params.sdw_id;
     try {
-        //temp values
-        res.render('admin_reports', {
-            admin: { first_name: 'Admin', last_name: 'User' },
-            sdw: { first_name: 'John', last_name: 'Doe', sdw_id: 123 }
-        });
+        res.render('admin_sdw_homepage', {sdw_id});
     } catch (err) {
         console.error(err);
         res.redirect('/admin');
@@ -317,8 +313,6 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
             "SELECT * FROM reports WHERE sdw_id = ? AND type = ?",
             [sdw_id,categoryId] // report type is 1 for now
         );
-
-        connection.release();
         res.render('admin_reports_folder', {
             reports: reports,
             currentCategory: category
@@ -326,6 +320,8 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.redirect('/admin');
+    } finally {
+        if (connection) connection.release();
     }
 });
 
