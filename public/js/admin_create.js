@@ -59,7 +59,7 @@ confirmBtn.addEventListener("click", ()=> {
 
 cancelBtn.addEventListener("click", ()=>{
     // change route later
-    window.location.href = "/admin/create";
+    window.location.href = "/admin";
 });
 
 function preview(file){

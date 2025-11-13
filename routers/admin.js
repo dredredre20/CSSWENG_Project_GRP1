@@ -265,6 +265,32 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
     }
 });
 
+adminRouter.get('/delete/:staff_id', async (req, res) => {
+    const staff_id = req.params.staff_id;
+    let connection;
+    try {
+        connection = await db_connection_pool.getConnection();
+
+        await connection.execute(
+        "DELETE FROM sdws WHERE staff_info_id = ?",
+        [staff_id]
+        );
+
+        await connection.execute(
+        "DELETE FROM staff_info WHERE staff_id = ?",
+        [staff_id]
+        );
+        console.log('Sucessfully deleted sdw'); //temp, there should be smth displayed here
+        res.redirect('/admin')
+
+    } catch (err) {
+        console.error('Error deleting SDW:', err);
+        res.status(500).json({ success: false, message: 'Error deleting SDW.' });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
 
 adminRouter.get('/reports/', async (req, res) => {
     try {
