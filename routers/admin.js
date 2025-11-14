@@ -103,6 +103,16 @@ adminRouter.post('/create', async (req, res) => {
 
         await connection.beginTransaction();
 
+        //check for existing same email
+        const [existingRows] = await connection.execute(
+            `SELECT staff_id FROM staff_info WHERE email = ?`,
+            [email]
+        );
+
+        if (existingRows.length > 0) {
+            return res.status(400).json({ success: false, message: 'Email already exists.' });
+        }
+
         const [staffResult] = await connection.execute(
             `INSERT INTO staff_info (staff_type, email, password)
              VALUES (?, ?, ?)`,
