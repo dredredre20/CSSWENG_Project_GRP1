@@ -53,9 +53,9 @@
                     <div class="users" id="sdwContainer"> 
                         <% sdws.forEach(sdw => { %>
                             <button class="user-btn" onclick="navigateToSDW('<%= sdw.sdw_id %>')">
-                                <img src="/images/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
+                                <img src="/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
                                 <span><%= sdw.first_name %></span>
-                                <div class="kebab-wrapper"><img src="/images/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                                <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
                             </button>
                         <% }); %>
                     </div>
