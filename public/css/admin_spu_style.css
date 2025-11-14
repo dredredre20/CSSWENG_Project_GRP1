@@ -263,23 +263,74 @@ button span{
     text-align:center;
 }
 
-.kebab-wrapper{
+.kebab-menu {
+    position: absolute;
+    top: 60px;
+    right: 5px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 6px 0;
+    z-index: 100;
+    min-width: 100px; 
+    display: none;
+    margin-top: 0;
+}
+
+.kebab-menu:not(.hidden) {
+    display: block;
+}
+
+.kebab-menu.hidden {
+    display: none;
+}
+
+.kebab-menu li {
+    list-style: none;
+    padding: 6px 12px; 
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; 
+    transition: background-color 0.2s;
+}
+
+.kebab-menu li:hover {
+    background-color: #f5f5f5;
+}
+
+.kebab-menu li.edit-btn {
+    color: #007bff;
+    border-bottom: 1px solid #eee;
+}
+
+.kebab-menu li.delete-btn {
+    color: #dc3545;
+}
+
+.user-btn {
+    position: relative;
+}
+
+/* Make kebab wrapper smaller */
+.kebab-wrapper {
     transition: background-color 0.25s;
-    height: 61%;
-    padding: 0.25px;
+    height: 30px; 
+    width: 30px;
+    padding: 4px;
     border-radius: 50%;
-    margin-left:-2%;
-    margin-top:4%;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.kebab{
-    width:30%;
-    scale:300%;
-    margin-left:35%;
-}
-
-.kebab-wrapper:hover{
-    background-color: #c38c0d;
+/* Make kebab icon smaller */
+.kebab {
+    width: 23px; /* Smaller icon */
+    height: auto;
 }
 
 .sdw-icon{

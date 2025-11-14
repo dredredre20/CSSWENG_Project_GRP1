@@ -54,7 +54,7 @@
                         <% sdws.forEach(sdw => { %>
                             <button class="user-btn" onclick="navigateToSDW('<%= sdw.sdw_id %>')">
                                 <img src="/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
-                                <span><%= sdw.first_name %></span>
+                                <span><%= sdw.first_name %> <%= sdw.last_name %></span>
                                 <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
                                 <ul class="kebab-menu hidden">
                                     <li class="edit-btn" data-sdw-id="<%= sdw.staff_info_id %>">Edit</li>
