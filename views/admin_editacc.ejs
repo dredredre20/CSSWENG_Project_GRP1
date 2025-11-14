@@ -26,59 +26,54 @@
                                                     <!-- Change this if incorrect-->
                 <div class="content-bar"><h1>Edit <%=sdw.firstname %> <%=sdw.lastname%>'s account</h1></div>
                 <div class="content-area">
-                    <div class="inputs-area">
-                        <!-- needs script to get default values -->
+                    <form id="editSDWForm" data-staff-id="<%= staff_id %>">
                         <div class="label-and-input">
                             <label for="firstname">First Name</label>
                                                                             <!-- Render values to be shown in the backend-->
-                            <input class="textbox" id="firstname" value="<%= sdw.firstname %>">
+                            <input class="textbox" id="firstname" name="firstname" value="<%= sdw.firstname %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="middlename">Middle Name</label>
-                            <input class="textbox" id="middlename" value="<%= sdw.middlename %>">
+                            <input class="textbox" id="middlename" name="middlename" value="<%= sdw.middlename %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="lastname">Last Name</label>
-                            <input class="textbox" id="lastname" value="<%= sdw.lastname %>">
+                            <input class="textbox" id="lastname" name="lastname" value="<%= sdw.lastname %>">
                         </div>
 
 
                         <div class="label-and-input">
                             <label for="email">Email Address</label>
-                            <input class="textbox" id="email" value="<%= sdw.email %>">
+                            <input class="textbox" id="email" name="email" value="<%= sdw.email %>">
                         </div>
 
                         <div class="label-and-input">
                             <label for="password">Password</label>
-                            <input class="textbox" id="password" value="<%= sdw.password %>">
+                            <input class="textbox" id="password" name="password" value="<%= sdw.password %>">
                         </div>
                         
                         <div class="label-and-input">
                             <label for="spu">SPU</label>
-                            <select id="spu" selected="MS">
-                                <option>AMP</option>
-                                <option>FDQ</option>
-                                <option>MPH</option>
-                                <option>MS</option>
+                            <select id="spu" name="spu" required>
+                                <option value="1" <%= spu_name === 'AMP' ? 'selected' : '' %>>AMP</option>
+                                <option value="2" <%= spu_name === 'FDQ' ? 'selected' : '' %>>FDQ</option>
+                                <option value="3" <%= spu_name === 'MPH' ? 'selected' : '' %>>MPH</option>
+                                <option value="4" <%= spu_name === 'MS' ? 'selected' : '' %>>MS</option>
                             </select>
                         </div>
 
                         <div class="label-and-input">
                             <label for="input">User Image</label>
                             <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
-                            
                         </div>
-                    </div>
-                    <img id="preview" src="sdw_icon.png">
-
-                    <div class="bottom-bar">
-                        <button class="cancel-btn" id="cancel">Cancel</button>
-                        <button class="confirm-btn" id="confirm">Confirm Edits</button>
-
-                    </div>
-
+                        <img id="preview" src="sdw_icon.png">
+                        <div class="bottom-bar">
+                            <button class="cancel-btn" type="button" id="cancel">Cancel</button>
+                            <button class="confirm-btn" type="button" id="confirm">Confirm Edits</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

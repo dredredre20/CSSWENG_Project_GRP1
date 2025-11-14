@@ -28,3 +28,38 @@ function navigateToSDW(sdw_id) {
     // change url if incorrect
     window.location.href = `/admin/reports/${sdw_id}`;
 }
+
+document.querySelectorAll('.kebab').forEach(kebab => {
+    kebab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const menu = kebab.parentElement.nextElementSibling;
+        document.querySelectorAll('.kebab-menu').forEach(m => {
+            if (m !== menu) m.classList.add('hidden');
+        });
+        menu.classList.toggle('hidden');
+    });
+});
+
+document.addEventListener('click', () => {
+    document.querySelectorAll('.kebab-menu').forEach(menu => {
+        menu.classList.add('hidden');
+    });
+});
+
+// EDIT
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-sdw-id');
+        window.location.href = `/admin/edit/${id}`;
+    });
+});
+
+// DELETE
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-sdw-id');
+        window.location.href = `/admin/delete/${id}`;
+    });
+});

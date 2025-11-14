@@ -56,6 +56,10 @@
                                 <img src="/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
                                 <span><%= sdw.first_name %></span>
                                 <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                                <ul class="kebab-menu hidden">
+                                    <li class="edit-btn" data-sdw-id="<%= sdw.staff_info_id %>">Edit</li>
+                                    <li class="delete-btn" data-sdw-id="<%= sdw.staff_info_id %>">Delete</li>
+                                </ul>
                             </button>
                         <% }); %>
                     </div>

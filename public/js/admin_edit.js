@@ -1,5 +1,7 @@
+const editForm = document.getElementById("editSDWForm");
 const cancelBtn = document.getElementById("cancel");
 const confirmBtn = document.getElementById("confirm");
+const staff_id = editForm.dataset.staffId;
 let originalData = {};
 
 
@@ -7,9 +9,9 @@ let originalData = {};
 document.addEventListener("DOMContentLoaded", ()=>{
 
     originalData = {
-        firstName: document.getElementById("firstname").value,
-        middleName: document.getElementById("middlename").value,
-        lastName: document.getElementById("lastname").value,
+        firstname: document.getElementById("firstname").value,
+        middlename: document.getElementById("middlename").value,
+        lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
         spuAssignedTo: document.getElementById("spu").value
@@ -19,40 +21,30 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 confirmBtn.addEventListener("click", ()=> {
     // Get current values 
-    const firstName = document.getElementById("firstname").value.trim();
-    const middleName = document.getElementById("middlename").value.trim();  
-    const lastName = document.getElementById("lastname").value.trim();  
-    const email = document.getElementById("email").value.trim();    
-    const password = document.getElementById("password").value;  
-    const spuAssignedTo = document.getElementById("spu").value;
+    const updatedData = {
+        firstname: document.getElementById("firstname").value.trim(),
+        middlename: document.getElementById("middlename").value.trim(),
+        lastname: document.getElementById("lastname").value.trim(),
+        email: document.getElementById("email").value.trim(),   
+        password: document.getElementById("password").value, 
+        spu: document.getElementById("spu").value,
+    }
 
     // Check if required fields are filled
-    if (!firstName || !lastName || !email || !password) {
+    if (!updatedData.firstname || !updatedData.lastname || !updatedData.email || !updatedData.password) {
         alert("Please fill in all required fields.");
         return;
     }
 
+
     // Gmail regex assuming that clients will use gmail only
     const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!gmailPattern.test(email)) {
+    if (!gmailPattern.test(updatedData.email)) {
         alert("Please enter a valid Gmail address.");
         return;
     }
-
-    const updatedData = {
-        firstName: firstName, 
-        lastName: lastName, 
-        middleName: middleName, 
-        email: email, 
-        password: password, 
-        spuAssignedTo: spuAssignedTo 
-    }
-
-    // Not too sure about the fetch yet
-    // Update with proper endpoint later
-    fetch("/api/admin/update", {
+    fetch(`/admin/edit/${staff_id}`, {
         method: "POST", 
-        //not sure about this part
         headers: {
             "Content-Type": "application/json"
         },
@@ -77,34 +69,22 @@ confirmBtn.addEventListener("click", ()=> {
 
 cancelBtn.addEventListener("click", ()=>{
     const currentValues = {
-        firstName: document.getElementById("firstname").value,
-        middleName: document.getElementById("middlename").value,
-        lastName: document.getElementById("lastname").value,
+        firstname: document.getElementById("firstname").value,
+        middlename: document.getElementById("middlename").value,
+        lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        spuAssignedTo: document.getElementById("spu").value
+        spu: document.getElementById("spu").value
     };
 
     const hasChanges = Object.keys(originalData).
                     some(key => originalData[key] !== currentValues[key]);
 
-    // Change this later when the routing works.
     if (hasChanges) {
-
         const confirmCancel = confirm("You have unsaved changes. Are you sure you want to cancel?");
-
-        if (confirmCancel) {
-            // Reset fields to original values
-            document.getElementById("firstname").value = originalData.firstName;
-            document.getElementById("middlename").value = originalData.middleName;
-            document.getElementById("lastname").value = originalData.lastName;
-            document.getElementById("email").value = originalData.email;
-            document.getElementById("password").value = originalData.password;
-            document.getElementById("spu").value = originalData.spuAssignedTo;
-        }
-
-        window.location.href = "/admin/homepage";
+        if (!confirmCancel) return;
     }
+        window.location.href = "/admin";
 });
 
 function preview(file){

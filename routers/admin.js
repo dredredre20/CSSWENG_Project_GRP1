@@ -138,25 +138,16 @@ adminRouter.post('/create', async (req, res) => {
 
 adminRouter.get('/edit/:staff_id', async (req, res) => {
     const staff_id = req.params.staff_id;
+
     let connection;
     try {
         connection = await db_connection_pool.getConnection();
 
         const [sdw_rows] = await connection.execute(
-            `SELECT sdw_id
-             FROM sdws s JOIN staff_info si
-             ON si.staff_id = s.staff_info_id
-             WHERE staff_id = ?`,
+            `SELECT sdw_id, first_name, middle_name, last_name, email, spu_id
+             FROM sdws
+             WHERE staff_info_id = ?`,
             [staff_id]
-        );
-
-        const sdw_id = sdw_rows[0].sdw_id;
-
-        const [sdws] = await connection.execute(
-            `SELECT first_name, middle_name, last_name, email
-             FROM sdws s
-             WHERE sdw_id = ?`,
-            [sdw_id]
         );
 
         /*const [admin_rows] = await connection.execute(
@@ -178,12 +169,20 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
         3: "MPH",
         4: "MS"
         };
-        const { first_name: firstname, middle_name: middlename, last_name: lastname, email: email, spu_id } = sdws[0];
-        const spu_name = spuMap[spu_id]; // this isnt being passed yet, need to make the ejs dropdown dynamic first
+
+        const row = sdw_rows[0] || {}; // default to empty object if no row
+        const first_name = row.first_name || '';
+        const middle_name = row.middle_name || '';
+        const last_name = row.last_name || '';
+        const email = row.email || '';
+        const spu_id = row.spu_id || null;
+        const spu_name = spuMap[spu_id];
 
         res.render('admin_editacc', {
-        AdminName: 'Admin',
-        sdw: { firstname, middlename, lastname, email, password: '' }
+            AdminName: 'Admin',
+            sdw: { firstname: first_name, middlename: middle_name, lastname: last_name, email, password: '' },
+            spu_name,
+            staff_id
         });
 
     } catch (err) {
@@ -196,40 +195,50 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
 });
 
 adminRouter.post('/edit/:staff_id', async (req, res) => {
-    const staff_id = req.params.staff_id;
-    const { firstName, lastName, middleName, email, password } = req.body;
+    const staff_id = parseInt(req.params.staff_id, 10);
+    const body = req.body;
+    const firstName = body.firstname;
+    const middleName = body.middlename || '';
+    const lastName = body.lastname;
+    const email = body.email;
+    const password = body.password;
+    const spu = body.spu;
+    const spuMap = {
+        1: "AMP",
+        2: "FDQ",
+        3: "MPH",
+        4: "MS"
+        };
+
+    if (!firstName || !lastName || !email || !password) {
+        return res.render('admin_editacc', {
+            AdminName: 'Admin',
+            sdw: {
+                firstname: firstName || '',
+                middlename: middleName,
+                lastname: lastName || '',
+                email: email || '',
+                password: ''
+            },
+            staff_id,
+            spu_name: spuMap[spu],
+            message: 'Please fill in all required fields.'
+        });
+    }
+
     let connection;
 
     try {
         connection = await db_connection_pool.getConnection();
         await connection.beginTransaction();
 
-        const [sdw_rows] = await connection.execute(
-            `SELECT sdw_id
-             FROM sdws s 
-             JOIN staff_info si ON si.staff_id = s.staff_info_id
-             WHERE si.staff_id = ?`,
-            [staff_id]
-        );
-
-        if (sdw_rows.length === 0) {
-            console.warn(`No SDW found for staff_id ${staff_id}`);
-            await connection.rollback();
-            return res.status(404).render('error', { message: 'SDW record not found.' });
-        }
-
-        const sdw_id = sdw_rows[0].sdw_id;
-
-        let hashed = null;
-        if (password && password.trim() !== "") {
-            hashed = await bcrypt.hash(password, 10);
-        }
+        const hashed = await bcrypt.hash(password, 10);
 
         await connection.execute(
             `UPDATE sdws
-             SET first_name = ?, middle_name = ?, last_name = ?, email = ?
-             WHERE sdw_id = ?`,
-            [firstName, middleName, lastName, email, sdw_id]
+             SET first_name = ?, middle_name = ?, last_name = ?, email = ?, spu_id = ?
+             WHERE staff_info_id = ?`,
+            [firstName, middleName, lastName, email, spu, staff_id]
         );
 
         if (hashed) {
@@ -250,11 +259,17 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
 
         await connection.commit();
 
-        res.render('admin_editacc', {
-            AdminName: 'Admin',
-            sdw: { firstname: firstName, middlename: middleName, lastname: lastName, email, password: '' },
-            message: 'Account updated successfully!'
-        });
+        const [updatedRows] = await connection.execute(
+            `SELECT first_name, middle_name, last_name, email, spu_id
+            FROM sdws WHERE staff_info_id = ?`,
+            [staff_id]
+        );
+
+        
+
+        const updatedSDW = updatedRows[0];
+
+        res.json({ success: true, message: 'Account updated successfully!' });
 
     } catch (err) {
         console.error('Error editing SDW:', err);
