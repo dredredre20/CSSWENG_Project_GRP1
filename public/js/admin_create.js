@@ -46,7 +46,7 @@ confirmBtn.addEventListener("click", ()=> {
     .then(data => {
         if (data.success) {
             alert("SDW created successfully.");
-            window.location.href = "/admin/homepage";
+            window.location.href = "/home";
         } else {
             alert("Error updating admin details: " + data.message);
         }
