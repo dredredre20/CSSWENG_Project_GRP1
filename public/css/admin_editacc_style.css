@@ -126,7 +126,7 @@ h1 {
     height:calc(100% - 135px);
 }
 
-.inputs-area{
+#editSDWForm{
     display:grid;
     column-gap:30px;
     row-gap:80px;
