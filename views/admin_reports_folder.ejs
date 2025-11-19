@@ -46,7 +46,7 @@
                                  data-report-id="<%= report.report_id %>"
                                  data-report-name="<%= report.sdw_id %>"
                                  data-report-date="<%= report.upload_date %>"
-                                 data-report-type="<%= report.type || 'Unknown' %>"
+                                 data-report-type="<%= report.type || 'Unknown' %>">
 
                                  <%# For the report id, we can probably join to the sdw table to show name instead %>
                                  
@@ -57,9 +57,7 @@
                                 </div>
                                 
                                 <div class="report-info">
-                                    <span class="report-icon">📊</span>
                                     <span class="report-name"><%= report.name %></span>
-                                    <button class="report-options-btn" onclick="event.stopPropagation()">⋮</button>
                                 </div>
                             </div>
                         <% }); %>
@@ -102,11 +100,9 @@
                 </div>
                 <div class="modal-buttons">
                     <button class="btn-download" id="btnDownload">
-                        <span>⬇</span>
                         Download
                     </button>
                     <button class="btn-delete" id="btnDelete">
-                        <span>🗑</span>
                         Delete
                     </button>
                 </div>
