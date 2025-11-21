@@ -290,7 +290,7 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
     }
 });
 
-adminRouter.get('/delete/:staff_id', async (req, res) => {
+adminRouter.delete('/delete/:staff_id', async (req, res) => {
     const staff_id = req.params.staff_id;
     let connection;
     try {
@@ -306,7 +306,8 @@ adminRouter.get('/delete/:staff_id', async (req, res) => {
         [staff_id]
         );
         console.log('Sucessfully deleted sdw'); //temp, there should be smth displayed here
-        res.redirect('/admin')
+
+        res.status(200).json({ success: true, message: 'SDW deleted successfully' });
 
     } catch (err) {
         console.error('Error deleting SDW:', err);
