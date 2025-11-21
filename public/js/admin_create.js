@@ -23,6 +23,13 @@ confirmBtn.addEventListener("click", ()=> {
         return;
     }
 
+    // Password regex for password validation
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (!passwordPattern.test(password)) {
+        alert("Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.");
+        return;
+    }
+
     const sdwData = {
         firstName: firstName, 
         lastName: lastName, 

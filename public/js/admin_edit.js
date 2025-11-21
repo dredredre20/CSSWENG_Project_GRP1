@@ -31,7 +31,7 @@ confirmBtn.addEventListener("click", ()=> {
     }
 
     // Check if required fields are filled
-    if (!updatedData.firstname || !updatedData.lastname || !updatedData.email || !updatedData.password) {
+    if (!updatedData.firstname || !updatedData.lastname || !updatedData.email) {
         alert("Please fill in all required fields.");
         return;
     }
@@ -43,6 +43,14 @@ confirmBtn.addEventListener("click", ()=> {
         alert("Please enter a valid Gmail address.");
         return;
     }
+
+    // Password regex for password validation
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (updatedData.password && !passwordPattern.test(updatedData.password)) {
+        alert("Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.");
+        return;
+    }
+
     fetch(`/admin/edit/${staff_id}`, {
         method: "POST", 
         headers: {
@@ -55,7 +63,8 @@ confirmBtn.addEventListener("click", ()=> {
         if (data.success) {
             alert("Admin details updated successfully.");
             originalData = { ...updatedData };
-            location.reload();
+            // location.reload();
+            window.location.href = "/admin";
         } else {
             alert("Error updating admin details: " + data.message);
         }

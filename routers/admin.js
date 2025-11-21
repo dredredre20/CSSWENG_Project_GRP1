@@ -219,8 +219,9 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
         3: "MPH",
         4: "MS"
         };
-
-    if (!firstName || !lastName || !email || !password) {
+    
+    // Removed password validation for optional change
+    if (!firstName || !lastName || !email) {
         return res.render('admin_editacc', {
             AdminName: 'Admin',
             sdw: {
@@ -242,8 +243,6 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
         connection = await db_connection_pool.getConnection();
         await connection.beginTransaction();
 
-        const hashed = await bcrypt.hash(password, 10);
-
         await connection.execute(
             `UPDATE sdws
              SET first_name = ?, middle_name = ?, last_name = ?, email = ?, spu_id = ?, supervisor_id = ?
@@ -251,7 +250,8 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
             [firstName, middleName, lastName, email, spu, spu, staff_id]
         );
 
-        if (hashed) {
+        if (password) {
+            const hashed = await bcrypt.hash(password, 10);
             await connection.execute(
                 `UPDATE staff_info
                  SET email = ?, password = ?
