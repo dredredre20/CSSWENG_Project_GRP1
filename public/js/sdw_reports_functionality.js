@@ -40,7 +40,8 @@ document.querySelectorAll('.report-card').forEach(card => {
                 name: this.dataset.reportName,
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
-                uploader: this.dataset.reportUploader
+                uploader: this.dataset.reportUploader,
+                supervisor: this.dataset.reportSupervisor
             };
             openModal(currentReport);
         });
@@ -52,6 +53,7 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
     document.getElementById('uploader').textContent = report.uploader;
+    document.getElementById('supervisor').textContent = report.supervisor;
 
 
     const previewContainer = document.getElementById('previewContainer');

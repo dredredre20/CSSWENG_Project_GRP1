@@ -81,9 +81,11 @@ reportRouter.get('/:category', async (req, res) => {
                                     r.report_name as name,
                                     r.file_size as size,
                                     r.upload_date as date,
-                                    CONCAT(s.first_name, ' ', s.last_name) AS uploader
+                                    CONCAT(s.first_name, ' ', s.last_name) AS uploader, 
+                                    CONCAT(sup.first_name, ' ', sup.last_name) AS supervisor
                              FROM reports r
                              JOIN sdws s ON r.sdw_id = s.sdw_id
+                             JOIN supervisors sup ON sup.supervisor_id = s.supervisor_id
                              WHERE r.sdw_id = ?
                              AND r.type = ?`;
         const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
@@ -135,9 +137,11 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                                     r.report_name as name,
                                     r.file_size as size,
                                     r.upload_date as date,
-                                    CONCAT(s.first_name, ' ', s.last_name) AS uploader
+                                    CONCAT(s.first_name, ' ', s.last_name) AS uploader, 
+                                    CONCAT(sup.first_name, ' ', sup.last_name) AS supervisor
                              FROM reports r
                              JOIN sdws s ON r.sdw_id = s.sdw_id
+                             JOIN supervisors sup ON sup.supervisor_id = s.supervisor_id
                              WHERE r.sdw_id = ?
                              AND r.type = ?`;
         const [rows] = await connection.execute(reports_query, [id, categoryId]);
