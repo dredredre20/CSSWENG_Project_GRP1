@@ -246,9 +246,9 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
 
         await connection.execute(
             `UPDATE sdws
-             SET first_name = ?, middle_name = ?, last_name = ?, email = ?, spu_id = ?
+             SET first_name = ?, middle_name = ?, last_name = ?, email = ?, spu_id = ?, supervisor_id = ?
              WHERE staff_info_id = ?`,
-            [firstName, middleName, lastName, email, spu, staff_id]
+            [firstName, middleName, lastName, email, spu, spu, staff_id]
         );
 
         if (hashed) {
