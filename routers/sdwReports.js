@@ -103,7 +103,7 @@ reportRouter.get('/:category', async (req, res) => {
                 return result.data;
         });
 
-        console.log(rows); 
+        console.log("From sdwReports.js " + rows); 
         res.render('sdw_reports', { reports: rows, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id });
 
     } catch (err){
