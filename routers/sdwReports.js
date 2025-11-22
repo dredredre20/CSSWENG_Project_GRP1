@@ -66,7 +66,10 @@ reportRouter.get('/:category', async (req, res) => {
             res.redirect('/login');
         }
 
-        //const sdw_rows = await supabase.from('sdws').select('*').eq('supervisor', account.id)
+        const sdw_rows = await supabase.from('sdws').select('*').eq('supervisor', account.id).then((result) =>{
+            if(result.data.length > 0)
+                return result.data;
+        });
 
         //connection = await db_connection_pool.getConnection();
         /*
@@ -105,6 +108,8 @@ reportRouter.get('/:category', async (req, res) => {
     }
 });
 
+
+
 // for per report categories routing
 supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
      let connection;
@@ -129,9 +134,14 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
 
         connection = await db_connection_pool.getConnection();
 
-        let sdw_id_query = `SELECT sdw_id FROM sdws WHERE sdw_id = ?`;
+        //let sdw_id_query = `SELECT sdw_id FROM sdws WHERE sdw_id = ?`;
 
-        const [sdw_rows] = await connection.execute(sdw_id_query, [sdw_id]);
+        //const [sdw_rows] = await connection.execute(sdw_id_query, [sdw_id]);
+
+        const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('sdw_id', sdw_id).then((result) =>{
+            if(result.data.length > 0)
+                return result.data;
+        });
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.staff_id);
@@ -149,15 +159,22 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                              JOIN sdws s ON r.sdw_id = s.sdw_id
                              WHERE r.sdw_id = ?
                              AND r.type = ?`;
-        const [rows] = await connection.execute(reports_query, [id, categoryId]);
+        //const [rows] = await connection.execute(reports_query, [id, categoryId]);
+
+        const rows = await supabase.from('reports').select('*').eq('sdw_id', id).eq('type', categoryId).then((result) =>{
+            if(result.data.length > 0)
+                return result.data;
+        });
+
         console.log(rows);
+
         res.render('sdw_reports', { reports: rows, currentCategory: category, staff_type: account.staff_type, sdw_id: id});
 
     } catch (err){
         console.log(err);
         res.status(500).send('Server error from view_report.js');
     } finally {
-        connection.release();
+        //connection.release();
     }
 });
 
