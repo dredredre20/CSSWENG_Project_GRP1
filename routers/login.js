@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 
 import {supabase} from '../middleware/supabaseClient.js';
 
+
 const loginRouter = express.Router();
 
 const loginPage = (req, res) => {
