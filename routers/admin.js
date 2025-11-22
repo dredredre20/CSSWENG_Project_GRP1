@@ -275,8 +275,6 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
             [staff_id]
         );
 
-        
-
         const updatedSDW = updatedRows[0];
 
         res.json({ success: true, message: 'Account updated successfully!' });
@@ -319,11 +317,36 @@ adminRouter.delete('/delete/:staff_id', async (req, res) => {
 
 adminRouter.get('/reports/:sdw_id/', async (req, res) => {
     const sdw_id = req.params.sdw_id;
+    const admin = req.session.logged_user;
+    let connection;
+    
     try {
-        res.render('admin_sdw_homepage', {sdw_id});
+        connection = await db_connection_pool.getConnection();
+        
+        // Fetch SDW details
+        const [sdw_rows] = await connection.execute(
+            `SELECT first_name, last_name, sdw_id 
+             FROM sdws 
+             WHERE sdw_id = ?`,
+            [sdw_id]
+        );
+        
+        if (sdw_rows.length === 0) {
+            return res.redirect('/admin');
+        }
+        
+        const sdw = sdw_rows[0];
+        
+        res.render('admin_reports', {
+            sdw_id: sdw_id, 
+            sdw: sdw,      // Pass the full SDW object
+            admin: admin 
+        });
     } catch (err) {
         console.error(err);
         res.redirect('/admin');
+    } finally {
+        if (connection) connection.release();
     }
 });
 
@@ -341,7 +364,8 @@ adminRouter.get('/reports/:sdw_id/:category', async (req, res) => {
         );
         res.render('admin_reports_folder', {
             reports: reports,
-            currentCategory: category
+            currentCategory: category, 
+            sdw_id : sdw_id
         });
     } catch (err) {
         console.error(err);
