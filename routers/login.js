@@ -91,6 +91,9 @@ loginRouter.post('/', async (req, res) => {
                     await supabase.from('supervisor').select('*').eq('email',email).then((result) =>{
                         if(result.data.length > 0){
                             const supervisor_account = result.data[0];
+
+                            console.log(supervisor_account);
+
                             req.session.logged_user = {
                                 id: supervisor_account.supervisor_id, 
                                 staff_type: account.staff_type, 
