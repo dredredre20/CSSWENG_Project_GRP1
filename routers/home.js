@@ -5,7 +5,7 @@ import {supabase} from '../middleware/supabase_client.js';
 const homeRouter = express.Router();
 
 // get all sdws under the specific supervisor
-async function getSdws(supervisor_id){
+async function getSdws(spu_id){
     try{
         // Changed this query to correctly fetch sdws
         /*const [sdws] = await connection.execute(
@@ -58,7 +58,7 @@ homeRouter.get('/', async (req, res) => {
                     return result.data;
             });
             
-            const sdws = await getSdws(supervisor_user.supervisor_id);
+            const sdws = await getSdws(supervisor_user.spu_id);
             // console.log('SDWs data:', sdws); Just used this to debug
             console.log(supervisor_user);
             console.log(sdws);
