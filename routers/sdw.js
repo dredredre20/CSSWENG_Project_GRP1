@@ -11,7 +11,7 @@ async function findUser(sdw_id){
             'SELECT * FROM reports_db.sdws WHERE sdw_id = ?',
             [sdw_id]
         );*/
-
+        console.log(sdw_id);
         const rows = await supabase.from('sdws').select('*').eq('sdw_id', sdw_id).then((result)=>{
             if(result.data)
                 return result.data;
