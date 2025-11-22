@@ -53,19 +53,32 @@ loginRouter.post('/', async (req, res) => {
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
             if(account.staff_type == "sdw"){
-
-                await supabase.from('sdws').select('*').eq('email', email).then((result) =>{
-                    if(result.data.length > 0){
-                        const sdw_account = result.data[0];
-                        req.session.logged_user = {
-                            id: sdw_account.sdw_id,
-                            staff_type: account.staff_type,
-                            first_name: sdw_account.first_name,
-                            last_name: sdw_account.last_name,
-                             
-                        };
+                let happen = 0;
+                let delay = 250;
+                for(i = 0; i < 5 && happen == 0; i++){
+                    try{
+                        await supabase.from('sdws').select('*').eq('email', email).then((result) =>{
+                            if(result.data.length > 0){
+                                const sdw_account = result.data[0];
+                                req.session.logged_user = {
+                                    id: sdw_account.sdw_id,
+                                    staff_type: account.staff_type,
+                                    first_name: sdw_account.first_name,
+                                    last_name: sdw_account.last_name,
+                                    
+                                };
+                            }
+                            happen = 1;
+                        });
+                    }catch(err){
+                        console.error("ERROR FROM: login.js, retrying sdw fetch");
+                        
+                        const jitter = Math.random() * 100;
+                        const wait = delay + jitter;
+                        await new Promise(resolve => setTimeout(resolve, wait));
+                        delay *= 2;
                     }
-                });
+                }
 
             }
             else if (account.staff_type == "supervisor"){
