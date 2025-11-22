@@ -55,7 +55,7 @@ loginRouter.post('/', async (req, res) => {
             // email/password as parameters to validate --then execute query
             const [rows] = await connection.execute(statement, [email]); */
 
-            const rows = await supabase.from('staff_info').eq('email', email).select('*').then((result) =>{
+            const rows = await supabase.from('staff_info').select('*').eq('email', email).then((result) =>{
                 if(result.data){
                     return result.data;
                 }
