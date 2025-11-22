@@ -1,15 +1,21 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
+import {supabase} from "../middleware/supabase_client.js";  
 
 const sdwRouter = express.Router();
 
 // function for validating if the sdw/staff with the `sdw_id` exists in the database
-async function findUser(connection, sdw_id){
+async function findUser(sdw_id){
     try{
-        const [rows] = await connection.execute(
+        /*const [rows] = await connection.execute(
             'SELECT * FROM reports_db.sdws WHERE sdw_id = ?',
             [sdw_id]
-        );
+        );*/
+
+        const rows = await supabase.select('*').from('sdws').eq('sdw_id', sdw_id).then((result)=>{
+            if(result.data)
+                return result.data;
+        });
 
         if(rows.length > 0){
             return rows[0];
@@ -30,9 +36,9 @@ sdwRouter.get('/sdw/:sdw_id', async (req, res) => {
         return res.redirect('/login');
     }
 
-    const connection = await db_connection_pool.getConnection();
-    const sdw = await findUser(connection, sdw_id);
-    await connection.release();
+    //const connection = await db_connection_pool.getConnection();
+    const sdw = await findUser(sdw_id);
+    //await connection.release();
 
     if(sdw){
         return res.render(

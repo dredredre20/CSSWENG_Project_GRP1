@@ -2,6 +2,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import db_connection_pool from '../connections.js';
+import {supabase} from '../middleware/supabase_client.js';
 
 const loginRouter = express.Router();
 
@@ -15,10 +16,13 @@ loginRouter.get('/', loginPage);
 async function get_sdw_info(connection, account){
     try{
         // just experimenting with JOIN since both tables are accessed
+        
         const statement = `SELECT sdws.* FROM sdws 
                            JOIN staff_info ON sdws.email = staff_info.email 
                            WHERE staff_info.email = ?`;
         const [rows] = await connection.execute(statement, [account.email]);
+
+      
         const sdw_account = rows[0];
 
         return sdw_account || null;
@@ -27,6 +31,10 @@ async function get_sdw_info(connection, account){
         return null;
     }
 }
+
+/****************************************************************************************** */
+//Start Here vvv
+/****************************************************************************************** */
 
 loginRouter.post('/', async (req, res) => {
     try{
@@ -40,11 +48,19 @@ loginRouter.post('/', async (req, res) => {
 
         // find user in the database using email only
         try{
+            /*
             // use prepared statements
             const statement = 'SELECT * FROM staff_info WHERE email = ?;';
             
             // email/password as parameters to validate --then execute query
-            const [rows] = await connection.execute(statement, [email]); 
+            const [rows] = await connection.execute(statement, [email]); */
+
+            const rows = await supabase.from('staff_info').eq('email', email).select('*').then((result) =>{
+                if(result.data){
+                    return result.data;
+                }
+            });
+            
             account = rows[0];
             console.log("Found email")
         } catch(err){
@@ -61,51 +77,16 @@ loginRouter.post('/', async (req, res) => {
 
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
-            if(account.staff_type == "sdw"){
-                req.session.logged_user = {
+            req.session.logged_user = {
                     id: account.staff_id,
                     staff_type: account.staff_type,
                     first_name: account.first_name,
                     last_name: account.last_name,
                 };
-                connection.release();
-                return res.redirect('/home');
-            }
-            else if (account.staff_type == "supervisor"){
-                try{
-                    const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
-                    const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
-                    const supervisorAccount = rowsSupervisor[0];
-                    // add the id as well for the /sdw route
-                    req.session.logged_user = {
-                        id: supervisorAccount.supervisor_id, 
-                        staff_type: account.staff_type, 
-                        first_name: supervisorAccount.first_name, 
-                        last_name: supervisorAccount.last_name
-                    };
-                }catch(err){
-                    console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
-                }
-            }
-            else if(account.staff_type == "admin"){
-                const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
-                const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
-                const adminAccount = rowsAdmin[0];
-                
-                req.session.logged_user = {
-                    id: adminAccount.admin_id,
-                    staff_type: account.staff_type,
-                    first_name: adminAccount.first_name,
-                    last_name: adminAccount.last_name,
-                };
-            }
-            
-            await connection.release();
             
             return res.redirect('/home');
         } else{
             console.log('No account found');
-            await connection.release();
         }
         
         res.redirect('/login');
