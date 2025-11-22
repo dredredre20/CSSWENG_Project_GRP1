@@ -44,7 +44,7 @@ loginRouter.post('/', async (req, res) => {
         
         
         // get a connection to the db
-        const connection = await db_connection_pool.getConnection();
+        //const connection = await db_connection_pool.getConnection();
 
         // find user in the database using email only
         try{
