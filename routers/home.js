@@ -16,16 +16,14 @@ async function getSdws(supervisor_id){
              WHERE s.supervisor_id = ?`,
             [supervisor_id]
         );*/
-        await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
+        const [sdws] = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
             if(result.data.length > 0){
             const sdws = result.data;
-            console.log(sdws);
             return sdws;
         }
         });
         
-        console.log("Nothing to return...");
-        return;
+        return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
     }
@@ -39,7 +37,12 @@ async function getSpus(admin_id){
             [admin_id]
         );*/
 
-        const [spus] = await supabase.from('spus_has_admins').select('*');
+        const [spus] = await supabase.from('spus_has_admins').select('*').then((result) => {
+            if(result.data.lenght > 0){
+                const spus = result.data;
+                return spus;
+            }
+        });
         return spus;
     } catch(err){
         console.error('ERROR in home.js getSpus() function: ' + err);
