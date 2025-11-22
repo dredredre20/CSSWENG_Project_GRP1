@@ -57,8 +57,11 @@ homeRouter.get('/', async (req, res) => {
                 if(result.data)
                     return result.data;
             });
+            
             const sdws = await getSdws(supervisor_user.supervisor_id);
             // console.log('SDWs data:', sdws); Just used this to debug
+            console.log(supervisor_user);
+            console.log(sdws);
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
                 user: supervisor_user,
                 sdws: sdws
