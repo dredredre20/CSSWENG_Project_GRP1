@@ -18,7 +18,7 @@ async function getSdws(supervisor_id){
         );*/
         const [sdws] = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
             if(result.data.length > 0){
-            const sdws = result.data;
+            const [sdws] = result.data;
             return sdws;
         }
         });

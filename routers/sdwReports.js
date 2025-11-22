@@ -1,5 +1,6 @@
 import express from 'express';
 import db_connection_pool from '../connections.js';
+import {supabase} from '../middleware/supabaseClient.js';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
@@ -34,7 +35,7 @@ function categoryOf(category){
             case "Leaders Directory":
                 return 12;
             case "Logout":
-                return -1;
+                return -2;
             default:
                 return 0; // fallback
         }
@@ -62,13 +63,16 @@ reportRouter.get('/:category', async (req, res) => {
             res.redirect('/login');
         }
 
-        connection = await db_connection_pool.getConnection();
+        //const [sdw_rows] = await supabase.from('sdws').select('*').eq('staff_info_id', account.id)
 
+        //connection = await db_connection_pool.getConnection();
+        /*
         let sdw_id_query = `SELECT sdw_id
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
-                            WHERE si.staff_id = ?`;
-        const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
+                            WHERE si.staff_id = ?`;*/
+
+        //const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.id);
