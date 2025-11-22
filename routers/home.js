@@ -28,7 +28,7 @@ async function getSdws(supervisor_id){
 }
 
 // get all spus under the admin
-async function getSpus(connection, admin_id){
+async function getSpus(admin_id){
     try{
         const spus = await supabase.from('spus_has_admins').select('*').then((result)=>{
             if(result.data)
@@ -44,7 +44,7 @@ async function getSpus(connection, admin_id){
 homeRouter.get('/', async (req, res) => {
     //if the user is in session,, only
     if(req.session.logged_user){
-        const connection = await db_connection_pool.getConnection();
+        //const connection = await db_connection_pool.getConnection();
         
         // obtain the logged user in the session
         const user = req.session.logged_user;
