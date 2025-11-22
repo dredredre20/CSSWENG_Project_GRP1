@@ -55,7 +55,7 @@ loginRouter.post('/', async (req, res) => {
             if(account.staff_type == "sdw"){
                 let happen = 0;
                 let delay = 250;
-                for(i = 0; i < 5 && happen == 0; i++){
+                for(let i = 0; i < 5 && happen == 0; i++){
                     try{
                         await supabase.from('sdws').select('*').eq('email', email).then((result) =>{
                             if(result.data.length > 0){
@@ -72,7 +72,7 @@ loginRouter.post('/', async (req, res) => {
                         });
                     }catch(err){
                         console.error("ERROR FROM: login.js, retrying sdw fetch");
-                        
+
                         const jitter = Math.random() * 100;
                         const wait = delay + jitter;
                         await new Promise(resolve => setTimeout(resolve, wait));
