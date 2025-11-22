@@ -1,19 +1,22 @@
-import db_connection_pool from '../connections.js';
+//import db_connection_pool from '../connections.js';
+import {supabase} from '../middleware/supabaseClient.js';
 import express from 'express';
 
 const homeRouter = express.Router();
 
 // get all sdws under the specific supervisor
-async function getSdws(connection, supervisor_id){
+async function getSdws(supervisor_id){
     try{
         // Changed this query to correctly fetch sdws
-        const [sdws] = await connection.execute(
+        /*const [sdws] = await connection.execute(
             `SELECT s.sdw_id, s.first_name, s.last_name 
              FROM sdws s 
              JOIN supervisors sup ON s.supervisor_id = sup.supervisor_id
              WHERE s.supervisor_id = ?`,
             [supervisor_id]
-        );
+        );*/
+        const [sdws] = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id);
+        
         return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
@@ -21,12 +24,14 @@ async function getSdws(connection, supervisor_id){
 }
 
 // get all spus under the admin
-async function getSpus(connection, admin_id){
+async function getSpus(admin_id){
     try{
-        const [spus] = await connection.execute(
+        /*const [spus] = await connection.execute(
             `SELECT * FROM spus_has_admins WHERE admins_admin_id = ?`,
             [admin_id]
-        );
+        );*/
+
+        const [spus] = await supabase.from('spus_has_admins').select('*');
         return spus;
     } catch(err){
         console.error('ERROR in home.js getSpus() function: ' + err);
@@ -36,7 +41,6 @@ async function getSpus(connection, admin_id){
 homeRouter.get('/', async (req, res) => {
     //if the user is in session,, only
     if(req.session.logged_user){
-        //const connection = await db_connection_pool.getConnection();
         
         // obtain the logged user in the session
         const user = req.session.logged_user;
@@ -45,7 +49,7 @@ homeRouter.get('/', async (req, res) => {
             return res.redirect('/admin');
         } else if(user.staff_type === 'supervisor'){ 
             // for supervisor, include the list of sdws under them for rendering
-            //const sdws = await getSdws(connection, user.id);
+            const sdws = await getSdws(user.id);
             // console.log('SDWs data:', sdws); Just used this to debug
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
                 user: user,
@@ -57,8 +61,6 @@ homeRouter.get('/', async (req, res) => {
                 user: user
             });
         }
-
-        //await connection.release();
 
     } else {
         //if no user just go back to /login route
