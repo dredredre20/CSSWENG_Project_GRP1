@@ -7,6 +7,7 @@ const homeRouter = express.Router();
 // get all sdws under the specific supervisor
 async function getSdws(supervisor_id){
     try{
+        console.log(supervisor_id);
         // Changed this query to correctly fetch sdws
         /*const [sdws] = await connection.execute(
             `SELECT s.sdw_id, s.first_name, s.last_name 
@@ -18,6 +19,7 @@ async function getSdws(supervisor_id){
         await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
             if(result.data.length > 0){
             const sdws = result.data;
+            console.log(sdws);
             return sdws;
         }
         });
