@@ -12,7 +12,7 @@ async function findUser(sdw_id){
             [sdw_id]
         );*/
 
-        const rows = await supabase.select('*').from('sdws').eq('sdw_id', sdw_id).then((result)=>{
+        const rows = await supabase.from('sdws').select('*').eq('sdw_id', sdw_id).then((result)=>{
             if(result.data)
                 return result.data;
         });

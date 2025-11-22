@@ -101,7 +101,7 @@ reportRouter.get('/:category', async (req, res) => {
                              AND r.type = ?`; */
         //const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
 
-        const rows = await supabase.select('*').from('reports').eq('sdw_id', sdw_id).eq('type', categoryId).then((result)=>{
+        const rows = await supabase.from('reports').select('*').eq('sdw_id', sdw_id).eq('type', categoryId).then((result)=>{
             if(result.data){
                 return result.data;
             }
