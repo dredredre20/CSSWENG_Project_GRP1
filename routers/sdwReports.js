@@ -84,6 +84,7 @@ reportRouter.get('/:category', async (req, res) => {
         }
 
         const sdw_id = sdw_rows[0].sdw_id;
+        console.log(sdw_rows);
         /*
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
@@ -102,7 +103,7 @@ reportRouter.get('/:category', async (req, res) => {
             if(result.data)
                 return result.data;
         });
-
+        console.log("SDW ID: " + sdw_id);
         console.log("From sdwReports.js " + rows); 
         res.render('sdw_reports', { reports: rows, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id });
 
