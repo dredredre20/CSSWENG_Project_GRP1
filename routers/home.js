@@ -16,13 +16,13 @@ async function getSdws(supervisor_id){
              WHERE s.supervisor_id = ?`,
             [supervisor_id]
         );*/
-        const [sdws] = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
+        const sdws = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
             if(result.data.length > 0){
-            const [sdws] = result.data;
+            const sdws = result.data;
             return sdws;
         }
         });
-        console.log(sdws);
+        console.log("SDWS: \n\n" + sdws);
         return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
