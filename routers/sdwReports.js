@@ -151,7 +151,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         }
 
         const id = sdw_rows[0].sdw_id;
-
+        console.log("SDW ID: " + id);
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
                                     r.file_size as size,
