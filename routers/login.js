@@ -53,10 +53,12 @@ loginRouter.post('/', async (req, res) => {
 
             // using a single home route for cleaner file directory
             //tho we can define routes for each user, it would be tedious
+
+
             if(account.staff_type == "sdw"){
                 let happen = 0;
                 let delay = 250;
-                for(let i = 0; i < 5 && happen == 0; i++){
+                
                     try{
                         await supabase.from('sdws').select('*').eq('email', email).then((result) =>{
                             if(result.data.length > 0){
@@ -79,7 +81,7 @@ loginRouter.post('/', async (req, res) => {
                         await new Promise(resolve => setTimeout(resolve, wait));
                         delay *= 2;
                     }
-                }
+                
 
             }
             else if (account.staff_type == "supervisor"){
@@ -103,7 +105,7 @@ loginRouter.post('/', async (req, res) => {
                 }catch(err){
                     console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
                 }
-            }
+            } 
             else if(account.staff_type == "admin"){
                await supabase.from('admins').select('*').eq('email', email).then((result) =>{
                     if(result.data.length > 0){

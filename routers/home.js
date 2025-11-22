@@ -36,7 +36,7 @@ async function getSpus(connection, admin_id){
 homeRouter.get('/', async (req, res) => {
     //if the user is in session,, only
     if(req.session.logged_user){
-        const connection = await db_connection_pool.getConnection();
+        //const connection = await db_connection_pool.getConnection();
         
         // obtain the logged user in the session
         const user = req.session.logged_user;
@@ -45,19 +45,20 @@ homeRouter.get('/', async (req, res) => {
             return res.redirect('/admin');
         } else if(user.staff_type === 'supervisor'){ 
             // for supervisor, include the list of sdws under them for rendering
-            const sdws = await getSdws(connection, user.id);
+            //const sdws = await getSdws(connection, user.id);
             // console.log('SDWs data:', sdws); Just used this to debug
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
                 user: user,
                 sdws: sdws
             });
         } else if(user.staff_type === 'sdw'){
+            console.log(user);
             res.render('sdw_homepage', {  // route to sdw_homepage.ejs page
                 user: user
             });
         }
 
-        await connection.release();
+        //await connection.release();
 
     } else {
         //if no user just go back to /login route
