@@ -1,6 +1,6 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
-import { oauth2Client, drive } from "../middleware/googleAuth.js";
+import { dbx } from "../middleware/dropboxAuth.js";
 
 const deleteRouter = express.Router();
 
@@ -22,7 +22,7 @@ deleteRouter.delete('/:report_id', async (req, res) => {
 
         const filePath = rows[0].file_path;
         try {
-            await drive.files.delete({ fileId: filePath });
+            await dbx.filesDeleteV2({ path: filePath });
             console.log("Deleted from Google Drive:", filePath);
 
         } catch (err) {

@@ -1,8 +1,6 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
-import fs from "fs";
-import path from "path";
-import { oauth2Client, drive } from "../middleware/googleAuth.js";
+import { dbx } from "../middleware/dropboxAuth.js";
 
 const downloadRouter = express.Router();
 
@@ -25,22 +23,12 @@ downloadRouter.get('/:report_id', async (req, res) => {
         const filePath = rows[0].file_path; // this is now google drive id
         const fileName = rows[0].report_name; // includes the extension (.txt, .xlsx)
 
-        //if (!fs.existsSync(filePath)) {
-        //    return res.status(404).send("File not found on server.");
-        //}
-        // res.download(path.resolve(filePath), fileName); OLD local method
-
         try {
-            const response = await drive.files.get({
-                fileId: filePath,
-                alt: 'media',
-            }, { responseType: "stream" });
+            const response = await dbx.filesDownload({ path: filePath });
 
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${fileName}"`
-            );
-            response.data.pipe(res);
+            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+            res.setHeader("Content-Type", response.result.content_type || "application/octet-stream");
+            res.send(response.result.fileBinary);
 
             console.log("Downloaded from Google Drive");
         } catch (err) {

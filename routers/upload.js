@@ -1,12 +1,42 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
 import multer from "multer";
-import fs from "fs";
-
-import { oauth2Client, drive } from "../middleware/googleAuth.js";
+import { dbx } from "../middleware/dropboxAuth.js";
 
 const uploadRouter = express.Router();
-const upload = multer({dest: "uploads/"});
+const upload = multer({ storage: multer.memoryStorage() }); // so it doesnt make a temp file
+
+// appends (n) based on how many exists in the dropbox with the same name
+async function getUniqueDropboxPath(fileName) {
+    let baseName = fileName;
+    let ext = '';
+    const dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex !== -1) {
+        baseName = fileName.slice(0, dotIndex);
+        ext = fileName.slice(dotIndex);
+    }
+
+    let uniqueName = fileName;
+    let counter = 2;
+
+    while (true) {
+        try {
+            await dbx.filesGetMetadata({ path: uniqueName });
+            // file exists, generate next name
+            uniqueName = `${baseName}(${counter})${ext}`;
+            counter++;
+        } catch (err) {
+            if (err.status === 409) {
+                // File does not exist, break loop
+                break;
+            } else {
+                throw err; // other errors
+            }
+        }
+    }
+
+    return uniqueName;
+}
 
 uploadRouter.post('/', upload.single("file"), async (req, res) => {
     let response;
@@ -34,29 +64,15 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
 
         const sdw_id = sdw_rows[0].sdw_id;
 
-        // create google drive file
-        try{
-            response = await drive.files.create({
-                requestBody: {
-                    name: upload_info.report_name,
-                    mimeType: file.mimetype || 'application/vnd.ms-excel',
-                },
-                media: {
-                    mimeType: file.mimetype || 'application/vnd.ms-excel',
-                    body: fs.createReadStream(file.path),
-                }
-            });
-            console.log("Uploaded to Google Drive", response.data);
-        }catch(err){
-            console.error("Google Drive Error: ", err);
-            return res.status(500).send("Failed to upload to Google Drive." );
-        }finally {
-            // Always delete local file
-            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-        }
+        // when implementing supabase use this for the path instead of upload_info.report_name
+        const uniquePath = await getUniqueDropboxPath(`/${upload_info.report_name}`);
 
-        // insert into database
-        // VERY IMPORTANT -- the google drive ID is now file_path in the database
+        response = await dbx.filesUpload({
+            path: uniquePath,
+            contents: file.buffer,
+            mode: { ".tag": "add" }
+        });
+
         try{
             const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
             
@@ -64,8 +80,8 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
 
             // spu_id attrib is currently 0, since there is no db relations yet
-            await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.data.id]);
-            console.log(file.path);
+            await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.result.id]);
+            //console.log(file.path);
             res.json({ success: true });
         } catch(err){
             console.error("ERROR: upload.js uploadRouter DB Operation " + err);
