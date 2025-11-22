@@ -18,10 +18,10 @@ loginRouter.get('/', loginPage);
 async function get_sdw_info(connection, account){
     try{
         // just experimenting with JOIN since both tables are accessed
-        const statement = `SELECT sdws.* FROM sdws 
+        /*const statement = `SELECT sdws.* FROM sdws 
                            JOIN staff_info ON sdws.email = staff_info.email 
                            WHERE staff_info.email = ?`;
-        const [rows] = await connection.execute(statement, [account.email]);
+        const [rows] = await connection.execute(statement, [account.email]); */
         const sdw_account = rows[0];
 
         return sdw_account || null;
@@ -42,8 +42,6 @@ loginRouter.post('/', async (req, res) => {
                 account = result.data[0];
             }
         });
-
-        console.log(account);
         
         
         // if an account is returned and compare password hashes via bcrypt
@@ -76,10 +74,10 @@ loginRouter.post('/', async (req, res) => {
                     }catch(err){
                         console.error("ERROR FROM: login.js, retrying sdw fetch");
 
-                        const jitter = Math.random() * 100;
-                        const wait = delay + jitter;
-                        await new Promise(resolve => setTimeout(resolve, wait));
-                        delay *= 2;
+                        //const jitter = Math.random() * 100;
+                        //const wait = delay + jitter;
+                        //await new Promise(resolve => setTimeout(resolve, wait));
+                        //delay *= 2;
                     }
                 
 

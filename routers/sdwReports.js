@@ -44,6 +44,9 @@ function categoryOf(category){
 reportRouter.get('/:category', async (req, res) => {
     let connection;
     try {
+
+        console.log("Happen from reportRouter()");
+
         const category = req.params.category;
 
         const categoryId = categoryOf(category);
@@ -63,7 +66,7 @@ reportRouter.get('/:category', async (req, res) => {
             res.redirect('/login');
         }
 
-        //const [sdw_rows] = await supabase.from('sdws').select('*').eq('staff_info_id', account.id)
+        //const sdw_rows = await supabase.from('sdws').select('*').eq('supervisor', account.id)
 
         //connection = await db_connection_pool.getConnection();
         /*
@@ -121,6 +124,8 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         } else {
             res.redirect('/login');
         }
+
+        
 
         connection = await db_connection_pool.getConnection();
 

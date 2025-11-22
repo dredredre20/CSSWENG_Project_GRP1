@@ -9,20 +9,12 @@ async function getSdws(supervisor_id){
     try{
         console.log(supervisor_id);
         // Changed this query to correctly fetch sdws
-        /*const [sdws] = await connection.execute(
-            `SELECT s.sdw_id, s.first_name, s.last_name 
-             FROM sdws s 
-             JOIN supervisors sup ON s.supervisor_id = sup.supervisor_id
-             WHERE s.supervisor_id = ?`,
-            [supervisor_id]
-        );*/
         const sdws = await supabase.from('sdws').select("*").eq('supervisor_id', supervisor_id).then((result) => {
             if(result.data.length > 0){
-            const sdws = result.data;
-            return sdws;
+            return result.data;
         }
         });
-        console.log("SDWS: \n\n" + sdws);
+        //console.log("SDWS: \n\n" + sdws);
         return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
@@ -37,10 +29,9 @@ async function getSpus(admin_id){
             [admin_id]
         );*/
 
-        const [spus] = await supabase.from('spus_has_admins').select('*').then((result) => {
+        const spus = await supabase.from('spus_has_admins').select('*').then((result) => {
             if(result.data.lenght > 0){
-                const spus = result.data;
-                return spus;
+                return result.data;
             }
         });
         return spus;
