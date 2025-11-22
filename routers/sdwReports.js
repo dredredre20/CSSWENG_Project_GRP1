@@ -35,7 +35,7 @@ function categoryOf(category){
             case "Leaders Directory":
                 return 12;
             case "Logout":
-                return -1;
+                return -2;
             default:
                 return 0; // fallback
         }
@@ -72,7 +72,7 @@ reportRouter.get('/:category', async (req, res) => {
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
         const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]); */
-        console.log(req.session.logged_user);
+        //console.log(req.session.logged_user);
 
         const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('staff_info_id', account.id).then((result) => {
             if(result.data)
@@ -85,7 +85,7 @@ reportRouter.get('/:category', async (req, res) => {
         }
 
         const sdw_id = sdw_rows[0].sdw_id;
-        console.log(sdw_rows);
+        //console.log(sdw_rows);
         /*
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
@@ -104,8 +104,8 @@ reportRouter.get('/:category', async (req, res) => {
             if(result.data)
                 return result.data;
         });
-        console.log("SDW ID: " + sdw_id);
-        console.log("From sdwReports.js " + rows); 
+        //console.log("SDW ID: " + sdw_id);
+        //console.log("From sdwReports.js " + rows); 
         res.render('sdw_reports', { reports: rows, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id });
 
     } catch (err){
@@ -142,7 +142,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         
         //const [sdw_rows] = await connection.execute(sdw_id_query, [sdw_id]);
 
-        const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('sdw_id', sdw_id).then((result) => {
+        const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('staff_info_id', sdw_id).then((result) => {
             if(result.data)
                 return result.data;
         });
