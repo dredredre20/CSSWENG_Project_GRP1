@@ -5,6 +5,8 @@ import fs from "fs";
 
 import { oauth2Client, drive } from "../middleware/googleAuth.js";
 
+import {supabase} from '../middleware/supabaseClient.js';
+
 const uploadRouter = express.Router();
 const upload = multer({dest: "uploads/"});
 
@@ -13,7 +15,7 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
     try{
         const upload_info = req.body;
         const file = req.file;
-        const connection = await db_connection_pool.getConnection();
+        //const connection = await db_connection_pool.getConnection();
         const account = req.session.logged_user;
         console.log(account)
 
@@ -25,11 +27,16 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
-        const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
+        //const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
+
+        const sdw_rows = await supabase.from('sdws').select(sdw_id).eq('sdw_id', account.staff_id).then((result) => {
+            if(result.data)
+                return result.data;
+        });
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.staff_id);
-            return res.render('sdw_homepage'); // idk how to handle this
+            return res.render('/'); // idk how to handle this
         }
 
         const sdw_id = sdw_rows[0].sdw_id;
@@ -58,19 +65,20 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         // insert into database
         // VERY IMPORTANT -- the google drive ID is now file_path in the database
         try{
-            const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
+            //const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
             
             const now = new Date();
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
 
             // spu_id attrib is currently 0, since there is no db relations yet
-            await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.data.id]);
-            console.log(file.path);
+            await supabase.from('reports').insert([sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.data.id]);
+            //await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.data.id]);
+            //console.log(file.path);
             res.json({ success: true });
         } catch(err){
             console.error("ERROR: upload.js uploadRouter DB Operation " + err);
         } finally{
-            connection.release();
+            //connection.release();
         }
 
     } catch(err){

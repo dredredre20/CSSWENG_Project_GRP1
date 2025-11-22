@@ -1,6 +1,7 @@
 import db_connection_pool from "../connections.js";
 import express from "express";
 import { oauth2Client, drive } from "../middleware/googleAuth.js";
+import {supabase} from '../middleware/supabaseClient.js';
 
 const deleteRouter = express.Router();
 
@@ -9,12 +10,17 @@ deleteRouter.delete('/:report_id', async (req, res) => {
     let connection;
 
     try {
-        connection = await db_connection_pool.getConnection();
-
+        //connection = await db_connection_pool.getConnection();
+        /*
         const [rows] = await connection.execute(
             "SELECT file_path FROM reports WHERE report_id = ?",
             [reportId]
-        );
+        );*/
+
+        const rows = await supabase.from('reports').select('file_path').eq('report_id', reportId).then((result) =>{
+            if(result.data)
+                return result.data;
+        });
 
         if (rows.length === 0) {
             return res.status(404).json({ error: "Report not found." });
@@ -29,10 +35,12 @@ deleteRouter.delete('/:report_id', async (req, res) => {
             console.error("Google Drive Delete Error:", err.message);
         } finally {
             // Target file by id
-            await connection.execute(
+            /*await connection.execute(
                 "DELETE FROM reports WHERE report_id = ?",
                 [reportId]
-            );
+            );*/
+
+            await supabase.from('reports').delete().eq('report_id', reportId);
             res.json({ success: true, message: "Report deleted successfully." });
         }
 
@@ -40,7 +48,7 @@ deleteRouter.delete('/:report_id', async (req, res) => {
         console.error("ERROR in deleteRouter:", err);
         res.status(500).json({ error: "Server error while deleting file." });
     } finally {
-        if (connection) connection.release();
+        //if (connection) connection.release();
     }
 });
 
