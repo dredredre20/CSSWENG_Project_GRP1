@@ -22,7 +22,7 @@ async function getSdws(supervisor_id){
             return sdws;
         }
         });
-        
+        console.log(sdws);
         return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
