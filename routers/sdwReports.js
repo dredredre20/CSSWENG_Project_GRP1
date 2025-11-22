@@ -72,6 +72,7 @@ reportRouter.get('/:category', async (req, res) => {
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
                             WHERE si.staff_id = ?`;
         const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]); */
+        console.log(req.session.logged_user);
 
         const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('sdw_id', account.id).then((result) => {
             if(result.data)

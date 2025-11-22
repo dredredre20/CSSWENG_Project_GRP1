@@ -83,7 +83,7 @@ loginRouter.post('/', async (req, res) => {
                     first_name: account.first_name,
                     last_name: account.last_name,
                 };
-            console.log("Happen");
+            //console.log("Happen");
             return res.redirect('/home');
         } else{
             console.log('No account found');
