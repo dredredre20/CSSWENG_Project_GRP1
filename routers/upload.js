@@ -44,7 +44,6 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         const upload_info = req.body;
         const file = req.file;
         const account = req.session.logged_user;
-        console.log(account)
 
         if (!account) {
             return res.status(401).json({ success: false, message: "Please log in." });
@@ -58,7 +57,6 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         const { data, error } = await supabase.from('sdws').select('sdw_id').eq('staff_info_id', account.id);
         if (error) throw error;
         
-        console.log("sdws query result:", data);
         const sdw_id = data?.[0]?.sdw_id;
         
         if (sdw_id == null) {
