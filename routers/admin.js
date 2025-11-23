@@ -136,9 +136,11 @@ adminRouter.get('/spu/:spu_type', async (req, res) => {
             .eq('spu_id', spuId)
         
         if(err3) throw err3;
+        console.log(supervisor_response)
 
-        let supervisor
+        let supervisor 
 
+        //dont know why its always Unassigned
         if (!supervisor_response || !supervisor_response.supervisor) {
             supervisor = {
                 supervisor: {
@@ -146,7 +148,7 @@ adminRouter.get('/spu/:spu_type', async (req, res) => {
                     last_name: null
                 }
             };
-        } else { supervisor = supervisor_response; }
+        } else { supervisor = supervisor_response.supervisor; }
 
         const spuNameOf = {
             1: 'AMP',
