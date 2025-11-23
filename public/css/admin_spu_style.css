@@ -207,7 +207,6 @@ h1 {
 
 
 .users{
-    margin-top: 5%;
     display: flex;
     row-gap: 25px;
     column-gap: 13px;
@@ -229,7 +228,7 @@ h1 {
     text-align: left;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 0px 10px 0px 10px;
+    margin: 5% 10px 2% 10px;
     display:flex
 }
 

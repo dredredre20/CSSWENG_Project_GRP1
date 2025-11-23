@@ -184,7 +184,7 @@ h1 {
 }
 
 
-.deleted-btn{
+.admin-btn{
     background-color: #ed8e21;
     border: none;
     border-radius: 20px;
@@ -201,18 +201,18 @@ h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.deleted-btn:hover {
-    background-color: #53a851;
+.admin-btn:hover {
+    background-color: #ce7c1e;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.deleted-btn:active {
+.admin-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.deleted-btn.active {
-    background-color: #3e7b3c;
+.admin-btn.active {
+    background-color: #c0731c;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }

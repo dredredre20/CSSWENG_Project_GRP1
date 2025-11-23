@@ -1,9 +1,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPUs</title>
+    <title>Admin List</title>
     </title>
-    <link rel="stylesheet" href="/css/admin_spu_style.css"> <!--TODO change this -->
+    <link rel="stylesheet" href="/css/admin_spu_style.css">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </head>
 
@@ -23,26 +23,15 @@
         <main class="content">
             <div class="content-main">
                                 <!-- Render this dynamically to avoid repetition of the same code-->
-                <h2> Welcome to <%= spuPage %> Supervisor Suite! </h2>
-                <h3 style="position:absolute; left:22%"> Supervisor Assigned: </h3>
+                <h2> Welcome to the Admin List! </h2>
+                <h3 style="position:absolute; left:22%"> Admins Assigned: </h3>
+
+                <!--TODO: Delete this one when done with JS-->
+                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
                 
-                <!--TODO: Backend work here-->
-                <button class="user-btn"><img src="/sdw_icon.png" class="sdw-icon"><span>John Doe</span> </button>
-
-                <h3 style="position:absolute; left:22%;"> SDWs Assigned: </h3>
-
-                <div class="dropdown" style="position:absolute; right:30px">
-                        <label>Sort by: </label>
-                        <select id="sortMenu">
-                            <option value="alphabetical">Alphabetical</option>
-                            <option value="lastupdated">Last Updated</option>
-                            <!-- Add more options here if needed -->
-                        </select>
-                </div>
-
                 <% if (sdws == null) { %>
                     <div class="empty-state">
-                        <p class="upload-text">No SDWs Assigned For <%= user.first_name %></p>
+                        <p class="upload-text">No additional Admin accounts</p>
                     </div>
                 <% } else { %>
                     <div class="users" id="sdwContainer"> 
