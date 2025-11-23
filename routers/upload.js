@@ -1,7 +1,7 @@
-import db_connection_pool from "../connections.js";
 import express from "express";
 import multer from "multer";
 import { dbx } from "../middleware/dropboxAuth.js";
+import { supabase } from '../middleware/supabase_client.js';
 
 const uploadRouter = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }); // so it doesnt make a temp file
@@ -43,7 +43,6 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
     try{
         const upload_info = req.body;
         const file = req.file;
-        const connection = await db_connection_pool.getConnection();
         const account = req.session.logged_user;
         console.log(account)
 
@@ -51,21 +50,25 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
             return res.status(401).json({ success: false, message: "Please log in." });
         }
         // using staff_info_id to get sdw_id from sdws table
-        let sdw_id_query = `SELECT sdw_id
+        /*let sdw_id_query = `SELECT sdw_id
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
-                            WHERE si.staff_id = ?`;
-        const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
-        
-        if (sdw_rows.length === 0) {
-            console.log("No SDW found for staff_id:", account.staff_id);
-            return res.render('sdw_homepage'); // idk how to handle this
-        }
+                            WHERE si.staff_id = ?`;*/
 
-        const sdw_id = sdw_rows[0].sdw_id;
+        const { data, error } = await supabase.from('sdws').select('sdw_id').eq('staff_info_id', account.id);
+        if (error) throw error;
+        
+        console.log("sdws query result:", data);
+        const sdw_id = data?.[0]?.sdw_id;
+        
+        if (sdw_id == null) {
+            return res.status(400).json({ success: false, message: "No SDW found" });
+        }
 
         // when implementing supabase use this for the path instead of upload_info.report_name
         const uniquePath = await getUniqueDropboxPath(`/${upload_info.report_name}`);
+        // remvoes the / at the beginning of the path
+        const uniqueName = uniquePath.slice(1);
 
         response = await dbx.filesUpload({
             path: uniquePath,
@@ -74,23 +77,29 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
         });
 
         try{
-            const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
+            //const statement = 'INSERT INTO reports (sdw_id, report_name, file_size, upload_date, type, file_path) VALUES(?, ?, ?, ?, ?, ?)';
             
             const now = new Date();
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
 
-            // spu_id attrib is currently 0, since there is no db relations yet
-            await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.result.id]);
-            //console.log(file.path);
+            //await connection.execute(statement, [sdw_id, upload_info.report_name, file.size, dateTime, upload_info.type, response.result.id]);
+
+            const { error } = await supabase.from('reports')
+                                                    .insert({   sdw_id: sdw_id,
+                                                                report_name: uniqueName,
+                                                                file_size: file.size,
+                                                                upload_date: dateTime,
+                                                                type: upload_info.type,
+                                                                file_path: response.result.id});
+            if (error) throw error;
+
             res.json({ success: true });
         } catch(err){
             console.error("ERROR: upload.js uploadRouter DB Operation " + err);
-        } finally{
-            connection.release();
         }
 
     } catch(err){
-        console.error("ERROR: upload.js uploadRouter POST " + err);
+        console.error("ERROR: upload.js uploadRouter POST ", err);
     }
 });
 
