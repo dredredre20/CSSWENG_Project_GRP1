@@ -88,8 +88,15 @@ adminRouter.get('/spu/:spu_type', async (req, res) => {
 
 adminRouter.get('/create', async (req, res) => {
     try {
+        const { data: supervisors, error } = await supabase
+            .from('supervisor')
+            .select(`first_name, last_name, staff_info(staff_id)`);
+
+        if (error) throw error;
+
         res.render('admin_createacc', {
-            AdminName: 'admin'
+            AdminName: 'admin',
+            supervisors
         });
     } catch (err) {
         console.error(err);
