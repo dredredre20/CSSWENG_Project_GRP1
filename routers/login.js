@@ -29,10 +29,6 @@ async function get_sdw_info(account){
     }
 }
 
-/****************************************************************************************** */
-//Start Here vvv
-/****************************************************************************************** */
-
 loginRouter.post('/', async (req, res) => {
     try{
         // get the inputs from the form
@@ -41,12 +37,14 @@ loginRouter.post('/', async (req, res) => {
 
         // find user in the database using email only
         try{
-            const {data: account, error: err1} = await supabase
+            const {data: fetchAccount, error: err1} = await supabase
                 .from('staff_info')
                 .select('*')
                 .eq('email', email)
                 .single()
             
+            account = fetchAccount;
+
             if(err1) throw err1;
         } catch(err){
             console.error(err);
