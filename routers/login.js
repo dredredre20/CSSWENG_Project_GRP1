@@ -14,13 +14,6 @@ loginRouter.get('/', loginPage);
 // fetch the user account by querying `sdws` table
 async function get_sdw_info(account){
     try{
-        // // just experimenting with JOIN since both tables are accessed
-        // const statement = `SELECT sdws.* FROM sdws 
-        //                    JOIN staff_info ON sdws.email = staff_info.email 
-        //                    WHERE staff_info.email = ?`;
-        // const [rows] = await connection.execute(statement, [account.email]);
-        // const sdw_account = rows[0];
-
         const {data: sdw_account, error: err1} = await supabase
             .from('sdws')
             .select('*')
@@ -45,20 +38,9 @@ loginRouter.post('/', async (req, res) => {
         // get the inputs from the form
         const {email, password} = req.body;
         var account, firstName, lastName;
-        
-        
-        // get a connection to the db
-        // const connection = await db_connection_pool.getConnection();
 
         // find user in the database using email only
         try{
-            // use prepared statements
-            // const statement = 'SELECT * FROM staff_info WHERE email = ?;';
-            
-            // // email/password as parameters to validate --then execute query
-            // const [rows] = await connection.execute(statement, [email]); 
-            // account = rows[0];
-
             const {data: account, error: err1} = await supabase
                 .from('staff_info')
                 .select('*')
@@ -83,9 +65,6 @@ loginRouter.post('/', async (req, res) => {
                 return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
-                // const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
-                // const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
-                // const supervisorAccount = rowsSupervisor[0];
                 try{
                     const {data: supervisorAccount, error: err2} = await supabase
                         .from('supervisors')
@@ -105,11 +84,7 @@ loginRouter.post('/', async (req, res) => {
                     console.error(err);
                 }
             }
-            else if(account.staff_type == "admin"){
-                // const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
-                // const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
-                // const adminAccount = rowsAdmin[0];
-                
+            else if(account.staff_type == "admin"){              
                 try{
                     const {data: adminAccount, error: err3} = await supabase
                         .from('admin')
