@@ -23,11 +23,11 @@
         <main class="content">
             <div class="content-main">
                                 <!-- Render this dynamically to avoid repetition of the same code-->
-                <h2> Welcome to <%= spuPage %> Supervisor Suite! </h2>
+                <h2> Welcome to <%= spuPage %> Suite! </h2>
                 <h3 style="position:absolute; left:22%"> Supervisor Assigned: </h3>
                 
                 <!--TODO: Backend work here-->
-                <button class="user-btn"><img src="/sdw_icon.png" class="sdw-icon"><span>John Doe</span> </button>
+                <button class="user-btn"><img src="/sdw_icon.png" class="sdw-icon"><span><%= supervisor.supervisor.first_name %> <%= supervisor.supervisor.last_name %></span> </button>
 
                 <h3 style="position:absolute; left:22%;"> SDWs Assigned: </h3>
 
