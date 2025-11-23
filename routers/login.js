@@ -67,8 +67,8 @@ loginRouter.post('/', async (req, res) => {
                 var supervisor;
                 try{
                     //const {data, error} = await supabase
-                    const {data: supervisorAccount, error: err2} = await supabase
-                        .from('supervisors')
+                    const {data, error} = await supabase
+                        .from('supervisor')
                         .select('*')
                         .eq('email', email)
                         .single();
