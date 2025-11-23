@@ -1,6 +1,6 @@
-import { supabase } from "../supabase.js";
 // import db_connection_pool from "../connections.js";
 import express from "express";
+import {supabase} from "../middleware/supabase_client.js";  
 
 const sdwRouter = express.Router();
 

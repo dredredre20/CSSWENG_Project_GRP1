@@ -2,8 +2,8 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { oauth2Client, drive } from "../middleware/googleAuth.js";
-import { supabase } from "../supabase.js";
+import { supabase } from "../middleware/supabase_client.js";
+import { dbx } from "../middleware/dropboxAuth.js";
 
 const downloadRouter = express.Router();
 
@@ -71,16 +71,13 @@ downloadRouter.get('/:report_id', async (req, res) => {
         const fileName = report.report_name;
 
         try {
-            const response = await drive.files.get({
-                fileId: filePath,
-                alt: 'media',
-            }, { responseType: "stream" });
+            const response = await dbx.filesDownload({ path: filePath });
 
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${fileName}"`
-            );
-            response.data.pipe(res);
+            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+            res.setHeader("Content-Type", response.result.content_type || "application/octet-stream");
+            res.send(response.result.fileBinary);
+
+            console.log("Downloaded from Google Drive");
         } catch (err) {
             console.error(err);
         }

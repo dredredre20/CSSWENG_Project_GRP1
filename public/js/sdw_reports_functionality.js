@@ -41,6 +41,8 @@ document.querySelectorAll('.report-card').forEach(card => {
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader,
+
+                // Change in route sql passing
                 supervisor: this.dataset.reportSupervisor
             };
             openModal(currentReport);
@@ -53,6 +55,8 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
     document.getElementById('uploader').textContent = report.uploader;
+
+    // Change in route sql passing
     document.getElementById('supervisor').textContent = report.supervisor;
 
 

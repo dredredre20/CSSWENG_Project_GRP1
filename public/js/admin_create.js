@@ -1,4 +1,4 @@
-const cancelBtn = document.getElementById("cancel");
+// const cancelBtn = document.getElementById("cancel");
 const confirmBtn = document.getElementById("confirm");
 
 confirmBtn.addEventListener("click", ()=> {
@@ -9,9 +9,10 @@ confirmBtn.addEventListener("click", ()=> {
     const email = document.getElementById("email").value.trim();    
     const password = document.getElementById("password").value;  
     const spuAssignedTo = document.getElementById("spu").value;
+    const typeRole = document.getElementById("role").value;
 
     // Check if required fields are filled
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !lastName || !email || !password || !typeRole) {
         alert("Please fill in all required fields.");
         return;
     }
@@ -30,13 +31,14 @@ confirmBtn.addEventListener("click", ()=> {
         return;
     }
 
-    const sdwData = {
+    const accountData = {
         firstName: firstName, 
         lastName: lastName, 
         middleName: middleName, 
         email: email, 
         password: password, 
-        spuAssignedTo: spuAssignedTo 
+        spuAssignedTo: spuAssignedTo, 
+        typeRole : typeRole
     }
 
     // Not too sure about the fetch yet
@@ -47,12 +49,12 @@ confirmBtn.addEventListener("click", ()=> {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(sdwData)
+        body: JSON.stringify(accountData)
     })
     .then((response) => response.json())
     .then(data => {
         if (data.success) {
-            alert("SDW created successfully.");
+            alert("Account created successfully.");
             window.location.href = "/home";
         } else {
             alert("Error updating admin details: " + data.message);
@@ -64,12 +66,40 @@ confirmBtn.addEventListener("click", ()=> {
 
 });
 
-function preview(file){
-    if (file) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            document.getElementById("preview").src = reader.result;
-        }
+const roleSelect = document.getElementById("role");
+
+//automatically hide select fields that conflict with selected role
+roleSelect.addEventListener("change", ()=> {
+    const role = roleSelect.value;
+    const spuSelect = document.getElementById("spu");
+    const supervisorSelect = document.getElementById("supervisor");
+    const spuDiv = document.getElementById("spuDiv");
+    const supervisorDiv = document.getElementById("supervisorDiv");
+
+    
+    spuDiv.style.visibility = "visible";
+    supervisorDiv.style.visibility = "visible";
+    
+    spuSelect.disabled = false;
+    supervisorSelect.disabled = false;
+
+
+    if(role == "Supervisor"){
+        supervisorSelect.value = "";
+        supervisorSelect.disabled = true;
+        supervisorDiv.style.visibility = "hidden";
     }
-}
+
+    if(role == "Admin"){
+        supervisorDiv.style.visibility = "hidden";
+        supervisorSelect.value = "";
+        supervisorSelect.disabled = true;
+
+        spuDiv.style.visibility = "hidden";
+        spuSelect.value = "";
+        spuSelect.disabled = true;
+        
+    }
+
+    
+});

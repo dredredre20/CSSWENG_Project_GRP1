@@ -55,8 +55,18 @@
                         </div>
                         
                         <div class="label-and-input">
+                            <label for="role">Role</label>
+                            <select id="role">
+                                <option selected>SDW</option>
+                                <option>Supervisor</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="label-and-input" id="spuDiv">
                             <label for="spu">SPU</label>
                             <select id="spu">
+                                <option hidden disabled selected value></option>
                                 <option>AMP</option>
                                 <option>FDQ</option>
                                 <option>MPH</option>
@@ -64,12 +74,12 @@
                             </select>
                         </div>
 
-                        <div class="label-and-input">
-                            <label for="input">User Image</label>
-                            <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
-                            
+                        <div class="label-and-input" id="supervisorDiv">
+                            <label for="supervisor">Supervisor</label>
+                            <select id="supervisor">
+                                <option hidden disabled selected value></option>
+                            </select>
                         </div>
-                        <img id="preview" >
                     </div>
                 
 

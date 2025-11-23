@@ -1,6 +1,6 @@
 import express from 'express';
 import db_connection_pool from '../connections.js';
-import { supabase } from '../supabase.js';
+import { supabase } from '../middleware/supabase_client.js';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
@@ -35,7 +35,7 @@ function categoryOf(category){
             case "Leaders Directory":
                 return 12;
             case "Logout":
-                return -1;
+                return -2;
             default:
                 return 0; // fallback
         }

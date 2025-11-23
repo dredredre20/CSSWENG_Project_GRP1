@@ -1,6 +1,6 @@
-import { supabase } from '../supabase.js';
 import db_connection_pool from '../connections.js';
 import express from 'express';
+import {supabase} from '../middleware/supabase_client.js';
 
 const homeRouter = express.Router();
 
@@ -70,13 +70,21 @@ homeRouter.get('/', async (req, res) => {
             // for supervisor, include the list of sdws under them for rendering
             const sdws = await getSdws(user.id);
             // console.log('SDWs data:', sdws); Just used this to debug
+            console.log(supervisor_user[0].staff_info_id);
+            console.log(sdws);
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
-                user: user,
+                user: supervisor_user,
                 sdws: sdws
             });
         } else if(user.staff_type === 'sdw'){
+
+            const sdw_user = await supabase.from('sdws').select('*').eq('staff_info_id', user.id).then((result) =>{
+                if(result.data)
+                    return result.data;
+            });
+
             res.render('sdw_homepage', {  // route to sdw_homepage.ejs page
-                user: user
+                user: sdw_user
             });
         }
 
