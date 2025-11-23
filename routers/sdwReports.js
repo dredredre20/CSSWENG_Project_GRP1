@@ -1,5 +1,4 @@
 import express from 'express';
-import db_connection_pool from '../connections.js';
 import { supabase } from '../client.js';
 
 const reportRouter = express.Router();
@@ -61,7 +60,7 @@ reportRouter.get('/:category', async (req, res) => {
         } else {
             res.redirect('/login');
         }
-        
+
         const {data: sdw, error: err1} = await supabase
             .from('sdws')
             .select('sdw_id')
