@@ -64,12 +64,40 @@ confirmBtn.addEventListener("click", ()=> {
 
 });
 
-function preview(file){
-    if (file) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            document.getElementById("preview").src = reader.result;
-        }
+const roleSelect = document.getElementById("role");
+
+//automatically hide select fields that conflict with selected role
+roleSelect.addEventListener("change", ()=> {
+    const role = roleSelect.value;
+    const spuSelect = document.getElementById("spu");
+    const supervisorSelect = document.getElementById("supervisor");
+    const spuDiv = document.getElementById("spuDiv");
+    const supervisorDiv = document.getElementById("supervisorDiv");
+
+    
+    spuDiv.style.visibility = "visible";
+    supervisorDiv.style.visibility = "visible";
+    
+    spuSelect.disabled = false;
+    supervisorSelect.disabled = false;
+
+
+    if(role == "Supervisor"){
+        supervisorSelect.value = "";
+        supervisorSelect.disabled = true;
+        supervisorDiv.style.visibility = "hidden";
     }
-}
+
+    if(role == "Admin"){
+        supervisorDiv.style.visibility = "hidden";
+        supervisorSelect.value = "";
+        supervisorSelect.disabled = true;
+
+        spuDiv.style.visibility = "hidden";
+        spuSelect.value = "";
+        spuSelect.disabled = true;
+        
+    }
+
+    
+});

@@ -54,8 +54,17 @@
                                 <label for="password">Password</label>
                                 <input class="textbox" id="password" name="password" type="password" value="<%= sdw.password %>">
                             </div>
-                            
+
                             <div class="label-and-input">
+                                <label for="role">Role</label>
+                                <select id="role" name="role">
+                                    <option>SDW</option>
+                                    <option>Supervisor</option>
+                                    <option>Admin</option>
+                                </select>
+                            </div>
+
+                            <div class="label-and-input" id="spuDiv">
                                 <label for="spu">SPU</label>
                                 <select id="spu" name="spu" required>
                                     <option value="1" <%= spu_name === 'AMP' ? 'selected' : '' %>>AMP</option>
@@ -65,11 +74,12 @@
                                 </select>
                             </div>
 
-                            <div class="label-and-input">
-                                <label for="input">User Image</label>
-                                <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
+                            <div class="label-and-input" id="supervisorDiv">
+                                <label for="supervisor" name="supervisor">Supervisor</label>
+                                <select id="supervisor">
+                                    <option></option>
+                                </select>
                             </div>
-                            <img id="preview" src="/sdw_icon.png">
                         </div>
                         
                         <div class="bottom-bar">
