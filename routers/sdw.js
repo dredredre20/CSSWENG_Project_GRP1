@@ -47,7 +47,7 @@ sdwRouter.get('/sdw/:sdw_id', async (req, res) => {
     const sdw = await findUser(sdw_id);
 
     if(sdw){
-        return res.render(
+        return res.render( //Go to supervisor_reports.js
             'supervisor_reports', {
                 supervisor,
                 sdw

@@ -70,7 +70,7 @@ homeRouter.get('/', async (req, res) => {
             // for supervisor, include the list of sdws under them for rendering
             const sdws = await getSdws(user.id);
             // console.log('SDWs data:', sdws); Just used this to debug
-            console.log(supervisor_user[0].staff_info_id);
+            console.log();
             console.log(sdws);
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
                 user: supervisor_user,
