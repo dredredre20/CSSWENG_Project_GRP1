@@ -88,8 +88,15 @@ adminRouter.get('/spu/:spu_type', async (req, res) => {
 
 adminRouter.get('/create', async (req, res) => {
     try {
+        const { data: supervisors, error } = await supabase
+            .from('supervisor')
+            .select(`first_name, last_name, staff_info(staff_id)`);
+
+        if (error) throw error;
+
         res.render('admin_createacc', {
-            AdminName: 'admin'
+            AdminName: 'admin',
+            supervisors
         });
     } catch (err) {
         console.error(err);
@@ -98,8 +105,10 @@ adminRouter.get('/create', async (req, res) => {
 });
 
 adminRouter.post('/create', async (req, res) => {
-    const { firstName, lastName, middleName, email, password, spuAssignedTo } = req.body;
+    const { firstName, lastName, middleName, email, password, spuAssignedTo, typeRole } = req.body;
     const hashed = await bcrypt.hash(password, 10);
+
+    const role = typeRole.toLowerCase().trim();
 
     try{
         const {data: existingRows, error: err1} = await supabase
@@ -107,22 +116,23 @@ adminRouter.post('/create', async (req, res) => {
             .select('staff_id')
             .eq('email', email)
         
-
         if(err1) throw err1;
 
         if(existingRows.length > 0){
             return res.status(400).json({ success: false, message: 'Email already exists.' });
         }
-
+        
         const {data: staffResult, error: err2} = await supabase
             .from('staff_info')
             .insert({
-                staff_type: 'sdw',
+                staff_type: role,
                 email: email,
                 password: hashed
-                })
-            .select('staff_id')
+            })
+            .select('*')
             .single()
+
+        if(err2) throw err2
 
         const staffInfoId = staffResult.staff_id;
 
@@ -135,19 +145,65 @@ adminRouter.post('/create', async (req, res) => {
 
         const spuId = spuIdOf[spuAssignedTo];
 
-        const {data: sdwInsert, error: err3} = await supabase
-            .from('sdws')
-            .insert({
-                first_name: firstName,
-                middle_name: middleName,
-                last_name: lastName,
-                email: email,
-                spu_id: spuId,
-                supervisor_id: spuId,
-                staff_info_id: staffInfoId
-            })
-        
-        if(err3) throw err3;
+        switch(role){
+            case "admin":
+                const {data: adminInsert, error: err3} = await supabase
+                    .from('admins')
+                    .insert({
+                        first_name: firstName,
+                        middle_name: middleName,
+                        last_name: lastName,
+                        email: email,
+                        staff_info_id: staffInfoId
+                    })
+                    .select('*')
+                    .single()   
+                
+                if(err3) throw err3;
+
+                const {data: adminSpuInsert, error: err4} = await supabase
+                    .from('spus_has_admins')
+                    .insert({
+                        admins_admin_id: adminInsert.admin_id,
+                        spus_spu_id: spuId
+                    })
+                
+                if(err4) throw err4;
+                
+                break;
+            case "supervisor":
+                const {data: supervisorInsert, error: err5 } = await supabase
+                    .from('supervisor')
+                    .insert({
+                        spu_id: spuId,
+                        staff_info_id: staffInfoId,
+                        first_name: firstName,
+                        middle_name: middleName,
+                        last_name: lastName,
+                        email: email
+                    })
+
+                if(err5) throw err5;
+
+                break;
+            case "sdw":
+
+                const {data: sdwInsert, error: err6 } = await supabase
+                    .from('sdws')
+                    .insert({
+                        spu_id: spuId,
+                        staff_info_id: staffInfoId,
+                        first_name: firstName,
+                        middle_name: middleName,
+                        last_name: lastName,
+                        email: email
+                    })
+                
+                if(err6) throw err6;
+                break;
+            default:
+                break;
+        }
     
         res.status(201).json({ success: true, message: 'SDW created successfully.' });
 

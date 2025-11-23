@@ -78,6 +78,9 @@
                             <label for="supervisor">Supervisor</label>
                             <select id="supervisor">
                                 <option hidden disabled selected value></option>
+                                <% supervisors.forEach(s => { %>
+                                    <option value="<%= s.staff_info.staff_id %>"><%= s.first_name %> <%= s.last_name %></option>
+                                <% }) %>
                             </select>
                         </div>
                     </div>
