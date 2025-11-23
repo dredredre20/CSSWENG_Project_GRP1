@@ -27,27 +27,22 @@
                 <h3 style="position:absolute; left:22%"> Admins Assigned: </h3>
 
                 <!--TODO: Delete this one when done with JS-->
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                
-                <% if (sdws == null) { %>
-                    <div class="empty-state">
-                        <p class="upload-text">No additional Admin accounts</p>
-                    </div>
-                <% } else { %>
-                    <div class="users" id="sdwContainer"> 
-                        <% sdws.forEach(sdw => { %>
-                            <button class="user-btn" onclick="navigateToSDW('<%= sdw.sdw_id %>')">
-                                <img src="/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
-                                <span><%= sdw.first_name %> <%= sdw.middle_name %> <%= sdw.last_name %></span>
+                <!--button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span></span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button-->
+                <div class="users" id="sdwContainer">
+                <%if (admins != null){ admins.forEach(admin => {%>
+                    <button class="user-btn"> 
+                                <img src="/admin_icon.png" class="sdw-icon" alt="SDW Icon">
+                                <span><%= admin.first_name %> <%= admin.middle_name %> <%= admin.last_name %></span>
                                 <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
                                 <ul class="kebab-menu hidden">
-                                    <li class="edit-btn" data-sdw-id="<%= sdw.staff_info_id %>">Edit</li>
-                                    <li class="delete-btn" data-sdw-id="<%= sdw.staff_info_id %>">Delete</li>
+                                    <li class="edit-btn" data-sdw-id="<%= admin.staff_info_id %>">Edit</li>
+                                    <li class="delete-btn" data-sdw-id="<%= admin.staff_info_id %>">Delete</li>
                                 </ul>
                             </button>
-                        <% }); %>
-                    </div>
-                <% } %>
+                    <%});%> 
+                    
+                    <%}%>
+                </div>
             
             </div>
         </main>

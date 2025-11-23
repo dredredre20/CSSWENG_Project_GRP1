@@ -100,6 +100,16 @@ async function canModify(initiator, target){
     return false;
 }
 
+adminRouter.get('/adminlist', async (req, res) => {
+    try{
+        const {data: admins_List, error: err1} = await supabase.from('admins').select('*');
+        if(err1) throw err1;
+        res.render('admin_adminlist', {admins:admins_List});
+    }catch(err){
+        console.error(err);
+    }
+});
+
 adminRouter.get('/spu/:spu_type', async (req, res) => {
     try{
         const spu_type = req.params.spu_type;
@@ -140,7 +150,7 @@ adminRouter.get('/create', async (req, res) => {
         if (error) throw error;
 
         res.render('admin_createacc', {
-            AdminName: 'admin',
+            AdminName: 'Admin',
             supervisors
         });
     } catch (err) {
