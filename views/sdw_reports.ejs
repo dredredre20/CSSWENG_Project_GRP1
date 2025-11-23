@@ -58,22 +58,23 @@
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
                             
-                            <div class="report-card" 
+                            <div class="report-card"
                                  
                                 data-report-id="<%= report.report_id %>"
                                 data-report-name="<%= report.report_name %>"
                                 data-report-size="<%= report.file_size %>"
                                 data-report-date="<%= report.upload_date %>"
-                                data-report-uploader="<%= staff_name || 'Unknown' %>"
+                                data-report-uploader="<%= staff_name || 'Unknown' %>">
                                 
                                 <div class="report-thumbnail">
                                     <div class="thumbnail-placeholder">
                                         <span>📄</span>
                                     </div>
-                                    <div class="report-info">
-                                        <span class="report-name"><%= report.report_name %></span>
-                                    </div>
                                 </div>
+                                <div class="report-info">
+                                        <span class="report-name"><%= report.report_name %></span>
+                                </div>
+                                
                                 
                                 
                             </div>

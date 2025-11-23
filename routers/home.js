@@ -50,7 +50,7 @@ homeRouter.get('/', async (req, res) => {
             console.log();
             console.log(sdws);
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
-                user: supervisor_user,
+                user: user,
                 sdws: sdws
             });
         } else if(user.staff_type === 'sdw'){
