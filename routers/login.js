@@ -1,8 +1,7 @@
 // login router
 import express from 'express';
 import bcrypt from 'bcrypt';
-import db_connection_pool from '../connections.js';
-import { supabase } from '../supabase.js';
+import { supabase } from '../middleware/supabase_client.js';
 
 const loginRouter = express.Router();
 
