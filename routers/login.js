@@ -37,6 +37,7 @@ loginRouter.post('/', async (req, res) => {
 
         // find user in the database using email only
         try{
+<<<<<<< HEAD
             // use prepared statements
 
             const {data, error} = await supabase
@@ -46,6 +47,16 @@ loginRouter.post('/', async (req, res) => {
         
             if(error) throw error;
             else {account = data;}
+=======
+            const {data: fetchAccount, error: err1} = await supabase
+                .from('staff_info')
+                .select('*')
+                .eq('email', email)
+            
+            account = fetchAccount;
+
+            if(err1) throw err1;
+>>>>>>> 0e10ffb8a11560c7b0023c929888c2a8b5cc76b6
         } catch(err){
             console.error(err);
         }
@@ -65,7 +76,11 @@ loginRouter.post('/', async (req, res) => {
             else if (account.staff_type == "supervisor"){
                 var supervisor;
                 try{
+<<<<<<< HEAD
                     const {data, error} = await supabase
+=======
+                    const {data: supervisorAccount, error: err2} = await supabase
+>>>>>>> 0e10ffb8a11560c7b0023c929888c2a8b5cc76b6
                         .from('supervisor')
                         .select('*')
                         .eq('email', email)
