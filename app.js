@@ -20,8 +20,8 @@ import adminRouter from './routers/admin.js';
 import { protectRoutes, redirectIfAuthenticated, requireRole } from './middleware/auth.js';
 
 // dummy users
-import insert_dummy_users from './seed_db.js';
-import testing from './testing.js';
+//import insert_dummy_users from './seed_db.js';
+//import testing from './testing.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
