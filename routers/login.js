@@ -59,16 +59,18 @@ loginRouter.post('/', async (req, res) => {
             // const [rows] = await connection.execute(statement, [email]); 
             // account = rows[0];
 
-            const {data: account, error: err1} = await supabase
+            const {data, error} = await supabase
                 .from('staff_info')
                 .select('*')
                 .eq('email', email)
-                .single()
             
-            if(err1) throw err1;
+            if(error) throw error;
+            else account = data[0];
         } catch(err){
             console.error(err);
         }
+
+        console.log(account);
         
         // if an account is returned and compare password hashes via bcrypt
         if(account && await bcrypt.compare(password, account.password)){
