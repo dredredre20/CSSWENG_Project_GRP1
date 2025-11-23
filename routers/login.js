@@ -37,18 +37,35 @@ loginRouter.post('/', async (req, res) => {
 
         // find user in the database using email only
         try{
+<<<<<<< HEAD
+            // use prepared statements
+            // const statement = 'SELECT * FROM staff_info WHERE email = ?;';
+            
+            // // email/password as parameters to validate --then execute query
+            // const [rows] = await connection.execute(statement, [email]); 
+            // account = rows[0];
+
+            const {data, error} = await supabase
+=======
             const {data: fetchAccount, error: err1} = await supabase
+>>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
                 .from('staff_info')
                 .select('*')
                 .eq('email', email)
-                .single()
             
+<<<<<<< HEAD
+            if(error) throw error;
+            else account = data[0];
+=======
             account = fetchAccount;
 
             if(err1) throw err1;
+>>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
         } catch(err){
             console.error(err);
         }
+
+        console.log(account);
         
         // if an account is returned and compare password hashes via bcrypt
         if(account && await bcrypt.compare(password, account.password)){

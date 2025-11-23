@@ -1,5 +1,6 @@
 import express from 'express';
-import { supabase } from '../middleware/supabase_client.js';
+import db_connection_pool from '../connections.js';
+import { supabase } from '../client.js';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
@@ -34,7 +35,7 @@ function categoryOf(category){
             case "Leaders Directory":
                 return 12;
             case "Logout":
-                return -2;
+                return -1;
             default:
                 return 0; // fallback
         }
@@ -60,7 +61,7 @@ reportRouter.get('/:category', async (req, res) => {
         } else {
             res.redirect('/login');
         }
-
+        
         const {data: sdw, error: err1} = await supabase
             .from('sdws')
             .select('sdw_id')
@@ -82,8 +83,7 @@ reportRouter.get('/:category', async (req, res) => {
                 report_name,
                 file_size,
                 upload_date,
-                sdws:first_name,last_name,
-                supervisor:supervisor(first_name,last_name)
+                sdws:sdws(first_name,last_name)
             `)
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);
@@ -116,14 +116,10 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         } else {
             res.redirect('/login');
         }
-
-        // let sdw_id_query = `SELECT sdw_id FROM sdws WHERE sdw_id = ?`;
-
-        // const [sdw_rows] = await connection.execute(sdw_id_query, [sdw_id]);
         
         const {data: sdw, error: err1} = await supabase
             .from('sdws')
-            .select('sdw_id')
+            .select('select_id')
             .eq('sdw_id', sdw_id)
             .single()
         
@@ -142,8 +138,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                 report_name,
                 file_size,
                 upload_date,
-                sdws:first_name,last_name,
-                supervisor:supervisor(first_name,last_name)
+                sdws:sdws(first_name,last_name)
             `)
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);
