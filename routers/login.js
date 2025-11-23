@@ -2,6 +2,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import db_connection_pool from '../connections.js';
+import { supabase } from '../supabase.js';
 
 const loginRouter = express.Router();
 
@@ -12,18 +13,26 @@ const loginPage = (req, res) => {
 loginRouter.get('/', loginPage);
 
 // fetch the user account by querying `sdws` table
-async function get_sdw_info(connection, account){
+async function get_sdw_info(account){
     try{
-        // just experimenting with JOIN since both tables are accessed
-        const statement = `SELECT sdws.* FROM sdws 
-                           JOIN staff_info ON sdws.email = staff_info.email 
-                           WHERE staff_info.email = ?`;
-        const [rows] = await connection.execute(statement, [account.email]);
-        const sdw_account = rows[0];
+        // // just experimenting with JOIN since both tables are accessed
+        // const statement = `SELECT sdws.* FROM sdws 
+        //                    JOIN staff_info ON sdws.email = staff_info.email 
+        //                    WHERE staff_info.email = ?`;
+        // const [rows] = await connection.execute(statement, [account.email]);
+        // const sdw_account = rows[0];
 
+        const {data: sdw_account, error: err1} = await supabase
+            .from('sdws')
+            .select('*')
+            .eq('email', account.email)
+            .single();
+        
+        if(err1) throw err1;
+        
         return sdw_account || null;
     } catch(err){
-        console.error("ERROR FROM: login.js get_sdw_info() " + err);
+        console.error(err);
         return null;
     }
 }
@@ -36,31 +45,31 @@ loginRouter.post('/', async (req, res) => {
         
         
         // get a connection to the db
-        const connection = await db_connection_pool.getConnection();
+        // const connection = await db_connection_pool.getConnection();
 
         // find user in the database using email only
         try{
             // use prepared statements
-            const statement = 'SELECT * FROM staff_info WHERE email = ?;';
+            // const statement = 'SELECT * FROM staff_info WHERE email = ?;';
             
-            // email/password as parameters to validate --then execute query
-            const [rows] = await connection.execute(statement, [email]); 
-            account = rows[0];
-            console.log("Found email")
+            // // email/password as parameters to validate --then execute query
+            // const [rows] = await connection.execute(statement, [email]); 
+            // account = rows[0];
+
+            const {data: account, error: err1} = await supabase
+                .from('staff_info')
+                .select('*')
+                .eq('email', email)
+                .single()
+            
+            if(err1) throw err1;
         } catch(err){
-            console.error("ERROR FROM: login.js loginRouter database operation " + err);
+            console.error(err);
         }
         
-        // end connection
-        
-
         // if an account is returned and compare password hashes via bcrypt
         if(account && await bcrypt.compare(password, account.password)){
             //store the user in the session
-            //req.session.logged_user = account;
-
-            // using a single home route for cleaner file directory
-            //tho we can define routes for each user, it would be tedious
             if(account.staff_type == "sdw"){
                 req.session.logged_user = {
                     id: account.staff_id,
@@ -68,14 +77,20 @@ loginRouter.post('/', async (req, res) => {
                     first_name: account.first_name,
                     last_name: account.last_name,
                 };
-                connection.release();
                 return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
+                // const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
+                // const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
+                // const supervisorAccount = rowsSupervisor[0];
                 try{
-                    const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
-                    const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
-                    const supervisorAccount = rowsSupervisor[0];
+                    const {data: supervisorAccount, error: err2} = await supabase
+                        .from('supervisors')
+                        .select('*')
+                        .eq('email', email)
+                        .single()
+                    
+                    if(err2) throw err2;
                     // add the id as well for the /sdw route
                     req.session.logged_user = {
                         id: supervisorAccount.supervisor_id, 
@@ -83,34 +98,43 @@ loginRouter.post('/', async (req, res) => {
                         first_name: supervisorAccount.first_name, 
                         last_name: supervisorAccount.last_name
                     };
-                }catch(err){
-                    console.error("ERROR FROM: login.js loginRouter supervisor fetch " + err);
+                } catch(err){
+                    console.error(err);
                 }
             }
             else if(account.staff_type == "admin"){
-                const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
-                const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
-                const adminAccount = rowsAdmin[0];
+                // const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
+                // const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
+                // const adminAccount = rowsAdmin[0];
                 
-                req.session.logged_user = {
-                    id: adminAccount.admin_id,
-                    staff_type: account.staff_type,
-                    first_name: adminAccount.first_name,
-                    last_name: adminAccount.last_name,
-                };
+                try{
+                    const {data: adminAccount, error: err3} = await supabase
+                        .from('admin')
+                        .select('*')
+                        .eq('email', email)
+                        .single()
+                    
+                    if(err3) throw err3;
+
+                    req.session.logged_user = {
+                        id: adminAccount.admin_id,
+                        staff_type: account.staff_type,
+                        first_name: adminAccount.first_name,
+                        last_name: adminAccount.last_name,
+                    };
+                } catch(err){
+                    console.error(err);
+                } 
             }
-            
-            await connection.release();
             
             return res.redirect('/home');
         } else{
             console.log('No account found');
-            await connection.release();
         }
         
         res.redirect('/login');
     } catch(err){
-        console.error("ERROR FROM: login.js loginRouter POST " + err);
+        console.error(err);
     }
 })
 
