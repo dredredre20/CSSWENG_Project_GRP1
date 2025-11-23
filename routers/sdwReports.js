@@ -61,12 +61,6 @@ reportRouter.get('/:category', async (req, res) => {
             res.redirect('/login');
         }
 
-        // let sdw_id_query = `SELECT sdw_id
-        //                     FROM sdws s
-        //                     JOIN staff_info si ON si.staff_id = s.staff_info_id
-        //                     WHERE si.staff_id = ?`;
-        // const [sdw_rows] = await connection.execute(sdw_id_query, [account.id]);
-
         const {data: sdw, error: err1} = await supabase
             .from('sdws')
             .select('sdw_id')
@@ -81,20 +75,6 @@ reportRouter.get('/:category', async (req, res) => {
 
         const sdw_id = sdw.sdw_id;
 
-        // let reports_query = `SELECT r.report_id as id,
-        //                             r.report_name as name,
-        //                             r.file_size as size,
-        //                             r.upload_date as date,
-        //                             CONCAT(s.first_name, ' ', s.last_name) AS uploader, 
-        //                             CONCAT(sup.first_name, ' ', sup.last_name) AS supervisor
-        //                      FROM reports r
-        //                      JOIN sdws s ON r.sdw_id = s.sdw_id
-        //                      JOIN supervisors sup ON sup.supervisor_id = s.supervisor_id
-        //                      WHERE r.sdw_id = ?
-        //                      AND r.type = ?`;
-        // const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
-        // console.log(rows); 
-
         const {data: reports, error: err2} = await supabase
             .from('reports')
             .select(`
@@ -103,7 +83,7 @@ reportRouter.get('/:category', async (req, res) => {
                 file_size,
                 upload_date,
                 sdws:first_name,last_name,
-                supervisor:supervisors(first_name,last_name)
+                supervisor:supervisor(first_name,last_name)
             `)
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);
@@ -155,18 +135,6 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
 
         const id = sdw.sdw_id;
 
-        // let reports_query = `SELECT r.report_id as id,
-        //                             r.report_name as name,
-        //                             r.file_size as size,
-        //                             r.upload_date as date,
-        //                             CONCAT(s.first_name, ' ', s.last_name) AS uploader, 
-        //                             CONCAT(sup.first_name, ' ', sup.last_name) AS supervisor
-        //                      FROM reports r
-        //                      JOIN sdws s ON r.sdw_id = s.sdw_id
-        //                      JOIN supervisors sup ON sup.supervisor_id = s.supervisor_id
-        //                      WHERE r.sdw_id = ?
-        //                      AND r.type = ?`;
-        // const [rows] = await connection.execute(reports_query, [id, categoryId]);
         const { data: reports, error: err2 } = await supabase
             .from('reports')
             .select(`
@@ -175,7 +143,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                 file_size,
                 upload_date,
                 sdws:first_name,last_name,
-                supervisor:supervisors(first_name,last_name)
+                supervisor:supervisor(first_name,last_name)
             `)
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);

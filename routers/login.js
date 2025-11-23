@@ -65,7 +65,7 @@ loginRouter.post('/', async (req, res) => {
             else if (account.staff_type == "supervisor"){
                 try{
                     const {data: supervisorAccount, error: err2} = await supabase
-                        .from('supervisors')
+                        .from('supervisor')
                         .select('*')
                         .eq('email', email)
                         .single()
