@@ -38,7 +38,10 @@ document.querySelectorAll('.report-card').forEach(card => {
                 name: this.dataset.reportName,
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
-                uploader: this.dataset.reportUploader
+                uploader: this.dataset.reportUploader,
+
+                // Change in route sql passing
+                supervisor: this.dataset.reportSupervisor
             };
             openModal(currentReport);
         });
@@ -50,6 +53,9 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = report.size;
     document.getElementById('uploader').textContent = report.uploader;
+
+    // Change in route sql passing
+    document.getElementById('supervisor').textContent = report.supervisor;
 
 
     const previewContainer = document.getElementById('previewContainer');
