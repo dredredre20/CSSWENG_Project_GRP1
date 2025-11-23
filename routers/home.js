@@ -21,8 +21,7 @@ async function getSdws(supervisor_id){
                 console.log(result.statusText);
                 return result.data;
         });
-        console.log(supervisor_id);
-        console.log(sdws);
+        
         return sdws;
     } catch(err){
         console.error('ERROR in home.js getSdws() function: ' + err);
@@ -60,9 +59,9 @@ homeRouter.get('/', async (req, res) => {
                     return result.data;
             });
             
-            const sdws = await getSdws(supervisor_user.staff_info_id);
+            const sdws = await getSdws(supervisor_user[0].staff_info_id);
             // console.log('SDWs data:', sdws); Just used this to debug
-            console.log(supervisor_user[0].staff_info_id);
+            console.log();
             console.log(sdws);
             res.render('supervisor_homepage', { //renders supervisor_homepage.ejs
                 user: supervisor_user,

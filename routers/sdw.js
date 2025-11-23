@@ -41,7 +41,7 @@ sdwRouter.get('/sdw/:sdw_id', async (req, res) => {
     //await connection.release();
 
     if(sdw){
-        return res.render(
+        return res.render( //Go to supervisor_reports.js
             'supervisor_reports', {
                 supervisor,
                 sdw
