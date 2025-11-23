@@ -117,7 +117,7 @@ btnDelete.addEventListener('click', () => {
         if (confirm(`Are you sure you want to delete "${currentReport.name}"?`)) {
             // TODO: Implement delete API call
             // Marker: This needs more validation
-            fetch(`/api/reports/${currentReport.id}`, {
+            fetch(`/delete/${currentReport.id}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
