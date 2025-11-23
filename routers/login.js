@@ -37,35 +37,18 @@ loginRouter.post('/', async (req, res) => {
 
         // find user in the database using email only
         try{
-<<<<<<< HEAD
             // use prepared statements
-            // const statement = 'SELECT * FROM staff_info WHERE email = ?;';
-            
-            // // email/password as parameters to validate --then execute query
-            // const [rows] = await connection.execute(statement, [email]); 
-            // account = rows[0];
 
             const {data, error} = await supabase
-=======
-            const {data: fetchAccount, error: err1} = await supabase
->>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
                 .from('staff_info')
                 .select('*')
-                .eq('email', email)
-            
-<<<<<<< HEAD
+                .eq('email', email).single();
+        
             if(error) throw error;
-            else account = data[0];
-=======
-            account = fetchAccount;
-
-            if(err1) throw err1;
->>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
+            else {account = data;}
         } catch(err){
             console.error(err);
         }
-
-        console.log(account);
         
         // if an account is returned and compare password hashes via bcrypt
         if(account && await bcrypt.compare(password, account.password)){
@@ -80,41 +63,53 @@ loginRouter.post('/', async (req, res) => {
                 return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
+                var supervisor;
                 try{
-                    const {data: supervisorAccount, error: err2} = await supabase
-                        .from('supervisors')
+                    const {data, error} = await supabase
+                        .from('supervisor')
                         .select('*')
                         .eq('email', email)
-                        .single()
+                        .single();
                     
-                    if(err2) throw err2;
+                    if(error) throw error;
+                    else{
+                        console.log(data);
+                        supervisor = data;
+                    }
+                    
                     // add the id as well for the /sdw route
                     req.session.logged_user = {
-                        id: supervisorAccount.supervisor_id, 
+                        id: supervisor.supervisor_id, 
                         staff_type: account.staff_type, 
-                        first_name: supervisorAccount.first_name, 
-                        last_name: supervisorAccount.last_name
+                        first_name: supervisor.first_name, 
+                        last_name: supervisor.last_name
                     };
+                    supervisor = null;
                 } catch(err){
                     console.error(err);
                 }
             }
-            else if(account.staff_type == "admin"){              
+            else if(account.staff_type == "admin"){     
+                var admin;         
                 try{
-                    const {data: adminAccount, error: err3} = await supabase
+                    const {data, error} = await supabase
                         .from('admins')
                         .select('*')
                         .eq('email', email)
-                        .single()
+                        .single();
                     
-                    if(err3) throw err3;
+                    if(error) throw error;
+                    else{
+                        admin = data;
+                    }
 
                     req.session.logged_user = {
-                        id: adminAccount.admin_id,
+                        id: admin.admin_id,
                         staff_type: account.staff_type,
-                        first_name: adminAccount.first_name,
-                        last_name: adminAccount.last_name,
+                        first_name: admin.first_name,
+                        last_name: admin.last_name,
                     };
+                    admin = null;
                 } catch(err){
                     console.error(err);
                 } 

@@ -174,16 +174,13 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                 report_id,
                 report_name,
                 file_size,
-                upload_date,
-                sdws:first_name,last_name,
-                supervisor:supervisors(first_name,last_name)
-            `)
+                upload_date`)
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);
 
         if(err2) throw err2;
 
-        res.render('sdw_reports', { reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: id});
+        res.render('sdw_reports', { reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id, staff_name: sdw.first_name + " " + sdw.last_name, spu_id: sdw.spu_id });
 
     } catch (err){
         console.log(err);
