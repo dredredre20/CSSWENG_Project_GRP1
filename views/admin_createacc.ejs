@@ -24,7 +24,7 @@
         <main class="content">
             <div class="content-main">
                                                                                     <!-- Render Name in the backend-->
-                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= AdminName %></span>!</h2>
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= admin.first_name %>  <%= admin.last_name %></span>!</h2>
                 <div class="content-bar"><h1>Create a new account</h1></div>
                 <div class="content-area">
                     <div class="inputs-area">
@@ -71,16 +71,6 @@
                                 <option>FDQ</option>
                                 <option>MPH</option>
                                 <option>MS</option>
-                            </select>
-                        </div>
-
-                        <div class="label-and-input" id="supervisorDiv">
-                            <label for="supervisor">Supervisor</label>
-                            <select id="supervisor">
-                                <option hidden disabled selected value></option>
-                                <% supervisors.forEach(s => { %>
-                                    <option value="<%= s.staff_info.staff_id %>"><%= s.first_name %> <%= s.last_name %></option>
-                                <% }) %>
                             </select>
                         </div>
                     </div>
