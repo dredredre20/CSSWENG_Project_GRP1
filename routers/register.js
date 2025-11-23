@@ -2,7 +2,7 @@
 import express from 'express';
 import db_connection_pool from '../connections.js';
 import bcrypt from 'bcrypt';
-import { supabase } from '../supabase.js';
+import { supabase } from '../middleware/supabase_client.js';
 
 const registerRouter = express.Router();
 

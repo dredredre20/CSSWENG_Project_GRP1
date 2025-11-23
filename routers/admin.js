@@ -1,5 +1,5 @@
 //import db_connection_pool from "../connections.js";
-import {supabase} from "../supabase.js"
+import { supabase } from '../middleware/supabase_client.js';
 import bcrypt from "bcrypt";
 import express from "express";
 
