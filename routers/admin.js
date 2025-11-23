@@ -116,11 +116,11 @@ adminRouter.post('/create', async (req, res) => {
 
         const {data: staffResult, error: err2} = await supabase
             .from('staff_info')
-            .insert([{
+            .insert({
                 staff_type: 'sdw',
                 email: email,
                 password: hashed
-                }])
+                })
             .select('staff_id')
             .single()
 
@@ -137,7 +137,7 @@ adminRouter.post('/create', async (req, res) => {
 
         const {data: sdwInsert, error: err3} = await supabase
             .from('sdws')
-            .insert([{
+            .insert({
                 first_name: firstName,
                 middle_name: middleName,
                 last_name: lastName,
@@ -145,7 +145,7 @@ adminRouter.post('/create', async (req, res) => {
                 spu_id: spuId,
                 supervisor_id: spuId,
                 staff_info_id: staffInfoId
-            }])
+            })
         
         if(err3) throw err3;
     

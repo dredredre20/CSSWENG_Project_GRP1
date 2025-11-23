@@ -21,11 +21,11 @@ registerRouter.post('/', async (req, res) => {
         try{
             const {data: registerAccount, error: err1} = await supabase
                 .from('staff_info')
-                .insert([{
+                .insert({
                     staff_type: type,
                     email: email,
                     password: hashed
-                }])
+                })
             
             if(err1) throw err1;
         } catch(err){
