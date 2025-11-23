@@ -136,13 +136,8 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
                 report_id,
                 report_name,
                 file_size,
-<<<<<<< HEAD
                 upload_date`)
-=======
-                upload_date,
-                sdws:sdws(first_name,last_name)
-            `)
->>>>>>> 0e10ffb8a11560c7b0023c929888c2a8b5cc76b6
+
             .eq('sdw_id', sdw_id)
             .eq('type', categoryId);
 
