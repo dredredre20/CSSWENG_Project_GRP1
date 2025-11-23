@@ -88,49 +88,53 @@ document.addEventListener("DOMContentLoaded", ()=>{
     // if file added is confirmed for upload (correct button clicked)
     //only then perform adding it to the db
     correctBtn.addEventListener("click", async () => {
-        if(currentFile == null){
-            alert("Please select a file to upload.");
-            return;
-        }
+    if(currentFile == null){
+        alert("Please select a file to upload.");
+        return;
+    }
 
-        // remove the upload modal from display
-        uploadModal.classList.remove("show");
+    // remove the upload modal from display
+    uploadModal.classList.remove("show");
+    
+    // prepare the data to be fetched over the /upload route
+    const formData = new FormData();
+    formData.append("file", currentFile);
+    formData.append("report_name", currentFile.name);
+    formData.append("file_size", currentFile.size);
+    formData.append("sdw_id", loggedUser.sdw_id);
+    formData.append("type", report_type());
+
+    // Show loading state if needed
+    correctBtn.disabled = true;
+    correctBtn.textContent = "Uploading...";
+
+    try {
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
         
-        // prepare the data to be fetched over the /upload route
-        const formData = new FormData();
-        formData.append("file", currentFile);
-        formData.append("report_name", currentFile.name); // added the file name for report_name db attrib
-        formData.append("file_size", currentFile.size);
-        formData.append("sdw_id", loggedUser.sdw_id);
-        formData.append("type", report_type());
+        if(result.success){
+            // Use the final filename from server if available
+            successFileName.textContent = result.finalFileName || currentFile.name;
+            successReport.textContent = document.getElementById("reportSelect").value;
 
-        //display it on the modal as well
-        // also, the modal might need to wrap text
-        fileName.textContent = currentFile.name; 
-        fileSize.textContent = (currentFile.size / 1000).toFixed(0) + " KB";
-
-        // do the DB op
-        try{
-            const response = await fetch("/upload", {
-                method: "POST",
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if(result.success){
-                uploadModal.classList.remove("show"); //remove the upload modal again
-                // display them again
-                successFileName.textContent = currentFile.name;
-                successReport.textContent = document.getElementById("reportSelect").value;
-
-                successModal.classList.add("show"); //show the success modal
-                currentFile = null; //reset
-            }
-        } catch(err){
-            console.error("Upload failed:", err);
+            successModal.classList.add("show");
+            currentFile = null;
+        } else {
+            alert("Upload failed: " + (result.message || "Unknown error"));
         }
-    });
+    } catch(err) {
+        console.error("Upload failed:", err);
+        alert("Upload failed due to network error.");
+    } finally {
+        // Reset button state
+        correctBtn.disabled = false;
+        correctBtn.textContent = "Yes, it's correct";
+    }
+});
 
     // fileTypeBtn.addEventListener("click", () =>{
     //     fileTypeModal.classList.remove("show");
