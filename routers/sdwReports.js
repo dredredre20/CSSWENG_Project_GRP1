@@ -1,5 +1,5 @@
 import express from 'express';
-import { supabase } from '../client.js';
+import { supabase } from '../middleware/supabase_client.js';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
