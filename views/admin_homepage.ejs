@@ -21,7 +21,9 @@
                 <button class="nav-btn" data-category="MS">MS</button>
                 
                 <button class="create-btn" onclick="window.location.href='/admin/create'"> Create New Account</button>
-                <button class="admin-btn" hidden disabled>View Admin Accounts</button> <!--Only Master Admin should be able to see this!!-->
+                <% if(user.email === "admin1@gmail.com") { %>
+                    <button class="admin-btn">View Admin Accounts</button> <!--Only Master Admin should be able to see this!!-->
+                <% } %>
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </aside>

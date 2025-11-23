@@ -55,6 +55,51 @@ async function getSpus(admin_id){
     }
 }
 
+async function getAccountInfo(staff_id){
+    try{
+        const {data: accountInfo, error: err1} = await supabase
+            .from('staff_info')
+            .select('*')
+            .eq('staff_id', staff_id)
+            .single()
+        
+        if(err1) throw err1;
+
+        if(!accountInfo){
+            return null;
+        }
+
+        return accountInfo;
+
+    } catch(err){
+        console.error(err);
+    }
+}
+
+// initiator -> edits/deletes (modifies) -> target
+async function canModify(initiator, target){
+    const masterEmail = "admin1@gmail.com"; // change this accordingly
+
+    // If target for modification is the master admin, reject it
+    if(target.email === masterEmail){
+        return false;
+    }
+
+    // If the initiator of the modification is the master admin, accept
+    if(initiator.email === masterEmail){
+        return true;        
+    }
+
+    // If the initiator of the modification is a regular admin
+    if(initiator.staff_type === "admin"){
+        // Only accept if the target is not another admin
+        return target.staff_type !== "admin";
+    }
+
+    // Anyone else cannot modify anyone
+    return false;
+}
+
 adminRouter.get('/spu/:spu_type', async (req, res) => {
     try{
         const spu_type = req.params.spu_type;
@@ -214,13 +259,13 @@ adminRouter.post('/create', async (req, res) => {
 });
 
 adminRouter.get('/edit/:staff_id', async (req, res) => {
-    const staffId = req.params.staff_id;
+    const staff_id = req.params.staff_id;
 
     try{
         const {data: sdw, error: err1} = await supabase
             .from('sdws')
             .select('sdw_id, first_name, middle_name, last_name, email, spu_id')
-            .eq('staff_info_id', staffId)
+            .eq('staff_info_id', staff_id)
             .single()
         
         if(err1) throw err1;
@@ -237,18 +282,18 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
         };
 
         const row = sdw;
-        const firstName = row.first_name || '';
-        const middleName = row.middle_name || '';
-        const lastName = row.last_name || '';
+        const first_name = row.first_name || '';
+        const middle_name = row.middle_name || '';
+        const last_name = row.last_name || '';
         const email = row.email || '';
-        const spuId = row.spu_id || null;
-        const spuName = spuMap[spuId];
+        const spu_id = row.spu_id || null;
+        const spu_name = spuMap[spu_id];
 
         res.render('admin_editacc', {
             AdminName: 'Admin',
-            sdw: { firstname: firstName, middlename: middleName, lastname: lastName, email, password: '' },
-            spuName,
-            staffId
+            sdw: { firstname: first_name, middlename: middle_name, lastname: last_name, email, password: '' },
+            spu_name,
+            staff_id
         });
     } catch(err){
         console.error(err);
@@ -285,6 +330,17 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
     }
 
     try{
+        const initiator = req.session.logged_user;
+        const target= await getAccountInfo(staff_id);
+
+        if(!target){
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        if(!await canModify(initiator, target)){
+            return res.status(403).json({ success: false, message: 'Unauthorized.' });
+        }
+
         const {data: sdwData, error: err1} = await supabase
             .from('sdws')
             .update({                
@@ -322,47 +378,79 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
 });
 
 adminRouter.delete('/delete/:staff_id', async (req, res) => {
+    const userInSession = req.session.logged_user;
     const staff_id = req.params.staff_id;
     try{
+        const accountInfo = await getAccountInfo(staff_id);
 
-        const {data: sdwFetch, error: err1} = await supabase
-            .from('sdws')
-            .select('*')
-            .eq('staff_info_id', staff_id)
-            .single()
-
-        if(err1) throw err1;
-
-        if(!sdwFetch){
-            return res.status(404).json({ success: false, message: 'SDW not found.' });
+        if(!await canModify(userInSession, accountInfo)){
+            return res.status(403).json({ success: false, message: 'Unauthorized.' });
         }
 
-        const {data: deleteReports, error: err2} = await supabase
-            .from('reports')
-            .delete()
-            .eq('sdw_id', sdwFetch.sdw_id)
-        
-        if(err2) throw err2
+        switch(accountInfo.staff_type){
+            case "admin":
+                const {data: adminToDelete, error: err1} = await supabase
+                    .from('admins')
+                    .select('*')
+                    .eq('staff_info_id', staff_id)
+                    .single()
+                    .delete()
 
-        const {data: sdwDelete, error: err3} = await supabase
-            .from('sdws')
-            .delete()
-            .eq('staff_info_id', staff_id)
+                if(err1) throw err1;
 
-        if (err3) throw err3;
+                const {data: adminSpuToDelete, error: err2} = await supabase
+                    .from('spus_has_admins')
+                    .eq('admins_admin_id', adminToDelete.admin_id)
+                    .delete()
 
-        const {data: staffInfoDelete, error: err4} = await supabase
+                if(err2) throw err2;
+
+                break;
+            case "supervisor":
+                const {data: supervisorToDelete, error: err3} = await supabase
+                    .from('supervisor')
+                    .eq('staff_info_id', staff_id)
+                    .delete()
+                
+                if(err3) throw err3;
+                break;
+            case "sdw":
+                const { data: sdwFetch, error: err4 } = await supabase
+                    .from('sdws')
+                    .select('*')
+                    .eq('staff_info_id', staff_id)
+                    .single();
+
+                if(err4) throw err4;
+
+                const {data: deleteReports, error: err5} = await supabase
+                    .from('reports')
+                    .delete()
+                    .eq('sdw_id', sdwFetch.sdw_id)
+                
+                if(err5) throw err5;
+
+                const {data: sdwDelete, error: err6} = await supabase
+                    .from('sdws')
+                    .delete()
+                    .eq('staff_info_id', staff_id)
+
+                if (err6) throw err6;
+                break;
+        }
+
+        const {data: userToDelete, error: err7} = await supabase
             .from('staff_info')
             .delete()
             .eq('staff_id', staff_id)
 
-        if(err4) throw err4;
+        if(err7) throw err7;
 
-        res.status(200).json({ success: true, message: 'SDW deleted successfully' });
+        res.status(200).json({ success: true, message: 'User Deleted Successfully' });
 
     } catch(err){
         console.error(err);
-        res.status(500).json({ success: false, message: 'Error deleting SDW.' });
+        res.status(500).json({ success: false, message: 'Error Deleting User.' });
     }
 });
 

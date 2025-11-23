@@ -15,7 +15,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
 // Handle admin list button visibility for master admin
 const adminBtn = document.querySelector('.admin-btn');
-const isMasterAdmin = '<%= user.role %>' === 'master_admin'; // Adjust this as needed
+const isMasterAdmin = '<%= user.email %>' === 'admin1@gmail.com'; // Adjust this as needed
 
 if (adminBtn && isMasterAdmin) {
     // Show and enable the button for master admin

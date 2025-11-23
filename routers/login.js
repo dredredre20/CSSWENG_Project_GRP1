@@ -110,6 +110,7 @@ loginRouter.post('/', async (req, res) => {
                         staff_type: account.staff_type,
                         first_name: admin.first_name,
                         last_name: admin.last_name,
+                        email: admin.email
                     };
                     admin = null;
                 } catch(err){
