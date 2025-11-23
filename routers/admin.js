@@ -258,15 +258,21 @@ adminRouter.post('/create', async (req, res) => {
                 if(err5) throw err5;
 
                 const { data: existingSpu, error: err8 } = await supabase
-                .from('spus')
-                .select('supervisor_id')
-                .eq('spu_id', spuId)
-                .single();
-                if(err8) throw err8;
+                    .from('spus')
+                    .select('supervisor_id')
+                    .eq('spu_id', spuId)
+                    .single();
+
+                if (err8) throw err8;
+
+                if (!existingSpu) {
+                    return res.status(400).json({ success: false, message: 'SPU not found.' });
+                }
 
                 if (existingSpu.supervisor_id) {
                     return res.status(400).json({ success: false, message: 'A supervisor is already assigned.' });
                 }
+
 
                 const {data: spuUpdate, error: err7 } = await supabase
                     .from('spus')
@@ -349,63 +355,61 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
 
 async function deleteStaff(staff_id, userInSession) {
     const accountInfo = await getAccountInfo(staff_id);
-
     if (!accountInfo) throw { status: 404, message: 'User not found.' };
-
     if (!await canModify(userInSession, accountInfo)) throw { status: 403, message: 'Unauthorized.' };
 
-    switch (accountInfo.staff_type) {
+    switch (accountInfo.staff_type.toLowerCase()) {
         case "admin":
             const { data: adminToDelete, error: err1 } = await supabase
                 .from('admins')
                 .select('*')
                 .eq('staff_info_id', staff_id)
-                .single()
-                .delete();
+                .single();
             if (err1) throw err1;
 
-            const { data: adminSpuToDelete, error: err2 } = await supabase
-                .from('spus_has_admins')
-                .eq('admins_admin_id', adminToDelete.admin_id)
-                .delete();
-            if (err2) throw err2;
+            await supabase.from('spus_has_admins')
+                .delete()
+                .eq('admins_admin_id', adminToDelete.admin_id);
+
+            await supabase.from('admins')
+                .delete()
+                .eq('staff_info_id', staff_id);
             break;
 
         case "supervisor":
-            const { data: supervisorToDelete, error: err3 } = await supabase
-                .from('supervisor')
-                .eq('staff_info_id', staff_id)
-                .delete();
-            if (err3) throw err3;
+            await supabase.from('spus')
+                .update({ supervisor_id: null })
+                .eq('supervisor_id', accountInfo.staff_id);
+
+            await supabase.from('supervisor')
+                .delete()
+                .eq('staff_info_id', staff_id);
             break;
 
         case "sdw":
-            const { data: sdwFetch, error: err4 } = await supabase
+            const { data: sdwFetch, error: err2 } = await supabase
                 .from('sdws')
                 .select('*')
                 .eq('staff_info_id', staff_id)
                 .single();
-            if (err4) throw err4;
+            if (err2) throw err2;
 
-            const { data: deleteReports, error: err5 } = await supabase
-                .from('reports')
+            await supabase.from('reports')
                 .delete()
                 .eq('sdw_id', sdwFetch.sdw_id);
-            if (err5) throw err5;
 
-            const { data: sdwDelete, error: err6 } = await supabase
-                .from('sdws')
+            await supabase.from('sdws')
                 .delete()
                 .eq('staff_info_id', staff_id);
-            if (err6) throw err6;
             break;
     }
 
-    const { data: userToDelete, error: err7 } = await supabase
+    const { data: userToDelete, error: err3 } = await supabase
         .from('staff_info')
         .delete()
         .eq('staff_id', staff_id);
-    if (err7) throw err7;
+
+    if (err3) throw err3;
 
     return true;
 }
@@ -450,57 +454,54 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
         if(!await canModify(initiator, target)){
             return res.status(403).json({ success: false, message: 'Unauthorized.' });
         }
+            await deleteStaff(staff_id, initiator);
 
-        switch(role){
-            case "admin":
-                await deleteStaff(staff_id, initiator);
-                // insert into admin
-                break;
-            case "supervisor":
-                await deleteStaff(staff_id, initiator);
-                //insert into supervisor
-                const {data: supervisorInsert, error: err5 } = await supabase
-                    .from('supervisor')
-                    .insert({
-                        staff_info_id: staff_id,
-                        first_name: firstname,
-                        middle_name: middlename,
-                        last_name: lastname,
-                        email: email
-                    }).select('*').single();
+            /* i keep getting this error TypeError: Cannot read properties of null (reading 'supervisor_id')
+            the idea is that deleteStaff is just a function version of the delete route
+            this switch statement tries to insert it to its respective tables
+            but it keeps erroring whenever it tries to insert
+            which is weird because the create route works completely fine*/
+            switch(role) {
+                case "Admin":
+                    const { data: adminInsert } = await supabase
+                        .from('admins')
+                        .insert({ staff_info_id: staff_id, first_name: firstname, middle_name: middlename, last_name: lastname, email })
+                        .select('*')
+                        .single();
+                    if (spu) {
+                        await supabase.from('spus_has_admins')
+                            .insert({ admins_admin_id: adminInsert.admin_id, spus_spu_id: spu });
+                    }
+                    break;
 
-                if(err5) throw err5;
+                case "Supervisor":
+                    const { data: supervisorInsert } = await supabase
+                        .from('supervisor')
+                        .insert({ staff_info_id: staff_id, first_name: firstname, middle_name: middlename, last_name: lastname, email })
+                        .select('*')
+                        .single();
+                    if (spu) {
+                        await supabase.from('spus')
+                            .update({ supervisor_id: supervisorInsert.supervisor_id })
+                            .eq('spu_id', spu);
+                    }
+                    break;
 
-                const { data: existingSpu, error: err8 } = await supabase
-                .from('spus')
-                .select('supervisor_id')
-                .eq('spu_id', spu)
-                .single();
-                if(err8) throw err8;
+                case "SDW":
+                    await supabase.from('sdws')
+                        .insert({ staff_info_id: staff_id, spu_id: spu, first_name: firstname, middle_name: middlename, last_name: lastname, email });
+                    break;
+            }
 
-                if (existingSpu.supervisor_id) {
-                    return res.status(400).json({ success: false, message: 'A supervisor is already assigned.' });
-                }
-
-                const {data: spuUpdate, error: err7 } = await supabase
-                    .from('spus')
-                    .update({
-                        supervisor_id: supervisorInsert.supervisor_id //supervisors auto incremented id
-                    })
-                    .eq('spu_id', spu)
-
-                if(err7) throw err7;
-                break;
-            case "sdw":
-                await deleteStaff(staff_id, initiator);
-                //insert into sdw
-                break;
-        }
+        const staffUpdates = { email };
+        if (password) staffUpdates.password = await bcrypt.hash(password, 10);
+        await supabase.from('staff_info').update(staffUpdates).eq('staff_id', staff_id);
 
         res.json({ success: true, message: 'Account updated successfully!' });
-    } catch(err){
-        res.status(500).json({ success: false, message: 'Error editing SDW.' });
+
+    } catch (err) {
         console.error(err);
+        res.status(500).json({ success: false, message: 'Error editing account.' });
     }
 });
 

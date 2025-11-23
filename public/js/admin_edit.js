@@ -28,6 +28,7 @@ confirmBtn.addEventListener("click", ()=> {
         email: document.getElementById("email").value.trim(),   
         password: document.getElementById("password").value, 
         spu: document.getElementById("spu").value,
+        role: document.getElementById("role").value
     }
 
     // Check if required fields are filled
