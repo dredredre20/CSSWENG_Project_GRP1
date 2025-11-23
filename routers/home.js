@@ -1,4 +1,3 @@
-import db_connection_pool from '../connections.js';
 import express from 'express';
 import {supabase} from '../middleware/supabase_client.js';
 
@@ -6,19 +5,6 @@ const homeRouter = express.Router();
 
 // get all sdws under the specific supervisor
 async function getSdws(supervisor_id){
-    // try{
-    //     // Changed this query to correctly fetch sdws
-    //     const [sdws] = await connection.execute(
-    //         `SELECT s.sdw_id, s.first_name, s.last_name 
-    //          FROM sdws s 
-    //          JOIN supervisors sup ON s.supervisor_id = sup.supervisor_id
-    //          WHERE s.supervisor_id = ?`,
-    //         [supervisor_id]
-    //     );
-    //     return sdws;
-    // } catch(err){
-    //     console.error('ERROR in home.js getSdws() function: ' + err);
-    // }
     try{
         const {data: sdws, error: err1} = await supabase
             .from('sdws')
@@ -35,15 +21,6 @@ async function getSdws(supervisor_id){
 
 // get all spus under the admin
 async function getSpus(admin_id){
-    // try{
-    //     const [spus] = await connection.execute(
-    //         `SELECT * FROM spus_has_admins WHERE admins_admin_id = ?`,
-    //         [admin_id]
-    //     );
-    //     return spus;
-    // } catch(err){
-    //     console.error('ERROR in home.js getSpus() function: ' + err);
-    // }
     try{
         const {data: spus, error: err1} = await supabase
             .from('spus_has_admins')

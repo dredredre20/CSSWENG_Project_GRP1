@@ -1,9 +1,8 @@
 // here be dummy users to experiment with
 import bcrypt from "bcrypt";
-import db_connection_pool from "./connections.js";
+import { supabase } from "./middleware/supabase_client";
 
-
-async function insert(connection, samples){
+async function insert(samples){
   try{
         let query = "";
         let values = [];
@@ -94,8 +93,6 @@ async function insert_dummy_users(){
         { stafftype: "sdw", first_name: "Sofia", last_name: "Martinez", email: "sdw8@gmail.com", password: "password123", supervisorid: 2, spu_id: 4},
     ];
 
-    //get connection
-    const connection = await db_connection_pool.getConnection();
 
     const [rows] = await connection.query('SELECT COUNT(*) AS count FROM staff_info');
     if (rows[0].count === 0) {

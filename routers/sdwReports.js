@@ -1,5 +1,4 @@
 import express from 'express';
-import db_connection_pool from '../connections.js';
 import { supabase } from '../middleware/supabase_client.js';
 
 const reportRouter = express.Router();

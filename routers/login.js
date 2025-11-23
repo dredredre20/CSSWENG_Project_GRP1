@@ -14,13 +14,6 @@ loginRouter.get('/', loginPage);
 // fetch the user account by querying `sdws` table
 async function get_sdw_info(account){
     try{
-        // // just experimenting with JOIN since both tables are accessed
-        // const statement = `SELECT sdws.* FROM sdws 
-        //                    JOIN staff_info ON sdws.email = staff_info.email 
-        //                    WHERE staff_info.email = ?`;
-        // const [rows] = await connection.execute(statement, [account.email]);
-        // const sdw_account = rows[0];
-
         const {data: sdw_account, error: err1} = await supabase
             .from('sdws')
             .select('*')
@@ -36,22 +29,15 @@ async function get_sdw_info(account){
     }
 }
 
-/****************************************************************************************** */
-//Start Here vvv
-/****************************************************************************************** */
-
 loginRouter.post('/', async (req, res) => {
     try{
         // get the inputs from the form
         const {email, password} = req.body;
         var account, firstName, lastName;
-        
-        
-        // get a connection to the db
-        // const connection = await db_connection_pool.getConnection();
 
         // find user in the database using email only
         try{
+<<<<<<< HEAD
             // use prepared statements
             // const statement = 'SELECT * FROM staff_info WHERE email = ?;';
             
@@ -60,12 +46,21 @@ loginRouter.post('/', async (req, res) => {
             // account = rows[0];
 
             const {data, error} = await supabase
+=======
+            const {data: fetchAccount, error: err1} = await supabase
+>>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
                 .from('staff_info')
                 .select('*')
                 .eq('email', email)
             
+<<<<<<< HEAD
             if(error) throw error;
             else account = data[0];
+=======
+            account = fetchAccount;
+
+            if(err1) throw err1;
+>>>>>>> b3b8b8ab422a951defe15cbc85a0df4be9a908c2
         } catch(err){
             console.error(err);
         }
@@ -85,9 +80,6 @@ loginRouter.post('/', async (req, res) => {
                 return res.redirect('/home');
             }
             else if (account.staff_type == "supervisor"){
-                // const statementSupervisor = 'SELECT * FROM supervisors WHERE email = ?;';
-                // const [rowsSupervisor] = await connection.execute(statementSupervisor, [email]);
-                // const supervisorAccount = rowsSupervisor[0];
                 try{
                     const {data: supervisorAccount, error: err2} = await supabase
                         .from('supervisors')
@@ -107,14 +99,10 @@ loginRouter.post('/', async (req, res) => {
                     console.error(err);
                 }
             }
-            else if(account.staff_type == "admin"){
-                // const statementAdmin = 'SELECT * FROM admins WHERE email = ?;';
-                // const [rowsAdmin] = await connection.execute(statementAdmin, [email]);
-                // const adminAccount = rowsAdmin[0];
-                
+            else if(account.staff_type == "admin"){              
                 try{
                     const {data: adminAccount, error: err3} = await supabase
-                        .from('admin')
+                        .from('admins')
                         .select('*')
                         .eq('email', email)
                         .single()
