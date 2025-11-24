@@ -37,10 +37,9 @@ confirmBtn.addEventListener("click", ()=> {
         return;
     }
 
-
-    // Gmail regex assuming that clients will use gmail only
-    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!gmailPattern.test(updatedData.email)) {
+    // Regex that allows various email domains
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(updatedData.email)) {
         alert("Please enter a valid Gmail address.");
         return;
     }
