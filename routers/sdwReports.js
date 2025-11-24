@@ -124,7 +124,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         if(err1) throw err1;
 
         if (!sdw) {
-            return res.render('sdw_reports', { reports: [], currentCategory: category });
+            return res.render('supervisor_reports_folder', { reports: [], currentCategory: category });
         }
 
         const id = sdw.sdw_id;
@@ -142,7 +142,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
 
         if(err2) throw err2;
 
-        res.render('sdw_reports', { reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id, staff_name: sdw.first_name + " " + sdw.last_name, spu_id: sdw.spu_id });
+        res.render('supervisor_reports_folder', { reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id, staff_name: sdw.first_name + " " + sdw.last_name, spu_id: sdw.spu_id });
 
     } catch (err){
         console.log(err);
