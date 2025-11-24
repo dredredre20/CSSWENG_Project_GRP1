@@ -2,8 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPUs</title>
-    </title>
-    <link rel="stylesheet" href="/css/admin_spu_style.css"> <!--TODO change this -->
+    <link rel="stylesheet" href="/css/admin_spu_style.css">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </head>
 
@@ -22,21 +21,23 @@
         <!-- Main Content Area -->
         <main class="content">
             <div class="content-main">
-                                <!-- Render this dynamically to avoid repetition of the same code-->
                 <h2> Welcome to <%= spuPage %> Suite! </h2>
                 <h3 style="position:absolute; left:22%"> Supervisor Assigned: </h3>
                 
-                <!--TODO: Backend work here-->
-                <!-- If array is passed, use first element. Just user supervisor directly if not-->
+                <!-- Supervisor Button with Edit/Delete -->
                 <% const s = (supervisor?.supervisor && supervisor.supervisor[0]) || supervisor || {}; %>
-                <button class="user-btn">
+                <% const hasSupervisor = s.first_name && s.first_name !== 'Unassigned'; %>
+                
+                <button class="user-btn supervisor-btn">
                     <img src="/sdw_icon.png" class="sdw-icon">
                     <span><%= s.first_name || 'Unassigned' %> <%= s.last_name || '' %></span>
-                    <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
-                    <ul class="kebab-menu hidden">
-                        <li class="edit-btn" data-sdw-id="">Edit</li>
-                        <li class="delete-btn" data-sdw-id="">Delete</li>
-                    </ul>
+                    <% if (hasSupervisor) { %>
+                        <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                        <ul class="kebab-menu hidden">
+                            <li class="edit-supervisor-btn" data-supervisor-id="<%= s.supervisor_id %>">Edit</li>
+                            <li class="delete-supervisor-btn" data-supervisor-id="<%= s.supervisor_id %>" data-supervisor-name="<%= s.first_name %> <%= s.last_name %>">Delete</li>
+                        </ul>
+                    <% } %>
                 </button>
 
 
@@ -47,7 +48,6 @@
                         <select id="sortMenu">
                             <option value="alphabetical">Alphabetical</option>
                             <option value="lastupdated">Last Updated</option>
-                            <!-- Add more options here if needed -->
                         </select>
                 </div>
 
@@ -78,4 +78,3 @@
     <script src="/js/admin_spu.js"></script>
 
 </body>
-

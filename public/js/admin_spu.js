@@ -8,7 +8,6 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
         const nameA = a.querySelector('span').textContent;
         const nameB = b.querySelector('span').textContent;
         
-        // Not sure about the logic here
         if (sortBy === 'alphabetical') {
             return nameA.localeCompare(nameB);
         } else if (sortBy === 'lastupdated') {
@@ -25,10 +24,10 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
 
 // Navigate to SDW page 
 function navigateToSDW(sdw_id) {
-    // change url if incorrect
     window.location.href = `/admin/reports/${sdw_id}`;
 }
 
+// Kebab menu toggle
 document.querySelectorAll('.kebab').forEach(kebab => {
     kebab.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -46,35 +45,69 @@ document.addEventListener('click', () => {
     });
 });
 
-// EDIT
+// EDIT - SDW
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const id = btn.getAttribute('data-sdw-id');
-        window.location.href = `/admin/edit/${id}`;
+        const sdwId = btn.getAttribute('data-sdw-id');
+        
+        if (sdwId) {
+            window.location.href = `/admin/edit/${sdwId}?type=sdw`;
+        }
     });
 });
 
-// DELETE - Updated with confirmation modal
+// DELETE - SDW
 document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const id = btn.getAttribute('data-sdw-id');
+        const sdwId = btn.getAttribute('data-sdw-id');
         const name = btn.closest('.user-btn').querySelector('span').textContent;
-        showDeleteConfirmation(id, name);
+        if (sdwId) {
+            showDeleteConfirmation(sdwId, name, 'sdw');
+        }
     });
 });
 
+// EDIT - Supervisor
+document.querySelectorAll('.edit-supervisor-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const supervisorId = btn.getAttribute('data-supervisor-id');
+        if (supervisorId) {
+            window.location.href = `/admin/edit/${supervisorId}?type=supervisor`;
+        }
+    });
+});
+
+// DELETE - Supervisor
+document.querySelectorAll('.delete-supervisor-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const supervisorId = btn.getAttribute('data-supervisor-id');
+        const name = btn.getAttribute('data-supervisor-name');
+        if (supervisorId) {
+            showDeleteConfirmation(supervisorId, name, 'supervisor');
+        }
+    });
+});
+
+// Variables for modal state
+let deleteConfirmModal = null;
+let currentItem = null;
+
 // Custom delete confirmation modal
-function showDeleteConfirmation(sdwId, sdwName) {
-    currentSDW = { id: sdwId, name: sdwName };
+function showDeleteConfirmation(id, name, type) {
+    currentItem = { id: id, name: name, type: type };
+    
+    const displayType = type === 'supervisor' ? 'Supervisor' : 'SDW';
     
     deleteConfirmModal = document.createElement('div');
     deleteConfirmModal.className = 'delete-modal';
     deleteConfirmModal.innerHTML = `
         <div class="delete-modal-content">
-            <h3>Delete SDW</h3>
-            <p>Are you sure you want to delete "<strong>${sdwName}</strong>"?</p>
+            <h3>Delete ${displayType}</h3>
+            <p>Are you sure you want to delete "<strong>${name}</strong>"?</p>
             <p class="warning-text">This action cannot be undone.</p>
             <div class="delete-modal-buttons">
                 <button class="btn-cancel">Cancel</button>
@@ -99,30 +132,36 @@ function closeDeleteConfirmation() {
                 document.body.removeChild(deleteConfirmModal);
             }
             deleteConfirmModal = null;
-            currentSDW = null;
+            currentItem = null;
         }, 300);
     }
 }
 
 function confirmDelete() {
-    if (!currentSDW) return;
+    if (!currentItem) return;
     
+    const { id, type, name } = currentItem;
     closeDeleteConfirmation();
     
-    fetch(`/admin/delete/${currentSDW.id}`, {  
-        method: 'DELETE'
+    // Single endpoint - backend handles the type
+    fetch(`/admin/delete/${id}`, {  
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ type: type })
     })
     .then(response => {
-        if (!response.ok) throw new Error('Failed to delete SDW');
+        if (!response.ok) throw new Error(`Failed to delete ${type}`);
         return response.json();
     })
     .then(data => {
-        alert(data.message || 'SDW deleted successfully!');
-        location.reload(); // Refresh the page to update the list
+        alert(data.message || `${type === 'supervisor' ? 'Supervisor' : 'SDW'} deleted successfully!`);
+        location.reload();
     })
     .catch(error => {
         console.error('Delete error:', error);
-        alert('Error deleting SDW: ' + error.message);
+        alert(`Error deleting ${type}: ${error.message}`);
     });
 }
 
