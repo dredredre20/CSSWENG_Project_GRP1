@@ -410,8 +410,8 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
                 middle_name: middlename,
                 last_name: lastname,
                 email: email,
-                spu_id: spu,
-                supervisor_id: spu
+                //spu_id: spu,
+                //supervisor_id: spu
             })
             .eq('staff_info_id', staff_id)
             .select()
