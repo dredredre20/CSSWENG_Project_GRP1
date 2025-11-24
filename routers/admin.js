@@ -324,6 +324,8 @@ adminRouter.post('/create', async (req, res) => {
     }
 });
 
+
+
 adminRouter.get('/edit/:staff_id', async (req, res) => {
     const staff_id = req.params.staff_id;
 
@@ -364,8 +366,8 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
                 
                 if(err3) throw err3;
 
-                if(!admin){
-                    return res.status(404).send("Admin not found.");
+                if(!supervisor){
+                    return res.status(404).send("Supervisor not found.");
                 }
                 row = supervisor
                 break;
@@ -475,7 +477,7 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
             
                 if(err3) throw err3;
                 break;
-                break;
+                
             case 'sdw':
                 const {data: sdwData, error: err1} = await supabase
                 .from('sdws')
@@ -579,6 +581,8 @@ adminRouter.delete('/delete/:staff_id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error Deleting User.' });
     }
 });
+
+
 
 adminRouter.get('/reports/:sdw_id/', async (req, res) => {
     const sdw_id = req.params.sdw_id;

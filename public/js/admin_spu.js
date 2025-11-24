@@ -49,10 +49,9 @@ document.addEventListener('click', () => {
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const sdwId = btn.getAttribute('data-sdw-id');
-        
-        if (sdwId) {
-            window.location.href = `/admin/edit/${sdwId}?type=sdw`;
+        const staffId = btn.getAttribute('data-sdw-id');
+        if (staffId) {
+            window.location.href = `/admin/edit/${staffId}`;
         }
     });
 });
@@ -61,10 +60,10 @@ document.querySelectorAll('.edit-btn').forEach(btn => {
 document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const sdwId = btn.getAttribute('data-sdw-id');
+        const staffId = btn.getAttribute('data-sdw-id');
         const name = btn.closest('.user-btn').querySelector('span').textContent;
-        if (sdwId) {
-            showDeleteConfirmation(sdwId, name, 'sdw');
+        if (staffId) {
+            showDeleteConfirmation(staffId, name, 'SDW');
         }
     });
 });
@@ -73,9 +72,9 @@ document.querySelectorAll('.delete-btn').forEach(btn => {
 document.querySelectorAll('.edit-supervisor-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const supervisorId = btn.getAttribute('data-supervisor-id');
-        if (supervisorId) {
-            window.location.href = `/admin/edit/${supervisorId}?type=supervisor`;
+        const staffId = btn.getAttribute('data-supervisor-id');
+        if (staffId) {
+            window.location.href = `/admin/edit/${staffId}`;
         }
     });
 });
@@ -84,10 +83,10 @@ document.querySelectorAll('.edit-supervisor-btn').forEach(btn => {
 document.querySelectorAll('.delete-supervisor-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const supervisorId = btn.getAttribute('data-supervisor-id');
+        const staffId = btn.getAttribute('data-supervisor-id');
         const name = btn.getAttribute('data-supervisor-name');
-        if (supervisorId) {
-            showDeleteConfirmation(supervisorId, name, 'supervisor');
+        if (staffId) {
+            showDeleteConfirmation(staffId, name, 'Supervisor');
         }
     });
 });
@@ -143,20 +142,16 @@ function confirmDelete() {
     const { id, type, name } = currentItem;
     closeDeleteConfirmation();
     
-    // Single endpoint - backend handles the type
+    // Backend determines type via getAccountInfo()
     fetch(`/admin/delete/${id}`, {  
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ type: type })
+        method: 'DELETE'
     })
     .then(response => {
         if (!response.ok) throw new Error(`Failed to delete ${type}`);
         return response.json();
     })
     .then(data => {
-        alert(data.message || `${type === 'supervisor' ? 'Supervisor' : 'SDW'} deleted successfully!`);
+        alert(data.message || `${type} deleted successfully!`);
         location.reload();
     })
     .catch(error => {
