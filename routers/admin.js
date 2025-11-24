@@ -537,8 +537,8 @@ adminRouter.delete('/delete/:staff_id', async (req, res) => {
             case "supervisor":
                 const {data: supervisorToDelete, error: err3} = await supabase
                     .from('supervisor')
+                    .delete() 
                     .eq('staff_info_id', staff_id)
-                    .delete()
                 
                 if(err3) throw err3;
                 break;
