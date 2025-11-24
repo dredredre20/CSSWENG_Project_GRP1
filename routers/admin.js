@@ -363,71 +363,9 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
     }
 });
 
-async function deleteStaff(staff_id, userInSession) {
-    const accountInfo = await getAccountInfo(staff_id);
-    if (!accountInfo) throw { status: 404, message: 'User not found.' };
-    if (!await canModify(userInSession, accountInfo)) throw { status: 403, message: 'Unauthorized.' };
-
-    switch (accountInfo.staff_type.toLowerCase()) {
-        case "admin":
-            const { data: adminToDelete, error: err1 } = await supabase
-                .from('admins')
-                .select('*')
-                .eq('staff_info_id', staff_id)
-                .single();
-            if (err1) throw err1;
-
-            await supabase.from('spus_has_admins')
-                .delete()
-                .eq('admins_admin_id', adminToDelete.admin_id);
-
-            await supabase.from('admins')
-                .delete()
-                .eq('staff_info_id', staff_id);
-            break;
-
-        case "supervisor":
-            await supabase.from('spus')
-                .update({ supervisor_id: null })
-                .eq('supervisor_id', accountInfo.staff_id);
-
-            await supabase.from('supervisor')
-                .delete()
-                .eq('staff_info_id', staff_id);
-            break;
-
-        case "sdw":
-            const { data: sdwFetch, error: err2 } = await supabase
-                .from('sdws')
-                .select('*')
-                .eq('staff_info_id', staff_id)
-                .single();
-            if (err2) throw err2;
-
-            await supabase.from('reports')
-                .delete()
-                .eq('sdw_id', sdwFetch.sdw_id);
-
-            await supabase.from('sdws')
-                .delete()
-                .eq('staff_info_id', staff_id);
-            break;
-    }
-
-    const { data: userToDelete, error: err3 } = await supabase
-        .from('staff_info')
-        .delete()
-        .eq('staff_id', staff_id);
-
-    if (err3) throw err3;
-
-    return true;
-}
-
-
 adminRouter.post('/edit/:staff_id', async (req, res) => {
     const staff_id = parseInt(req.params.staff_id, 10);
-    const { firstname, middlename = '', lastname, email, password, role, spu } = req.body;
+    const { firstname, middlename = '', lastname, email, password, spu } = req.body;
 
     const spuMap = { 
         1: "AMP", 
@@ -464,54 +402,40 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
         if(!await canModify(initiator, target)){
             return res.status(403).json({ success: false, message: 'Unauthorized.' });
         }
-            await deleteStaff(staff_id, initiator);
 
-            /* i keep getting this error TypeError: Cannot read properties of null (reading 'supervisor_id')
-            the idea is that deleteStaff is just a function version of the delete route
-            this switch statement tries to insert it to its respective tables
-            but it keeps erroring whenever it tries to insert
-            which is weird because the create route works completely fine*/
-            switch(role) {
-                case "Admin":
-                    const { data: adminInsert } = await supabase
-                        .from('admins')
-                        .insert({ staff_info_id: staff_id, first_name: firstname, middle_name: middlename, last_name: lastname, email })
-                        .select('*')
-                        .single();
-                    if (spu) {
-                        await supabase.from('spus_has_admins')
-                            .insert({ admins_admin_id: adminInsert.admin_id, spus_spu_id: spu });
-                    }
-                    break;
+        const {data: sdwData, error: err1} = await supabase
+            .from('sdws')
+            .update({                
+                first_name: firstname,
+                middle_name: middlename,
+                last_name: lastname,
+                email: email,
+                spu_id: spu,
+                supervisor_id: spu
+            })
+            .eq('staff_info_id', staff_id)
+            .select()
+        
+        if(err1) throw err1;
 
-                case "Supervisor":
-                    const { data: supervisorInsert } = await supabase
-                        .from('supervisor')
-                        .insert({ staff_info_id: staff_id, first_name: firstname, middle_name: middlename, last_name: lastname, email })
-                        .select('*')
-                        .single();
-                    if (spu) {
-                        await supabase.from('spus')
-                            .update({ supervisor_id: supervisorInsert.supervisor_id })
-                            .eq('spu_id', spu);
-                    }
-                    break;
+        const updateInfo = {email };
 
-                case "SDW":
-                    await supabase.from('sdws')
-                        .insert({ staff_info_id: staff_id, spu_id: spu, first_name: firstname, middle_name: middlename, last_name: lastname, email });
-                    break;
-            }
+        if(password){
+            updateInfo.password = await bcrypt.hash(password, 10);
+        }
 
-        const staffUpdates = { email };
-        if (password) staffUpdates.password = await bcrypt.hash(password, 10);
-        await supabase.from('staff_info').update(staffUpdates).eq('staff_id', staff_id);
+        const {data: updatedSdw, error: err2} = await supabase
+            .from('staff_info')
+            .update(updateInfo)
+            .eq('staff_id', staff_id)
+            .select()
+
+        if(err2) throw err2;
 
         res.json({ success: true, message: 'Account updated successfully!' });
-
-    } catch (err) {
+    } catch(err){
+        res.status(500).json({ success: false, message: 'Error editing SDW.' });
         console.error(err);
-        res.status(500).json({ success: false, message: 'Error editing account.' });
     }
 });
 
