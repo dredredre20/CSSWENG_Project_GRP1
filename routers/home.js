@@ -5,7 +5,7 @@ const homeRouter = express.Router();
 
 // get all sdws under the specific supervisor
 async function getSdws(supervisor_id){
-    try{
+    /*try{
         const {data: sdws, error: err1} = await supabase
             .from('sdws')
             .select('sdw_id, first_name, last_name')
@@ -16,6 +16,35 @@ async function getSdws(supervisor_id){
         return sdws;
     } catch(err){
         console.error(err);
+    }*/
+    try {
+        const { data: spuData, error: spuErr } = await supabase
+            .from('spus')
+            .select('spu_id')
+            .eq('supervisor_id', supervisor_id)
+            .single();
+
+        if (spuErr) throw spuErr;
+
+        if (!spuData) {
+            console.log('Supervisor not assigned to any SPU.');
+            return [];
+        }
+
+        const spuId = spuData.spu_id;
+
+        const { data: sdws, error: sdwErr } = await supabase
+            .from('sdws')
+            .select('sdw_id, first_name, last_name')
+            .eq('spu_id', spuId);
+
+        if (sdwErr) throw sdwErr;
+
+        return sdws || [];
+
+    } catch (err) {
+        console.error('Error fetching SDWs:', err);
+        return [];
     }
 }
 

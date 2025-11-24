@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        spuAssignedTo: document.getElementById("spu").value
+        //spuAssignedTo: document.getElementById("spu").value
     };
 
 });
@@ -27,8 +27,8 @@ confirmBtn.addEventListener("click", ()=> {
         lastname: document.getElementById("lastname").value.trim(),
         email: document.getElementById("email").value.trim(),   
         password: document.getElementById("password").value, 
-        spu: document.getElementById("spu").value,
-        role: document.getElementById("role").value
+        //spu: document.getElementById("spu").value,
+        //role: document.getElementById("role").value
     }
 
     // Check if required fields are filled
@@ -83,7 +83,7 @@ cancelBtn.addEventListener("click", ()=>{
         lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        spu: document.getElementById("spu").value
+        //spu: document.getElementById("spu").value
     };
 
     const hasChanges = Object.keys(originalData).
@@ -96,9 +96,10 @@ cancelBtn.addEventListener("click", ()=>{
         window.location.href = "/admin";
 });
 
-const roleSelect = document.getElementById("role");
+//const roleSelect = document.getElementById("role");
 
 //automatically hide select fields that conflict with selected role
+/*
 roleSelect.addEventListener("change", ()=> {
     const role = roleSelect.value;
     const spuSelect = document.getElementById("spu");
@@ -130,3 +131,4 @@ roleSelect.addEventListener("change", ()=> {
 
     
 });
+*/
