@@ -95,38 +95,34 @@ h1{
 }
 
 .divButtons{
-    padding-top:25px;
-    height:600px;
-    overflow:scroll;
-    display:grid;
-    grid-template-columns: auto auto auto auto;
-    flex-wrap:wrap;
-    row-gap: 0px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    max-width: 1100px;
+    padding-top: 0;
+    margin-top: 20px;
 }
 
 .report-btn{
     background-color: #f4b41a;
     border: none;
-    border-radius: 70px;
-    width: 90%;
-    height: 80px;
-    padding: 15px 20px;
-    font-size: 18px;
-    font-weight: 500;
+    border-radius: 50px;
+    width: 100%;
+    min-width: 0;
+    height: 90px;
+    padding: 20px 35px;
+    font-size: 19px;
+    font-weight: 600;
     color: #000;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 0px 10px 0px 10px;
-    display:flex
-}
-
-button span{
-    width:100%;
-    margin:auto;
-    text-align:center;
-
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
 }
 
 .report-btn:hover {
