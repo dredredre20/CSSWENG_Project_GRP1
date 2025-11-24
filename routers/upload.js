@@ -6,9 +6,8 @@ import { supabase } from '../middleware/supabase_client.js';
 const uploadRouter = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }); // so it doesnt make a temp file
 
-
 // appends (n) based on how many exists in the dropbox with the same name AND same report type
-async function getUniqueDropboxPath(fileName, reportType, dbx) {
+async function getUniqueDropboxPath(fileName, reportType) {
     let baseName = fileName;
     let ext = '';
     const dotIndex = fileName.lastIndexOf('.');
@@ -17,37 +16,47 @@ async function getUniqueDropboxPath(fileName, reportType, dbx) {
         ext = fileName.slice(dotIndex);
     }
 
-    let uniqueName = baseName + ext;
+    let uniqueName = baseName + ext; // Start with original name
     let counter = 1;
 
-    const { data: dbFiles, error: dbErr } = await supabase
+    // First, check if this exact filename already exists for this report type in database
+    const { data: existingFiles, error } = await supabase
         .from('reports')
         .select('report_name')
-        .eq('type', reportType);
+        .eq('type', reportType)
+        .like('report_name', `${baseName}%`); 
 
-    if (dbErr) {
-        console.error("Supabase error:", dbErr);
+    if (error) {
+        console.error("Error checking existing files:", error);
+        return uniqueName; // Return original name if error
     }
 
-    const dbNames = dbFiles?.map(f => f.report_name) ?? [];
+    // Extract just the base names without extensions for comparison
+    const existingBaseNames = existingFiles.map(file => {
+        const fileDotIndex = file.report_name.lastIndexOf('.');
+        return fileDotIndex !== -1 ? file.report_name.slice(0, fileDotIndex) : file.report_name;
+    });
 
-    async function dropboxExists(path) {
-        try {
-            await dbx.filesGetMetadata({ path: "/" + path });
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
+    // Check if original name exists
+    if (existingBaseNames.includes(baseName)) {
+        // Find the highest number already used
+        const pattern = new RegExp(`^${baseName} \\((\\d+)\\)$`);
+        let maxNumber = 0;
+        
+        existingBaseNames.forEach(name => {
+            const match = name.match(pattern);
+            if (match && match[1]) {
+                const num = parseInt(match[1]);
+                if (num > maxNumber) maxNumber = num;
+            }
+        });
 
-    while (dbNames.includes(uniqueName) || await dropboxExists(uniqueName)) {
+        counter = maxNumber + 1;
         uniqueName = `${baseName} (${counter})${ext}`;
-        counter++;
     }
 
     return uniqueName;
 }
-
 
 
 uploadRouter.post('/', upload.single("file"), async (req, res) => {
@@ -70,17 +79,18 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
             return res.status(400).json({ success: false, message: "No SDW found" });
         }
 
-        
         // Get unique filename with consideration of report type to avoid non-repeated names outside same type
-        const uniqueName = await getUniqueDropboxPath(upload_info.report_name, upload_info.type, dbx);
+        const uniqueName = await getUniqueDropboxPath(upload_info.report_name, upload_info.type);
+        const dropboxPath = `/${uniqueName}`;
 
+        // Upload to Dropbox
         response = await dbx.filesUpload({
-            path: "/" + uniqueName,
+            path: dropboxPath,
             contents: file.buffer,
-            mode: { ".tag": "add" },
-            autorename: true
+            mode: { ".tag": "add" }
         });
 
+        // Insert into database
         try {
             const now = new Date();
             const dateTime = now.toISOString().slice(0, 19).replace("T", " ");
@@ -88,16 +98,16 @@ uploadRouter.post('/', upload.single("file"), async (req, res) => {
             const { error: insertError } = await supabase.from('reports')
                 .insert({ 
                     sdw_id: sdw_id,
-                    report_name: response.result.name,
+                    report_name: uniqueName, 
                     file_size: file.size,
                     upload_date: dateTime,
                     type: upload_info.type,
-                    file_path: response.result.path_lower
+                    file_path: response.result.id
                 });
             
             if (insertError) throw insertError;
 
-            res.json({ success: true, finalFileName: response.result.name });
+            res.json({ success: true, finalFileName: uniqueName });
         } catch(err) {
             console.error("ERROR: upload.js uploadRouter DB Operation " + err);
             res.status(500).json({ success: false, message: "Database operation failed" });
