@@ -52,7 +52,7 @@ reportRouter.get('/:category', async (req, res) => {
                 break;
             case "Logout":
                 res.redirect('/');
-                categoryId = -1;
+                categoryId = -2;
                 break;
             default:
                     categoryId = 0; // fallback
@@ -60,6 +60,11 @@ reportRouter.get('/:category', async (req, res) => {
         
         if(categoryId == -1){
             return
+        }
+
+        if(categoryId === -2){
+            console.log("Logging out");
+            return res.redirect('/logout');
         }
         
         let account;
