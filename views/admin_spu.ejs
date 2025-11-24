@@ -27,7 +27,13 @@
                 <h3 style="position:absolute; left:22%"> Supervisor Assigned: </h3>
                 
                 <!--TODO: Backend work here-->
-                <button class="user-btn"><img src="/sdw_icon.png" class="sdw-icon"><span><%= supervisor.supervisor.first_name %> <%= supervisor.supervisor.last_name %></span> </button>
+                <!-- If array is passed, use first element. Just user supervisor directly if not-->
+                <% const s = (supervisor?.supervisor && supervisor.supervisor[0]) || supervisor || {}; %>
+                <button class="user-btn">
+                  <img src="/sdw_icon.png" class="sdw-icon">
+                  <span><%= s.first_name || 'Unassigned' %> <%= s.last_name || '' %></span>
+                </button>
+
 
                 <h3 style="position:absolute; left:22%;"> SDWs Assigned: </h3>
 

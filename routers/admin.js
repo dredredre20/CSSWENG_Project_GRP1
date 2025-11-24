@@ -110,65 +110,63 @@ adminRouter.get('/adminlist', async (req, res) => {
     }
 });
 
+
+
 adminRouter.get('/spu/:spu_type', async (req, res) => {
-    try{
-        const spu_type = req.params.spu_type;
-        const {data: rows, error: err1} = await supabase
-            .from('spus')
-            .select('*')
-            .eq('spu_name', spu_type)
-            .single()
-        
-        if(err1) throw err1;
+  try {
+    const spu_type = req.params.spu_type;
 
-        const spuId = rows.spu_id;
+    const { data: spuRow, error: err1 } = await supabase
+      .from('spus')
+      .select('*')
+      .eq('spu_name', spu_type)
+      .single();
+    if (err1) throw err1;
 
-        const {data: sdws, error: err2} = await supabase
-            .from('sdws')
-            .select('*')
-            .eq('spu_id', spuId)
-        
-        if(err2) throw err2;
+    const spuId = spuRow.spu_id;
 
-        const {data: supervisor_response, error: err3} = await supabase
-            .from('spus')
-            .select('supervisor(*)')
-            .eq('spu_id', spuId)
-        
-        if(err3) throw err3;
-        console.log(supervisor_response)
+    const { data: sdws, error: err2 } = await supabase
+      .from('sdws')
+      .select('*')
+      .eq('spu_id', spuId);
+    if (err2) throw err2;
 
-        let supervisor 
+    // request the spu row with nested supervisor relation, ensure single row
+    const { data: spuWithSupervisor, error: err3 } = await supabase
+      .from('spus')
+      .select('supervisor(*)')
+      .eq('spu_id', spuId)
+      .single();
+    if (err3) throw err3;
 
-        //dont know why its always Unassigned
-        if (!supervisor_response || !supervisor_response.supervisor) {
-            supervisor = {
-                supervisor: {
-                    first_name: 'Unassigned',
-                    last_name: null
-                }
-            };
-        } else { supervisor = supervisor_response.supervisor; }
+    // spuWithSupervisor.supervisor can be an array (PostgREST returns nested arrays)
+    let supervisor;
+    const nested = spuWithSupervisor?.supervisor;
 
-        const spuNameOf = {
-            1: 'AMP',
-            2: 'FDQ',
-            3: 'MPH',
-            4: 'MS'
-        }
-
-        const spuName = spuNameOf[spuId];
-        
-        res.render('admin_spu', {
-           spuPage: spuName,
-           sdws: sdws,
-           supervisor
-        });
-
-    } catch(err){
-        console.error(err);
+    // if no supervisor assigned, or empty array, use the default value
+    if (!nested || (Array.isArray(nested) && nested.length === 0)) {
+      supervisor = { first_name: 'Unassigned', last_name: null };
+    } else { //return first element if array
+      supervisor = Array.isArray(nested) ? nested[0] : nested;
     }
+
+    const spuNameOf = { 1: 'AMP', 2: 'FDQ', 3: 'MPH', 4: 'MS' };
+    const spuName = spuNameOf[spuId];
+
+    res.render('admin_spu', {
+      spuPage: spuName,
+      sdws,
+      supervisor
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 });
+
+
+
 
 adminRouter.get('/create', async (req, res) => {
     try {
