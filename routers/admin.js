@@ -443,20 +443,54 @@ adminRouter.post('/edit/:staff_id', async (req, res) => {
             return res.status(403).json({ success: false, message: 'Unauthorized.' });
         }
 
-        const {data: sdwData, error: err1} = await supabase
-            .from('sdws')
-            .update({                
-                first_name: firstname,
-                middle_name: middlename,
-                last_name: lastname,
-                email: email,
-                //spu_id: spu,
-                //supervisor_id: spu
-            })
-            .eq('staff_info_id', staff_id)
-            .select()
-        
-        if(err1) throw err1;
+        switch(target.staff_type){
+            case 'admin':
+                const {data: adminData, error: err2} = await supabase
+                .from('admins')
+                .update({                
+                    first_name: firstname,
+                    middle_name: middlename,
+                    last_name: lastname,
+                    email: email,
+
+                })
+                .eq('staff_info_id', staff_id)
+                .select()
+            
+                if(err2) throw err2;
+                break;
+
+            case 'supervisor':
+                const {data: supervisorData, error: err3} = await supabase
+                .from('supervisor')
+                .update({                
+                    first_name: firstname,
+                    middle_name: middlename,
+                    last_name: lastname,
+                    email: email,
+
+                })
+                .eq('staff_info_id', staff_id)
+                .select()
+            
+                if(err3) throw err3;
+                break;
+                break;
+            case 'sdw':
+                const {data: sdwData, error: err1} = await supabase
+                .from('sdws')
+                .update({                
+                    first_name: firstname,
+                    middle_name: middlename,
+                    last_name: lastname,
+                    email: email,
+                })
+                .eq('staff_info_id', staff_id)
+                .select()
+            
+                if(err1) throw err1;
+                break;
+        }
 
         const updateInfo = {email };
 
