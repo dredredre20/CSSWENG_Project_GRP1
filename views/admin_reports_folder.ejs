@@ -42,9 +42,10 @@
                 <% } else { %>
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
+                            <input type="hidden" id="fileSize" value="<%= report.file_size%>">
                             <div class="report-card" 
                                  data-report-id="<%= report.report_id %>"
-                                 data-report-name="<%= report.sdw_id %>"
+                                 data-report-name="<%= report.report_name %>"
                                  data-report-date="<%= report.upload_date %>"
                                  data-report-type="<%= report.type || 'Unknown' %>">
 

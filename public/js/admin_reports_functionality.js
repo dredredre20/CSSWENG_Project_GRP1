@@ -1,7 +1,5 @@
 // Store current report data
 let currentReport = null;
-
-
 // Get DOM elements
 const modal = document.getElementById('previewModal');
 const closeModalBtn = document.getElementById('closeModal');
@@ -9,6 +7,8 @@ const btnDownload = document.getElementById('btnDownload');
 const btnDelete = document.getElementById('btnDelete');
 const sortSelect = document.getElementById('sort-by');
 const reportGrid = document.querySelector('.report-grid');
+const sizeVal = document.getElementById('fileSize');
+
 
 // Sidebar navigation - Make dynamic
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -24,19 +24,23 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         window.location.href = `/reports/${encodeURIComponent(category)}`;
     });
 });
-    
+
 // Open modal when clicking on report card
 document.querySelectorAll('.report-card').forEach(card => {
     card.addEventListener('click', function(e) {
+        console.log("File size value: " + sizeVal.value);
         // Don't open if clicking the options button
         if (e.target.classList.contains('report-options-btn')) {
             return;
         }
+        
+        
         // Might edit some of the details here
+        //console.log(this.dataset);
         currentReport = {
                 id: this.dataset.reportId,
                 name: this.dataset.reportName,
-                size: this.dataset.reportSize,
+                size: sizeVal.value,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader
                 
