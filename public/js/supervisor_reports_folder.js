@@ -6,14 +6,13 @@ let currentReport = null;
 const modal = document.getElementById('previewModal');
 const closeModalBtn = document.getElementById('closeModal');
 const btnDownload = document.getElementById('btnDownload');
-const btnDelete = document.getElementById('btnDelete');
 const sortSelect = document.getElementById('sort-by');
 const reportGrid = document.querySelector('.report-grid');
 
 // Sidebar navigation - Make dynamic
 document.querySelectorAll('.nav-btn').forEach(btn => {
     // Highlight active category
-    if (btn.dataset.category === '<%= currentCategory %>') {
+    if (btn.dataset.category === '<%= currentCategory %>') { 
         btn.classList.add('active');
     }
     // Navigate to category
@@ -110,27 +109,6 @@ btnDownload.addEventListener('click', () => {
     }
 });
 
-// Delete button
-btnDelete.addEventListener('click', () => {
-    if (currentReport) {
-        if (confirm(`Are you sure you want to delete "${currentReport.name}"?`)) {
-            // TODO: Implement delete API call
-            // Marker: This needs more validation
-            fetch(`/api/reports/${currentReport.id}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Report deleted successfully!');
-                closeModal();
-                location.reload(); // Refresh the page
-            })
-            .catch(error => {
-                alert('Error deleting report: ' + error.message);
-            });
-        }
-    }
-});
 
 // Sorting functionality
 sortSelect.addEventListener('change', () => {
