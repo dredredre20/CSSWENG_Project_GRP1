@@ -31,7 +31,7 @@ downloadRouter.get('/:report_id', async (req, res) => {
             res.setHeader("Content-Type", response.result.content_type || "application/octet-stream");
             res.send(response.result.fileBinary);
 
-            console.log("Downloaded from Google Drive");
+            console.log("Downloaded from Dropbox");
         } catch (err) {
             console.error(err);
         }
