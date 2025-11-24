@@ -30,8 +30,13 @@
                 <!-- If array is passed, use first element. Just user supervisor directly if not-->
                 <% const s = (supervisor?.supervisor && supervisor.supervisor[0]) || supervisor || {}; %>
                 <button class="user-btn">
-                  <img src="/sdw_icon.png" class="sdw-icon">
-                  <span><%= s.first_name || 'Unassigned' %> <%= s.last_name || '' %></span>
+                    <img src="/sdw_icon.png" class="sdw-icon">
+                    <span><%= s.first_name || 'Unassigned' %> <%= s.last_name || '' %></span>
+                    <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                    <ul class="kebab-menu hidden">
+                        <li class="edit-btn" data-sdw-id="">Edit</li>
+                        <li class="delete-btn" data-sdw-id="">Delete</li>
+                    </ul>
                 </button>
 
 
