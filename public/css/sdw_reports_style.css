@@ -592,8 +592,8 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position:fixed;
-    bottom: 8;
-    right: 8;
+    bottom: 8px;
+    right: 8px;
 }
 
 .upload-btn{
