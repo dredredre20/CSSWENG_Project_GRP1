@@ -42,7 +42,7 @@ document.querySelectorAll('.report-card').forEach(card => {
                 name: this.dataset.reportName,
                 size: sizeVal.value,
                 date: this.dataset.reportDate,
-                uploader: this.dataset.reportUploader
+                uploader: this.dataset.reportUploader //test
                 
                 
 
