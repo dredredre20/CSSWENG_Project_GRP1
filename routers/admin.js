@@ -104,7 +104,11 @@ adminRouter.get('/adminlist', async (req, res) => {
     try{
         const {data: admins_List, error: err1} = await supabase.from('admins').select('*');
         if(err1) throw err1;
-        res.render('admin_adminlist', {admins:admins_List});
+        //console.log(admins_List)
+        res.render('admin_adminlist', {
+            admins:admins_List,
+
+        });
     }catch(err){
         console.error(err);
     }
@@ -226,7 +230,7 @@ adminRouter.post('/create', async (req, res) => {
         }
 
         const spuId = spuIdOf[spuAssignedTo];
-        console.log(spuId);
+        //console.log(spuId);
 
         switch(role){
             case "admin":
@@ -324,17 +328,9 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
     const staff_id = req.params.staff_id;
 
     try{
-        const {data: sdw, error: err1} = await supabase
-            .from('sdws')
-            .select('sdw_id, first_name, middle_name, last_name, email, spu_id')
-            .eq('staff_info_id', staff_id)
-            .single()
-        
-        if(err1) throw err1;
-
-        if(!sdw){
-            return res.status(404).send("SDW not found.");
-        }
+        const account = await getAccountInfo(staff_id);
+        //console.log(account)
+        if (!account) return res.status(404).send("User not found.");
 
         const spuMap = {
             1: "AMP",
@@ -342,24 +338,68 @@ adminRouter.get('/edit/:staff_id', async (req, res) => {
             3: "MPH",
             4: "MS"
         };
+        let row;
+        switch(account.staff_type){
+            case 'admin':
+                const {data: admin, error: err2} = await supabase
+                    .from('admins')
+                    .select('admin_id, first_name, middle_name, last_name, email')
+                    .eq('staff_info_id', staff_id)
+                    .single()
+                
+                if(err2) throw err2;
 
-        const row = sdw;
-        const first_name = row.first_name || '';
-        const middle_name = row.middle_name || '';
-        const last_name = row.last_name || '';
-        const email = row.email || '';
-        const spu_id = row.spu_id || null;
-        const spu_name = spuMap[spu_id];
+                if(!admin){
+                    return res.status(404).send("Admin not found.");
+                }
+                row = admin
+                break;
 
-        res.render('admin_editacc', {
-            AdminName: 'Admin',
-            sdw: { firstname: first_name, middlename: middle_name, lastname: last_name, email, password: '' },
-            spu_name,
-            staff_id
-        });
+            case 'supervisor':
+                const {data: supervisor, error: err3} = await supabase
+                    .from('supervisor')
+                    .select('supervisor_id, first_name, middle_name, last_name, email')
+                    .eq('staff_info_id', staff_id)
+                    .single()
+                
+                if(err3) throw err3;
+
+                if(!admin){
+                    return res.status(404).send("Admin not found.");
+                }
+                row = supervisor
+                break;
+
+            case 'sdw':
+                const {data: sdw, error: err1} = await supabase
+                    .from('sdws')
+                    .select('sdw_id, first_name, middle_name, last_name, email')
+                    .eq('staff_info_id', staff_id)
+                    .single()
+                
+                if(err1) throw err1;
+
+                if(!sdw){
+                    return res.status(404).send("SDW not found.");
+                }
+                row = sdw;
+                break;
+        }
+                
+
+                const first_name = row.first_name || '';
+                const middle_name = row.middle_name || '';
+                const last_name = row.last_name || '';
+                const email = row.email || '';
+
+                res.render('admin_editacc', {
+                    AdminName: '',
+                    sdw: { firstname: first_name, middlename: middle_name, lastname: last_name, email, password: '' },
+                    staff_id
+                });
     } catch(err){
         console.error(err);
-        res.status(500).json({ success: false, message: 'Error editing SDW.' });
+        res.status(500).json({ success: false, message: 'Error editing account.' });
     }
 });
 
@@ -453,20 +493,10 @@ adminRouter.delete('/delete/:staff_id', async (req, res) => {
             case "admin":
                 const {data: adminToDelete, error: err1} = await supabase
                     .from('admins')
-                    .select('*')
-                    .eq('staff_info_id', staff_id)
-                    .single()
                     .delete()
+                    .eq('staff_info_id', staff_id)
 
                 if(err1) throw err1;
-
-                const {data: adminSpuToDelete, error: err2} = await supabase
-                    .from('spus_has_admins')
-                    .eq('admins_admin_id', adminToDelete.admin_id)
-                    .delete()
-
-                if(err2) throw err2;
-
                 break;
             case "supervisor":
                 const {data: supervisorToDelete, error: err3} = await supabase
