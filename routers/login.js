@@ -49,6 +49,7 @@ loginRouter.post('/', async (req, res) => {
 
         } catch(err){
             console.error(err);
+            return res.status(401).json({error: 'invalid_credentials', message: 'Incorrect Password or Email'});
         }
         
         // if an account is returned and compare password hashes via bcrypt
@@ -61,7 +62,7 @@ loginRouter.post('/', async (req, res) => {
                     first_name: account.first_name,
                     last_name: account.last_name,
                 };
-                return res.redirect('/home');
+                return res.json({success: true, redirect: '/home'});
             }
             else if (account.staff_type == "supervisor"){
                 var supervisor;
@@ -87,8 +88,10 @@ loginRouter.post('/', async (req, res) => {
                         last_name: supervisor.last_name
                     };
                     supervisor = null;
+                    return res.json({success: true, redirect: '/home'});
                 } catch(err){
                     console.error(err);
+                    return res.status(500).json({error: 'server_error', message: 'Server error occurred'});
                 }
             }
             else if(account.staff_type == "admin"){     
@@ -113,19 +116,26 @@ loginRouter.post('/', async (req, res) => {
                         email: admin.email
                     };
                     admin = null;
+                    return res.json({success: true, redirect: '/home'});
                 } catch(err){
                     console.error(err);
+                    return res.status(500).json({error: 'server_error', message: 'Server error occurred'});
+
                 } 
             }
             
-            return res.redirect('/home');
+            // return res.redirect('/home');
         } else{
-            console.log('No account found');
+            console.log('Invalid Credentials');
+            return res.status(401).json({error: 'invalid_credentials', message: 'Incorrect Password or Email'});
+
         }
         
         res.redirect('/login');
     } catch(err){
         console.error(err);
+        return res.status(500).json({error: 'server_error', message: 'Server error occurred'});
+
     }
 })
 
