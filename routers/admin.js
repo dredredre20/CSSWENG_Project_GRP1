@@ -78,7 +78,7 @@ async function getAccountInfo(staff_id){
 
 // initiator -> edits/deletes (modifies) -> target
 async function canModify(initiator, target){
-    const masterEmail = "admin1@gmail.com"; // change this accordingly
+    const masterEmail = "manila_programdept@intl.unbound.org"; // change this accordingly
 
     // If target for modification is the master admin, reject it
     if(target.email === masterEmail){
