@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Supervisor Reports Folder</title>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-    <link rel="stylesheet" href="/css/supervisor_reports_folder_style.css">
+    <link rel="stylesheet" href="/css/sdw_reports_style.css">
 </head>
 
 <body>
@@ -14,18 +14,6 @@
             <img src="/logo.png" style="scale:55%; margin: auto; ">
             <nav class="nav-menu">      <!-- Go back here to check if proper referencing-->
                 <button class="nav-btn" onclick="window.location.href='/supervisor_reports'">Back to Reports Folder Page</button>
-                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
-                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
-                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
-                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
-                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
-                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
-                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
-                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
-                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
-                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
-                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
-                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
             </nav>
         </aside>
 
@@ -48,36 +36,35 @@
                 <% if (reports.length === 0) { %>
                     <div class="empty-state">
                         <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>
-                        <p class="upload-subtext">Start by uploading a file on the <a href="/sdw_homepage">homepage</a>.</p>
                     </div>
 
                 <% } else { %>
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
-                            <div class="report-card" 
-                                 data-report-id="<%= report.report_id %>"
-                                 data-report-name="<%= report.sdw_id %>"
-                                 data-report-date="<%= report.upload_date %>"
-                                 data-report-type="<%= report.type || 'Unknown' %>"
-
-                                 <%# For the report id, we can probably join to the sdw table to show name instead %>
+                            
+                            <div class="report-card"
                                  
+                                data-report-id="<%= report.report_id %>"
+                                data-report-name="<%= report.report_name %>"
+                                data-report-size="<%= report.file_size %>"
+                                data-report-date="<%= report.upload_date %>"
+                                data-report-uploader="<%= staff_name || 'Unknown' %>">
+                                
                                 <div class="report-thumbnail">
                                     <div class="thumbnail-placeholder">
                                         <span>📄</span>
                                     </div>
                                 </div>
-                                
                                 <div class="report-info">
-                                    <span class="report-icon">📊</span>
-                                    <span class="report-name"><%= report.name %></span>
-                                    <button class="report-options-btn" onclick="event.stopPropagation()">⋮</button>
+                                        <span class="report-name"><%= report.report_name %></span>
                                 </div>
+                                
+                                
+                                
                             </div>
                         <% }); %>
                     </div>
                 <% } %>
-
                 
             </div>
             <!-- <button class="logout-btn" onclick="window.location.href='/login'">Logout</button>  -->
@@ -111,23 +98,21 @@
                     <strong>Uploaded:</strong> <span id="uploadDate">-</span> | 
                     <strong>Size:</strong> <span id="fileSize">-</span> | 
                     <strong>By:</strong> <span id="uploader">-</span>
+                    <!-- <strong>Uploaded Under SPU:</strong> <span id="supervisor">-</span> -->
                 </div>
                 <div class="modal-buttons">
                     <button class="btn-download" id="btnDownload">
                         <span>⬇</span>
                         Download
                     </button>
-                    <button class="btn-delete" id="btnDelete">
-                        <span>🗑</span>
-                        Delete
-                    </button>
+
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Access the srcipt for the functionalities for the reports-->
-    <script src="/js/sdw_reports_functionality.js"></script>
+    <script src="/js/supervisor_reports_folder.js"></script>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Create Account</title>
+    <title>Admin Edit Account</title>
     </title>
     <link rel="stylesheet" href="/css/admin_editacc_style.css">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
@@ -54,23 +54,8 @@
                                 <label for="password">Password</label>
                                 <input class="textbox" id="password" name="password" type="password" value="<%= sdw.password %>">
                             </div>
-                            
-                            <div class="label-and-input">
-                                <label for="spu">SPU</label>
-                                <select id="spu" name="spu" required>
-                                    <option value="1" <%= spu_name === 'AMP' ? 'selected' : '' %>>AMP</option>
-                                    <option value="2" <%= spu_name === 'FDQ' ? 'selected' : '' %>>FDQ</option>
-                                    <option value="3" <%= spu_name === 'MPH' ? 'selected' : '' %>>MPH</option>
-                                    <option value="4" <%= spu_name === 'MS' ? 'selected' : '' %>>MS</option>
-                                </select>
-                            </div>
-
-                            <div class="label-and-input">
-                                <label for="input">User Image</label>
-                                <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
-                            </div>
                         </div>
-                        <img id="preview" src="sdw_icon.png">
+                        
                         <div class="bottom-bar">
                             <button class="cancel-btn" type="button" id="cancel">Cancel</button>
                             <button class="confirm-btn" type="button" id="confirm">Confirm Edits</button>

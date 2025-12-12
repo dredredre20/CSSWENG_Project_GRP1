@@ -12,3 +12,10 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         });
     }
 });
+
+// Handle admin list button visibility for master admin
+const adminBtn = document.getElementById('view-admin').addEventListener('click', () =>{
+    //console.log("Is Happen");
+    window.location.href = '/admin/adminlist';
+});
+

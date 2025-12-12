@@ -163,11 +163,13 @@ select{
 }
 
 .content-area img{
-    margin-top: -10px;
-    height:100%;
-    width:100%;
-    max-width:200px;
-    max-height:200px
+    margin-top: 5px;
+    height: 100%;
+    width: 100%;
+    max-width: 63.5%;
+    max-height: 200px;
+    min-height: 713.3%;
+    border: 1px solid black;
 }
 
 .bottom-bar{

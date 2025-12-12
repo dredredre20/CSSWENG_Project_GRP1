@@ -1,5 +1,5 @@
 // Sort functionality
-document.getElementById('sortMenu').addEventListener('change', function(e) {
+/*document.getElementById('sortMenu').addEventListener('change', function(e) {
     const sortBy = e.target.value;
     const container = document.getElementById('sdwContainer');
     const buttons = Array.from(container.getElementsByTagName('button'));
@@ -8,6 +8,7 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
         const nameA = a.querySelector('span').textContent;
         const nameB = b.querySelector('span').textContent;
         
+        // Not sure about the logic here
         if (sortBy === 'alphabetical') {
             return nameA.localeCompare(nameB);
         } else if (sortBy === 'lastupdated') {
@@ -20,14 +21,10 @@ document.getElementById('sortMenu').addEventListener('change', function(e) {
     
     container.innerHTML = '';
     buttons.forEach(button => container.appendChild(button));
-});
+});*/
 
-// Navigate to SDW page 
-function navigateToSDW(sdw_id) {
-    window.location.href = `/admin/reports/${sdw_id}`;
-}
+// reimplement sorting later, it breaks currently
 
-// Kebab menu toggle
 document.querySelectorAll('.kebab').forEach(kebab => {
     kebab.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -45,68 +42,35 @@ document.addEventListener('click', () => {
     });
 });
 
-// EDIT - SDW
+// EDIT
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const staffId = btn.getAttribute('data-sdw-id');
-        if (staffId) {
-            window.location.href = `/admin/edit/${staffId}`;
-        }
+        const id = btn.getAttribute('data-sdw-id');
+        window.location.href = `/admin/edit/${id}`;
     });
 });
 
-// DELETE - SDW
+// DELETE - Updated with confirmation modal
 document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const staffId = btn.getAttribute('data-sdw-id');
+        const id = btn.getAttribute('data-sdw-id');
         const name = btn.closest('.user-btn').querySelector('span').textContent;
-        if (staffId) {
-            showDeleteConfirmation(staffId, name, 'SDW');
-        }
+        showDeleteConfirmation(id, name);
     });
 });
-
-// EDIT - Supervisor
-document.querySelectorAll('.edit-supervisor-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const staffId = btn.getAttribute('data-supervisor-id');
-        if (staffId) {
-            window.location.href = `/admin/edit/${staffId}`;
-        }
-    });
-});
-
-// DELETE - Supervisor
-document.querySelectorAll('.delete-supervisor-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const staffId = btn.getAttribute('data-supervisor-id');
-        const name = btn.getAttribute('data-supervisor-name');
-        if (staffId) {
-            showDeleteConfirmation(staffId, name, 'Supervisor');
-        }
-    });
-});
-
-// Variables for modal state
-let deleteConfirmModal = null;
-let currentItem = null;
 
 // Custom delete confirmation modal
-function showDeleteConfirmation(id, name, type) {
-    currentItem = { id: id, name: name, type: type };
-    
-    const displayType = type === 'supervisor' ? 'Supervisor' : 'SDW';
+function showDeleteConfirmation(sdwId, sdwName) {
+    currentSDW = { id: sdwId, name: sdwName };
     
     deleteConfirmModal = document.createElement('div');
     deleteConfirmModal.className = 'delete-modal';
     deleteConfirmModal.innerHTML = `
         <div class="delete-modal-content">
-            <h3>Delete ${displayType}</h3>
-            <p>Are you sure you want to delete "<strong>${name}</strong>"?</p>
+            <h3>Delete SDW</h3>
+            <p>Are you sure you want to delete "<strong>${sdwName}</strong>"?</p>
             <p class="warning-text">This action cannot be undone.</p>
             <div class="delete-modal-buttons">
                 <button class="btn-cancel">Cancel</button>
@@ -131,32 +95,30 @@ function closeDeleteConfirmation() {
                 document.body.removeChild(deleteConfirmModal);
             }
             deleteConfirmModal = null;
-            currentItem = null;
+            currentSDW = null;
         }, 300);
     }
 }
 
 function confirmDelete() {
-    if (!currentItem) return;
+    if (!currentSDW) return;
     
-    const { id, type, name } = currentItem;
     closeDeleteConfirmation();
     
-    // Backend determines type via getAccountInfo()
-    fetch(`/admin/delete/${id}`, {  
+    fetch(`/admin/delete/${currentSDW.id}`, {  
         method: 'DELETE'
     })
     .then(response => {
-        if (!response.ok) throw new Error(`Failed to delete ${type}`);
+        if (!response.ok) throw new Error('Failed to delete SDW');
         return response.json();
     })
     .then(data => {
-        alert(data.message || `${type} deleted successfully!`);
-        location.reload();
+        alert(data.message || 'SDW deleted successfully!');
+        location.reload(); // Refresh the page to update the list
     })
     .catch(error => {
         console.error('Delete error:', error);
-        alert(`Error deleting ${type}: ${error.message}`);
+        alert('Error deleting SDW: ' + error.message);
     });
 }
 

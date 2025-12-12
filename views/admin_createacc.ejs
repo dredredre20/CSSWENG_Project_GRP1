@@ -24,7 +24,7 @@
         <main class="content">
             <div class="content-main">
                                                                                     <!-- Render Name in the backend-->
-                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= AdminName %></span>!</h2>
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= admin.first_name %>  <%= admin.last_name %></span>!</h2>
                 <div class="content-bar"><h1>Create a new account</h1></div>
                 <div class="content-area">
                     <div class="inputs-area">
@@ -55,22 +55,26 @@
                         </div>
                         
                         <div class="label-and-input">
-                            <label for="spu">SPU</label>
-                            <select id="spu">
-                                <option>AMP</option>
-                                <option>FDQ</option>
-                                <option>MPH</option>
-                                <option>MS</option>
+                            <label for="role">Role</label>
+                            <select id="role">
+                                <option selected>SDW</option>
+                                <option>Supervisor</option>
+                                <option>Admin</option>
                             </select>
                         </div>
 
-                        <div class="label-and-input">
-                            <label for="input">User Image</label>
-                            <input class="fileupload" accept="image/*" type="file" onchange="preview(this.files[0])">
-                            
+                        <div class="label-and-input" id="spuDiv">
+                            <label for="spu">SPU</label>
+                            <select id="spu">
+                                <option hidden disabled selected value></option>
+                                <option value="AMP">AMP</option>
+                                <option value="FDQ">FDQ</option>
+                                <option value="MPH">MPH</option>
+                                <option value="MS">MS</option>
+                            </select>
                         </div>
                     </div>
-                    <img id="preview" >
+                
 
                     <div class="bottom-bar">
                         <button type="button" class="cancel-btn" id="cancel" onclick="window.location.href='/admin'">Cancel</button>

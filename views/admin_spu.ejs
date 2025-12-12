@@ -1,9 +1,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Homepage</title>
-    </title>
-    <link rel="stylesheet" href="/css/admin_spu_style.css"> <!--TODO change this -->
+    <title>SPUs</title>
+    <link rel="stylesheet" href="/css/admin_spu_style.css">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </head>
 
@@ -14,7 +13,6 @@
             <a><img src="/logo.png" id=logo style="scale:55%; margin: auto; "></a>
             
             <nav class="nav-menu">
-                <button class="nav-btn" onclick="window.location.href='/admin/create'"> Create New Account</button>
                 <button class="nav-btn" id="back-btn" onclick="window.location.href='/admin'"> Back to SPUs</button>
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
@@ -23,28 +21,36 @@
         <!-- Main Content Area -->
         <main class="content">
             <div class="content-main">
-                                <!-- Render this dynamically to avoid repetition of the same code-->
-                <h2> Welcome to <%= spuPage %> Supervisor Suite! </h2>
-                <h3 style="position:absolute; left:22%"> SDWs Assigned: </h3>
+                <h2> Welcome to <%= spuPage %> Suite! </h2>
+                <h3 style="position:absolute; left:22%"> Supervisor Assigned: </h3>
+                
+                <!-- Supervisor Button with Edit/Delete -->
+                <% const s = (supervisor?.supervisor && supervisor.supervisor[0]) || supervisor || {}; %>
+                <% const hasSupervisor = s.first_name && s.first_name !== 'Unassigned'; %>
+                
+                <button class="user-btn supervisor-btn">
+                    <img src="/sdw_icon.png" class="sdw-icon">
+                    <span><%= s.first_name || 'Unassigned' %> <%= s.last_name || '' %></span>
+                    <% if (hasSupervisor) { %>
+                        <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                        <ul class="kebab-menu hidden">
+                            <li class="edit-supervisor-btn" data-supervisor-id="<%= s.staff_info_id %>">Edit</li>
+                            <li class="delete-supervisor-btn" data-supervisor-id="<%= s.staff_info_id %>" data-supervisor-name="<%= s.first_name %> <%= s.last_name %>">Delete</li>
+                        </ul>
+                    <% } %>
+                </button>
+
+
+                <h3 style="position:absolute; left:22%;"> SDWs Assigned: </h3>
 
                 <div class="dropdown" style="position:absolute; right:30px">
                         <label>Sort by: </label>
                         <select id="sortMenu">
                             <option value="alphabetical">Alphabetical</option>
                             <option value="lastupdated">Last Updated</option>
-                            <!-- Add more options here if needed -->
                         </select>
                 </div>
 
-                <!--
-                <div class="users">
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                <button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span>John Doe</span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button>
-                -->
                 <% if (sdws == null) { %>
                     <div class="empty-state">
                         <p class="upload-text">No SDWs Assigned For <%= user.first_name %></p>
@@ -54,7 +60,7 @@
                         <% sdws.forEach(sdw => { %>
                             <button class="user-btn" onclick="navigateToSDW('<%= sdw.sdw_id %>')">
                                 <img src="/sdw_icon.png" class="sdw-icon" alt="SDW Icon">
-                                <span><%= sdw.first_name %> <%= sdw.last_name %></span>
+                                <span><%= sdw.first_name %> <%= sdw.middle_name %> <%= sdw.last_name %></span>
                                 <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
                                 <ul class="kebab-menu hidden">
                                     <li class="edit-btn" data-sdw-id="<%= sdw.staff_info_id %>">Edit</li>
@@ -72,4 +78,3 @@
     <script src="/js/admin_spu.js"></script>
 
 </body>
-

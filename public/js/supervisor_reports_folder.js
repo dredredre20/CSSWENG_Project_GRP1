@@ -6,14 +6,13 @@ let currentReport = null;
 const modal = document.getElementById('previewModal');
 const closeModalBtn = document.getElementById('closeModal');
 const btnDownload = document.getElementById('btnDownload');
-const btnDelete = document.getElementById('btnDelete');
 const sortSelect = document.getElementById('sort-by');
 const reportGrid = document.querySelector('.report-grid');
 
 // Sidebar navigation - Make dynamic
 document.querySelectorAll('.nav-btn').forEach(btn => {
     // Highlight active category
-    if (btn.dataset.category === '<%= currentCategory %>') {
+    if (btn.dataset.category === '<%= currentCategory %>') { 
         btn.classList.add('active');
     }
     // Navigate to category
@@ -39,6 +38,9 @@ document.querySelectorAll('.report-card').forEach(card => {
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader
+
+                // Change in route sql passing
+                // supervisor: this.dataset.reportSupervisor
             };
             openModal(currentReport);
         });
@@ -51,6 +53,8 @@ function openModal(report) {
     document.getElementById('fileSize').textContent = report.size;
     document.getElementById('uploader').textContent = report.uploader;
 
+    // Change in route sql passing
+  //  document.getElementById('supervisor').textContent = report.supervisor;
 
     const previewContainer = document.getElementById('previewContainer');
     const fileExt = report.name.split('.').pop().toLowerCase();
@@ -97,7 +101,7 @@ btnDownload.addEventListener('click', () => {
     if (currentReport) {
         // Marker: this needs more validation
         const link = document.createElement('a');
-        link.href = currentReport.path || `/api/download/${currentReport.id}`;
+        link.href = currentReport.path || `/download/${currentReport.id}`;
         link.download = currentReport.name;
         document.body.appendChild(link);
         link.click();
@@ -105,27 +109,6 @@ btnDownload.addEventListener('click', () => {
     }
 });
 
-// Delete button
-btnDelete.addEventListener('click', () => {
-    if (currentReport) {
-        if (confirm(`Are you sure you want to delete "${currentReport.name}"?`)) {
-            // TODO: Implement delete API call
-            // Marker: This needs more validation
-            fetch(`/api/reports/${currentReport.id}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Report deleted successfully!');
-                closeModal();
-                location.reload(); // Refresh the page
-            })
-            .catch(error => {
-                alert('Error deleting report: ' + error.message);
-            });
-        }
-    }
-});
 
 // Sorting functionality
 sortSelect.addEventListener('change', () => {

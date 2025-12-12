@@ -1,7 +1,5 @@
 // Store current report data
 let currentReport = null;
-
-
 // Get DOM elements
 const modal = document.getElementById('previewModal');
 const closeModalBtn = document.getElementById('closeModal');
@@ -9,6 +7,8 @@ const btnDownload = document.getElementById('btnDownload');
 const btnDelete = document.getElementById('btnDelete');
 const sortSelect = document.getElementById('sort-by');
 const reportGrid = document.querySelector('.report-grid');
+const sizeVal = document.getElementById('fileSize');
+
 
 // Sidebar navigation - Make dynamic
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -24,21 +24,30 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         window.location.href = `/reports/${encodeURIComponent(category)}`;
     });
 });
-    
+
 // Open modal when clicking on report card
 document.querySelectorAll('.report-card').forEach(card => {
     card.addEventListener('click', function(e) {
+        console.log("File size value: " + sizeVal.value);
         // Don't open if clicking the options button
         if (e.target.classList.contains('report-options-btn')) {
             return;
         }
+        
+        
         // Might edit some of the details here
+        //console.log(this.dataset);
         currentReport = {
                 id: this.dataset.reportId,
                 name: this.dataset.reportName,
-                size: this.dataset.reportSize,
+                size: sizeVal.value,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader
+                
+                
+
+                // Change in route sql passing
+                //supervisor: this.dataset.reportSupervisor
             };
             openModal(currentReport);
         });
@@ -50,6 +59,9 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = report.size;
     document.getElementById('uploader').textContent = report.uploader;
+
+    // Change in route sql passing
+    // document.getElementById('supervisor').textContent = report.supervisor;
 
 
     const previewContainer = document.getElementById('previewContainer');
@@ -97,7 +109,7 @@ btnDownload.addEventListener('click', () => {
     if (currentReport) {
         // Marker: this needs more validation
         const link = document.createElement('a');
-        link.href = currentReport.path || `/api/download/${currentReport.id}`;
+        link.href = currentReport.path || `/download/${currentReport.id}`;
         link.download = currentReport.name;
         document.body.appendChild(link);
         link.click();
@@ -111,7 +123,7 @@ btnDelete.addEventListener('click', () => {
         if (confirm(`Are you sure you want to delete "${currentReport.name}"?`)) {
             // TODO: Implement delete API call
             // Marker: This needs more validation
-            fetch(`/api/reports/${currentReport.id}`, {
+            fetch(`/delete/${currentReport.id}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())

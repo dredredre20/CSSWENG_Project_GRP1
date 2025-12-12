@@ -1,25 +1,32 @@
-  <head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <title>Login</title>
-  </head>
-  <body>
+</head>
+<body>
     <div id="loginbox">
-      <img src="/unbound logo.png">
-      <h1>Login</h1>
-      <form action="/login" method="POST">
-      <div>
-        <div id="email">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-      </div>
-      <div>
-        <div id="password">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-        </div>
-      </div>
-      <button type="submit">Login</button>
-      </form>
+        <img src="/logo.png">
+        <h1>Login</h1>
+        <form id="loginForm" method="POST">
+            <div id="email">
+                <label for="emailInput">Email</label>
+                <input type="email" id="emailInput" name="email" required>
+                
+            </div>
+            <div id="password">
+                <label for="passwordInput">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="passwordInput" name="password" required>
+                    <span class="toggle-password" id="togglePassword">👁️</span>
+                </div>
+                
+            </div>
+
+            <div class="error-message" id="generalError"></div>
+
+            <button type="submit">Login</button>
+        </form>
     </div>
-  </body>
+    <script src="/js/login.js"></script>
+</body>

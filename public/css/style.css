@@ -1,8 +1,8 @@
 body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-image: url('/login_design.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-image: url('/bg.png');
+    background-repeat: space;
+    background-size: 7%;
     background-position: center center;
     background-attachment: fixed;
 }
@@ -80,4 +80,64 @@ img{
 
 #loginbox button[type="submit"]:active {
     transform: translateY(0);
+}
+
+#password input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    margin-top: -3px;
+}
+
+#password input[type="text"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    font-size: 18px;
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: #333;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 17px;
+    margin-top: 8px;
+    text-align: left;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.input-error {
+    border-color: #d32f2f !important;
+}
+
+#loginbox button[type="submit"]:hover {
+    background-color: #5aabb0;  
+    transform: translateY(-1px);
 }

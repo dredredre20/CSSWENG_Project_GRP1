@@ -52,7 +52,7 @@ reportRouter.get('/:category', async (req, res) => {
                 break;
             case "Logout":
                 res.redirect('/');
-                categoryId = -1;
+                categoryId = -2;
                 break;
             default:
                     categoryId = 0; // fallback
@@ -60,6 +60,11 @@ reportRouter.get('/:category', async (req, res) => {
         
         if(categoryId == -1){
             return
+        }
+
+        if(categoryId === -2){
+            console.log("Logging out");
+            return res.redirect('/logout');
         }
         
         let account;
@@ -71,13 +76,17 @@ reportRouter.get('/:category', async (req, res) => {
 
         
 
-        connection = await db_connection_pool.getConnection();
-
+        //connection = await db_connection_pool.getConnection();
+        /*
         let sdw_id_query = `SELECT sdw_id
                             FROM sdws s
                             JOIN staff_info si ON si.staff_id = s.staff_info_id
-                            WHERE si.staff_id = ?`;
-        const [sdw_rows] = await connection.execute(sdw_id_query, [account.staff_id]);
+                            WHERE si.staff_id = ?`;*/
+        //const [sdw_rows] = await connection.execute(sdw_id_query, [account.staff_id]);
+        const sdw_rows = await supabase.from('sdws').select('sdw_id').eq('sdw_id',id).then((result) => {
+            if(result.data)
+                return result.data;
+        });
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.staff_id);
@@ -85,7 +94,7 @@ reportRouter.get('/:category', async (req, res) => {
         }
 
         const sdw_id = sdw_rows[0].sdw_id;
-
+        /*
         let reports_query = `SELECT r.report_id as id,
                                     r.report_name as name,
                                     r.file_size as size,
@@ -94,8 +103,15 @@ reportRouter.get('/:category', async (req, res) => {
                              FROM reports r
                              JOIN sdws s ON r.sdw_id = s.sdw_id
                              WHERE r.sdw_id = ?
-                             AND r.type = ?`;
-        const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
+                             AND r.type = ?`; */
+        //const [rows] = await connection.execute(reports_query, [sdw_id, categoryId]);
+
+        const rows = await supabase.from('reports').select('*').eq('sdw_id', sdw_id).eq('type', categoryId).then((result)=>{
+            if(result.data){
+                return result.data;
+            }
+        });
+
         console.log(rows);
         res.render('sdw_reports', { reports: rows, currentCategory: category });
 
@@ -103,7 +119,7 @@ reportRouter.get('/:category', async (req, res) => {
         console.log(err);
         res.status(500).send('Server error from view_report.js');
     } finally {
-        connection.release();
+        //connection.release();
     }
 });
 

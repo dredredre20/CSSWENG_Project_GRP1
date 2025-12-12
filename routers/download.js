@@ -1,57 +1,43 @@
-import db_connection_pool from "../connections.js";
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { oauth2Client, drive } from "../middleware/googleAuth.js";
+import { supabase } from "../middleware/supabase_client.js";
+import { dbx } from "../middleware/dropboxAuth.js";
 
 const downloadRouter = express.Router();
 
 downloadRouter.get('/:report_id', async (req, res) => {
     const reportId = req.params.report_id;
-    let connection;
+    try{
+        const {data: report, error: err1} = await supabase
+            .from('reports')
+            .select('file_path, report_name')
+            .eq('report_id', reportId)
+            .single()
+        
+        if(err1) throw err1;
 
-    try {
-        connection = await db_connection_pool.getConnection();
-
-        const [rows] = await connection.execute(
-            "SELECT file_path, report_name FROM reports WHERE report_id = ?",
-            [reportId]
-        );
-
-        if (rows.length === 0) {
+        if(!report){
             return res.status(404).send("Report not found.");
         }
 
-        const filePath = rows[0].file_path; // this is now google drive id
-        const fileName = rows[0].report_name; // includes the extension (.txt, .xlsx)
-
-        //if (!fs.existsSync(filePath)) {
-        //    return res.status(404).send("File not found on server.");
-        //}
-        // res.download(path.resolve(filePath), fileName); OLD local method
+        const filePath = report.file_path;
+        const fileName = report.report_name;
 
         try {
-            const response = await drive.files.get({
-                fileId: filePath,
-                alt: 'media',
-            }, { responseType: "stream" });
+            const response = await dbx.filesDownload({ path: filePath });
 
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${fileName}"`
-            );
-            response.data.pipe(res);
+            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+            res.setHeader("Content-Type", response.result.content_type || "application/octet-stream");
+            res.send(response.result.fileBinary);
 
-            console.log("Downloaded from Google Drive");
+            console.log("Downloaded from Dropbox");
         } catch (err) {
-            console.error("Google Drive API Download Error: ",err);
+            console.error(err);
         }
-
-    } catch (err) {
-        console.error("ERROR in downloadRouter:", err);
+    } catch(err){
         res.status(500).send("Server error while downloading file.");
-    } finally {
-        if (connection) connection.release();
+        console.error(err);
     }
 });
 export default downloadRouter;

@@ -57,29 +57,33 @@
                 <% } else { %>
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
-                            <div class="report-card" 
-                                 data-report-id="<%= report.id %>"
-                                 data-report-name="<%= report.name %>"
-                                 data-report-size="<%= report.size %>"
-                                 data-report-date="<%= report.date %>"
-                                 data-report-uploader="<%= report.uploader || 'Unknown' %>">
+                            
+                            <div class="report-card"
+                                 
+                                data-report-id="<%= report.report_id %>"
+                                data-report-name="<%= report.report_name %>"
+                                data-report-size="<%= report.file_size %>"
+                                data-report-date="<%= report.upload_date %>"
+                                data-report-uploader="<%= staff_name || 'Unknown' %>">
                                 
                                 <div class="report-thumbnail">
                                     <div class="thumbnail-placeholder">
                                         <span>📄</span>
                                     </div>
                                 </div>
-                                
                                 <div class="report-info">
-                                    <span class="report-name"><%= report.name %></span>
+                                        <span class="report-name"><%= report.report_name %></span>
                                 </div>
+                                
+                                
+                                
                             </div>
                         <% }); %>
                     </div>
                 <% } %>
             </div>
 
-            <button class="logout-btn" onclick="window.location.href='/login'" style="background-color: #f05a50;">Logout</button>
+            <button class="logout-btn" onclick="window.location.href='/logout'" style="background-color: #f05a50;">Logout</button>
         </main>
     </div>
 
@@ -104,6 +108,8 @@
                     <strong>Uploaded:</strong> <span id="uploadDate">-</span> | 
                     <strong>Size:</strong> <span id="fileSize">-</span> | 
                     <strong>By:</strong> <span id="uploader">-</span>
+
+                    <!-- <strong>Uploaded Under SPU:</strong> <span id="supervisor">-</span> -->
                 </div>
                 <div class="modal-buttons">
                     <button class="btn-download" id="btnDownload">Download</button>

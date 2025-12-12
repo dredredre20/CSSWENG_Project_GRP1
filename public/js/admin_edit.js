@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        spuAssignedTo: document.getElementById("spu").value
+        //spuAssignedTo: document.getElementById("spu").value
     };
 
 });
@@ -27,22 +27,30 @@ confirmBtn.addEventListener("click", ()=> {
         lastname: document.getElementById("lastname").value.trim(),
         email: document.getElementById("email").value.trim(),   
         password: document.getElementById("password").value, 
-        spu: document.getElementById("spu").value,
+        //spu: document.getElementById("spu").value,
+        //role: document.getElementById("role").value
     }
 
     // Check if required fields are filled
-    if (!updatedData.firstname || !updatedData.lastname || !updatedData.email || !updatedData.password) {
+    if (!updatedData.firstname || !updatedData.lastname || !updatedData.email) {
         alert("Please fill in all required fields.");
         return;
     }
 
-
-    // Gmail regex assuming that clients will use gmail only
-    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!gmailPattern.test(updatedData.email)) {
+    // Regex that allows various email domains
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(updatedData.email)) {
         alert("Please enter a valid Gmail address.");
         return;
     }
+
+    // Password regex for password validation
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (updatedData.password && !passwordPattern.test(updatedData.password)) {
+        alert("Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.");
+        return;
+    }
+
     fetch(`/admin/edit/${staff_id}`, {
         method: "POST", 
         headers: {
@@ -55,7 +63,8 @@ confirmBtn.addEventListener("click", ()=> {
         if (data.success) {
             alert("Admin details updated successfully.");
             originalData = { ...updatedData };
-            location.reload();
+            // location.reload();
+            window.location.href = "/admin";
         } else {
             alert("Error updating admin details: " + data.message);
         }
@@ -74,7 +83,7 @@ cancelBtn.addEventListener("click", ()=>{
         lastname: document.getElementById("lastname").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
-        spu: document.getElementById("spu").value
+        //spu: document.getElementById("spu").value
     };
 
     const hasChanges = Object.keys(originalData).
@@ -87,12 +96,39 @@ cancelBtn.addEventListener("click", ()=>{
         window.location.href = "/admin";
 });
 
-function preview(file){
-    if (file) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            document.getElementById("preview").src = reader.result;
-        }
+//const roleSelect = document.getElementById("role");
+
+//automatically hide select fields that conflict with selected role
+/*
+roleSelect.addEventListener("change", ()=> {
+    const role = roleSelect.value;
+    const spuSelect = document.getElementById("spu");
+    const supervisorSelect = document.getElementById("supervisor");
+    const spuDiv = document.getElementById("spuDiv");
+    const supervisorDiv = document.getElementById("supervisorDiv");
+
+    
+    spuDiv.style.visibility = "visible";
+    supervisorDiv.style.visibility = "visible";
+    
+    spuSelect.disabled = false;
+    supervisorSelect.disabled = false;
+
+
+    if(role == "Supervisor"){
+        supervisorSelect.disabled = true;
+        supervisorDiv.style.visibility = "hidden";
     }
-}
+
+    if(role == "Admin"){
+        supervisorDiv.style.visibility = "hidden";
+        supervisorSelect.disabled = true;
+
+        spuDiv.style.visibility = "hidden";
+        spuSelect.disabled = true;
+        
+    }
+
+    
+});
+*/

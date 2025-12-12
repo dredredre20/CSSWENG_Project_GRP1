@@ -12,7 +12,7 @@
         <div class="sidebar">
             <img src="/logo.png" style="scale:55%; margin: auto; ">
             <nav class="nav-menu">
-                <button class="nav-btn" id="back-btn" onclick="window.location.href='/admin/reports'"> Back to SDW Reports</button>
+                <button class="nav-btn" id="back-btn" onclick="history.back()"> Back to SDW Reports</button>
                 <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
             </nav>
         </div>
@@ -42,9 +42,10 @@
                 <% } else { %>
                     <div class="report-grid">
                         <% reports.forEach(report => { %>
+                            <input type="hidden" id="fileSize" value="<%= report.file_size%>">
                             <div class="report-card" 
                                  data-report-id="<%= report.report_id %>"
-                                 data-report-name="<%= report.sdw_id %>"
+                                 data-report-name="<%= report.report_name %>"
                                  data-report-date="<%= report.upload_date %>"
                                  data-report-type="<%= report.type || 'Unknown' %>">
 
@@ -57,7 +58,7 @@
                                 </div>
                                 
                                 <div class="report-info">
-                                    <span class="report-name"><%= report.name %></span>
+                                    <span class="report-name"><%= report.report_name %></span>
                                 </div>
                             </div>
                         <% }); %>

@@ -1,0 +1,55 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin List</title>
+    </title>
+    <link rel="stylesheet" href="/css/admin_spu_style.css">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a><img src="/logo.png" id=logo style="scale:55%; margin: auto; "></a>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn" id="back-btn" onclick="window.location.href='/admin'"> Back to SPUs</button>
+                <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-main">
+                                <!-- Render this dynamically to avoid repetition of the same code-->
+                <h2> Welcome to the Admin List! </h2>
+                <h3 style="position:absolute; left:22%"> Admins Assigned: </h3>
+
+                <!--TODO: Delete this one when done with JS-->
+                <!--button class="user-btn"><img src="sdw_icon.png" class="sdw-icon"><span></span>  <div class="kebab-wrapper"><img src="kebab.png" class="kebab"></div> </button-->
+                
+                <div class="users" id="sdwContainer">
+                <%if (admins != null){ admins.forEach(admin => {%>
+                    <button class="user-btn"> 
+                                <img src="/admin_icon.png" class="sdw-icon" alt="SDW Icon">
+                                <span><%= admin.first_name %> <%= admin.middle_name %> <%= admin.last_name %></span>
+                                <div class="kebab-wrapper"><img src="/kebab.png" class="kebab" alt="Kebab Menu"></div>
+                                <ul class="kebab-menu hidden">
+                                    <li class="edit-btn" data-sdw-id="<%= admin.staff_info_id %>">Edit</li>
+                                    <li class="delete-btn" data-sdw-id="<%= admin.staff_info_id %>">Delete</li>
+                                </ul>
+                            </button>
+                    <%});%> 
+                    
+                    <%}%>
+                </div>
+            
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/admin_adminlist.js"></script>
+
+</body>
+

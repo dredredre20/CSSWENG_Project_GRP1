@@ -41,7 +41,11 @@ document.querySelectorAll('.report-card').forEach(card => {
                 size: this.dataset.reportSize,
                 date: this.dataset.reportDate,
                 uploader: this.dataset.reportUploader
+
+                // Change in route sql passing
+                //supervisor: this.dataset.reportSupervisor
             };
+            console.log("Current report: " + currentReport);
             openModal(currentReport);
         });
     });
@@ -52,6 +56,9 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
     document.getElementById('uploader').textContent = report.uploader;
+    console.log("reports gotten: " + report);
+    // Change in route sql passing
+   // document.getElementById('supervisor').textContent = report.supervisor;
 
 
     const previewContainer = document.getElementById('previewContainer');
@@ -60,6 +67,9 @@ function openModal(report) {
     // I think we need an external api to actually show the contents of the excel files like in gdrive
     // Placeholder for now
     // Marker: Change this
+    /********************************************************************************************88 */
+    /********************************************************************************************88 */
+    /********************************************************************************************88 */
      previewContainer.innerHTML = `
         <div class="preview-placeholder">
             <div></div>
