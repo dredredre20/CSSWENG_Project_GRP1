@@ -1,50 +1,66 @@
 import express from 'express';
 import { supabase } from '../middleware/supabase_client.js';
+import exceljs from 'exceljs';
+import { dbx } from '../middleware/dropboxAuth.js';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
 
-// Converted the category cases into a reusable helper function
-function categoryOf(category){
-        switch (category) {
-            case "Upload Page":
-                return -1;
-            case "DSWD Annual Report":
-                return 1;
-            case "Community Profile":
-                return 2;
-            case "Target Vs ACC & SE":
-                return 3;
-            case "Caseload Masterlist":
-                return 4;
-            case "Education Profile":
-                return 5;
-            case "Assistance to Families":
-                return 6;
-            case "Poverty Stoplight":
-                return 7;
-            case "CNF Candidates":
-                return 8;
-            case "Retirement Candidates":
-                return 9;
-            case "VM Accomplishments":
-                return 10;
-            case "Correspondence":
-                return 11;
-            case "Leaders Directory":
-                return 12;
-            case "Logout":
-                return -1;
-            default:
-                return 0; // fallback
-        }
+// used dictionaries instead for cleaner code
+const categoryOf = {
+    "Upload Page": -1,
+    "DSWD Annual Report": 1,
+    "Community Profile": 2,
+    "Target Vs ACC & SE": 3,
+    "Caseload Masterlist": 4,
+    "Education Profile": 5,
+    "Assistance to Families": 6,
+    "Poverty Stoplight": 7,
+    "CNF Candidates": 8,
+    "Retirement Candidates": 9,
+    "VM Accomplishments": 10,
+    "Correspondence": 11,
+    "Leaders Directory": 12,
+    "Logout": -1
+};
+
+const templateMap = {
+    "DSWD Annual Report": "dswd_annual_report.xlsx",
+    "Community Profile": "community_profile.xlsx",
+    "Target Vs ACC & SE": "deliverables_targets_vs_acc_and_se.xlsx",
+    "Caseload Masterlist": "caseload_masterlist.xlsx",
+    "Education Profile": "educ_profile.xlsx",
+    "Assistance to Families": "assistance_to_families.xlsx",
+    "Poverty Stoplight": "poverty_spotlight.xlsx",
+    "CNF Candidates": "cnf_candidates.xlsx",
+    "Retirement Candidates": "candidates_for_retirement.xlsx",
+    "VM Accomplishments": "vm_accomplishements.xlsx",
+    "Correspondence": "correspondence_accomplishment.xlsx",
+    "Leaders Directory": "leaders_directory.xlsx",
+};
+
+// generate file using base template 
+async function useTemplate(name, templateType){
+    const workbook = new exceljs.Workbook();
+    await workbook.xlsx.readFile(new URL(`../public/report_templates/${templateType}`, import.meta.url));
+    const sheet = workbook.getWorksheet(name);
+    return await workbook.xlsx.writeBuffer();
+}
+
+async function uploadToDropbox(buffer, filename){
+    return await dbx.filesUpload({
+        path: `/${filename}`,
+        contents: buffer,
+        mode: { '.tag': 'add' },
+        autorename: true
+    });
 }
 
 reportRouter.get('/:category', async (req, res) => {
     try {
         const category = req.params.category;
 
-        const categoryId = categoryOf(category);
+        const categoryId = categoryOf[category];
         
         if(categoryId === -1){
             return res.redirect('/home');
@@ -93,6 +109,46 @@ reportRouter.get('/:category', async (req, res) => {
     } catch (err){
         console.log(err);
         res.status(500).send('Server error.');
+    } 
+});
+
+reportRouter.get('/:category/template', async (req, res) => {
+    // serving duplicating base template file
+    try{
+        const category = req.params.category;
+        const categoryFile = templateMap[category];
+
+        if(!categoryFile){
+            return res.status(404).send('Template not found');
+        }
+
+        const fileBuffer = await useTemplate(category, categoryFile);
+        const filename = `${category}.xlsx`;
+        const response = await uploadToDropbox(fileBuffer, filename);
+        const dropboxData = response.result;
+
+        const {data: sdw} = await supabase
+            .from('sdws')
+            .select('sdw_id')
+            .eq('staff_info_id', req.session.logged_user.id)
+            .single()
+        
+        if(sdw){
+            await supabase.from('reports').insert({
+                sdw_id: sdw.sdw_id,
+                report_name: filename,
+                file_size: dropboxData.size,
+                upload_date: new Date(),
+                type: categoryOf[category],
+            });
+        }
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${category}.xlsx`);
+        res.send(fileBuffer);
+    } catch(err){
+        console.log(err);
+        res.status(500).send('Failed to generate template.');
     }
 });
 
@@ -102,7 +158,7 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         const sdw_id = req.params.sdw_id;
         const category = req.params.category;
 
-         const categoryId = categoryOf(category);
+         const categoryId = categoryOf[category];
         
         if(categoryId == -1){
             return;

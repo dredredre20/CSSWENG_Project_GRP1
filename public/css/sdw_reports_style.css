@@ -11,6 +11,17 @@ body {
     overflow: hidden;
 }
 
+.createnew-btn{
+    background-color: #53A6E6;
+    color: white;
+    text-align: center;
+    border-radius: 80%;
+    width: 160px;
+    font-size: 100px;
+    padding: 40px;
+    border: 10px none;
+}
+
 .container {
     display: flex;
     height: 100vh;
