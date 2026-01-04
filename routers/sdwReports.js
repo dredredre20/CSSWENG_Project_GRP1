@@ -61,7 +61,6 @@ reportRouter.get('/:category', async (req, res) => {
         const category = req.params.category;
 
         const categoryId = categoryOf[category];
-        const categoryId = categoryOf[category];
         
         if(categoryId === -1){
             return res.redirect('/home');
@@ -159,7 +158,6 @@ supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
         const sdw_id = req.params.sdw_id;
         const category = req.params.category;
 
-         const categoryId = categoryOf[category];
          const categoryId = categoryOf[category];
         
         if(categoryId == -1){
