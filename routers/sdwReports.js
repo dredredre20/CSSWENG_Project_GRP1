@@ -120,6 +120,8 @@ reportRouter.get('/:category/template', async (req, res) => {
 
         //const filePath = path.join('.','..', 'middleware', 'temp_storage', filename);
         await cp(filename, `temp_storage/${filename}`);
+        const check = fs.existsSync(`temp_storage/${filename}`);
+        console.log(check);
         //fs.copyFile(filename, `temp_storage/${filename}`);        
         res.download(filename);
     } catch(err){
