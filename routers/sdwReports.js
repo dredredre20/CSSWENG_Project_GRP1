@@ -43,7 +43,7 @@ const templateMap = {
 // generate file using base template 
 async function useTemplate(name, templateType){
     const workbook = new exceljs.Workbook();
-    await workbook.xlsx.readFile(`${templateType}`);
+    await workbook.xlsx.readFile(`/etc/secrets/${templateType}`);
     const sheet = workbook.getWorksheet(name);
     const filename = `${name}.xlsx`;
     await workbook.xlsx.writeFile(filename);
