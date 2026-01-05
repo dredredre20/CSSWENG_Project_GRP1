@@ -51,8 +51,27 @@
                 <%if(staff_type === "sdw") {%>
                     <br/>
                     <br/>
-                    <button class="createnew-btn" onclick="window.location.href='/reports/<%=currentCategory%>/template'">+</button>
+                    <button class="createnew-btn" onclick="createNew('<%=currentCategory%>')">+</button>
                 <%}%>
+
+                
+                <div class="modal" id="appear">
+                    <div class="modal-content">
+                        <p>New File Creation in Progress...Do you want to:</p>
+                        <button class="modal-buttons" onclick="window.location.href='/reports/<%=currentCategory%>/download'">Download New File</button>
+                        <button class="modal-buttons" onclick="">Edit New File</button>
+                        <button class="modal-buttons" onclick="renameTemplate()">Rename New File</button>
+                        <div hidden id="renameSection">
+                            <form action="/reports/<%=currentCategory%>/rename" method="POST">
+                                <input id="newfilename" type="text">
+                                <input type="submit">
+                            </form>
+                        </div>
+                        <button class="modal-buttons" onclick="createNewClose('<%=currentCategory%>')">Send New File to Storage</button>
+                        <button class="modal-buttons" onclick="closeNew()">Exit</button> 
+                    </div>
+                </div>
+                
                 <% if (reports.length === 0) { %>
                     <div class="empty-state">
                         <p class="upload-text">No reports found for <strong><%= currentCategory %></strong>.</p>

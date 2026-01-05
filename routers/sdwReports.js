@@ -2,6 +2,7 @@ import express from 'express';
 import { supabase } from '../middleware/supabase_client.js';
 import exceljs from 'exceljs';
 import { dbx } from '../middleware/dropboxAuth.js';
+import fs from 'fs';
 
 const reportRouter = express.Router();
 const supervisorSdwReportRouter = express.Router();
@@ -44,6 +45,7 @@ async function useTemplate(name, templateType){
     const workbook = new exceljs.Workbook();
     await workbook.xlsx.readFile(new URL(`../public/report_templates/${templateType}`, import.meta.url));
     const sheet = workbook.getWorksheet(name);
+    workbook.xlsx.writeFile(`${name}.xlsx`);
     return await workbook.xlsx.writeBuffer();
 }
 
@@ -104,7 +106,7 @@ reportRouter.get('/:category', async (req, res) => {
 
         if(err2) throw err2;
 
-        res.render('sdw_reports', {reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id, staff_name: sdw.first_name + " " + sdw.last_name, spu_id: sdw.spu_id });
+        res.render('sdw_reports', {reports: reports, currentCategory: category, staff_type: account.staff_type, sdw_id: sdw_id, staff_name: sdw.first_name + " " + sdw.last_name, spu_id: sdw.spu_id});
 
     } catch (err){
         console.log(err);
@@ -112,25 +114,22 @@ reportRouter.get('/:category', async (req, res) => {
     } 
 });
 
-reportRouter.get('/:category/template', async (req, res) => {
-    // serving duplicating base template file
-    try{
-        const category = req.params.category;
-        const categoryFile = templateMap[category];
+function deleteNewFile(filename){
+        fs.unlink(filename, (err) =>{
+            if(err){
+                throw err;
+            }
+        }); //Delete local file after download
+}
 
-        if(!categoryFile){
-            return res.status(404).send('Template not found');
-        }
-
-        const fileBuffer = await useTemplate(category, categoryFile);
-        const filename = `${category}.xlsx`;
+async function save(fileBuffer, filename, category, user_id){
         const response = await uploadToDropbox(fileBuffer, filename);
         const dropboxData = response.result;
 
         const {data: sdw} = await supabase
             .from('sdws')
             .select('sdw_id')
-            .eq('staff_info_id', req.session.logged_user.id)
+            .eq('staff_info_id', user_id)
             .single()
         
         if(sdw){
@@ -142,14 +141,97 @@ reportRouter.get('/:category/template', async (req, res) => {
                 type: categoryOf[category],
             });
         }
+}
 
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename=${category}.xlsx`);
-        res.send(fileBuffer);
+async function makeNewFile(category){
+    //const for_url = category.replaceAll(" ", "%20");
+    //await fetch(`/reports/${for_url}/template`);
+
+    try{
+        const categoryFile = templateMap[category];
+        if(!categoryFile){
+            return res.status(404).send('Template not found');
+        }
+
+        const fileBuffer = await useTemplate(category, categoryFile);
+        const filename = `${category}.xlsx`;
+
+        return {filename: filename, buffer: fileBuffer};
+        
     } catch(err){
         console.log(err);
         res.status(500).send('Failed to generate template.');
     }
+
+}
+
+reportRouter.get('/:category/download', async( req, res) =>{
+    try{
+
+        const category = req.params.category; 
+
+        const {filename, buffer} = await makeNewFile(category); //Make new file before downloading
+        console.log("Making new file...");
+        
+        res.download(filename, (err) =>{
+            if(err){
+                throw err;
+            }
+            else{
+                fs.unlink(filename, (errdel) =>{
+                    if(errdel){
+                        throw errdel;
+                    }
+                    else{
+                        console.log("Deleted local file after download.");
+                    }
+                });
+            }
+        }); //Download new file then Delete local file right after
+
+        console.log("Downloaded Successfully!");
+
+        //res.redirect('/reports/' + category);
+    }catch(err){
+        console.log(err);
+        res.status(500).send('Failed to download template.');
+    }
+    
+});
+
+reportRouter.post('/:category/rename', async (req, res) => {
+
+
+    const category = req.params.category;
+    const newfilename = req.body.newfilename;
+    const {filename, fileBuffer} = await makeNewFile(category);
+    console.log("Made New File...");
+    await save(fileBuffer, newfilename, category, req.session.logged_user.id);
+    deleteNewFile(filename);
+    res.status(200).send('Renamed Successfully.');
+    console.log("Going Back...");
+    
+});
+
+reportRouter.get('/:category/template', async( req, res) =>{
+    try{
+        const category = req.params.category;
+        const user_id = req.session.logged_user.id;
+        console.log("Hello");
+        const {filename, buffer} = await makeNewFile(category);
+        await save(buffer, filename, category, user_id);
+        deleteNewFile(`${category}.xlsx`);
+        res.status(200).send('Template created successfully.');
+        
+    }catch(err){
+        console.log(err);
+        res.status(500).send('Failed to create template.')};
+    }
+
+);
+
+reportRouter.post('/tempcopy', async( req, res) =>{
+
 });
 
 // for per report categories routing

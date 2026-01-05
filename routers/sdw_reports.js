@@ -90,7 +90,7 @@ reportRouter.get('/:category', async (req, res) => {
         
         if (sdw_rows.length === 0) {
             console.log("No SDW found for staff_id:", account.staff_id);
-            return res.render('sdw_reports', { reports: [], currentCategory: category });
+            return res.render('sdw_reports', { reports: [], currentCategory: category});
         }
 
         const sdw_id = sdw_rows[0].sdw_id;

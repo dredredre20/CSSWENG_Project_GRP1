@@ -1,8 +1,8 @@
+
+
 // Store current report data
 let currentReport = null;
 let deleteConfirmModal = null;
-
-
 // Get DOM elements
 const navbar = document.getElementById('navbar');
 const modal = document.getElementById('previewModal');
@@ -49,7 +49,88 @@ document.querySelectorAll('.report-card').forEach(card => {
             openModal(currentReport);
         });
     });
-    
+async function createNew(category){
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'block';
+}
+
+async function closeNew(){
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'none';
+}
+
+function renameTemplate(){
+    const newfilenametext = document.getElementById('renameSection');
+    newfilenametext.style.display = 'block';
+}
+
+async function setFileName(category){
+    try{
+
+    }catch(err){
+
+    }
+}
+
+async function createNewClose(category){
+    try{
+    const res_create = await fetch(`/reports/${category}/template`)
+
+    if (!res_create.ok) {
+    throw new Error(`HTTP error! Status: ${res_create.status}`);
+    }
+
+    console.log(res_create.statusText);
+
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'none';
+
+    alert("Template Created Successfully!");
+
+    window.location.reload();
+}catch(err){
+    console.log(err);
+}
+}
+
+async function downloadTemplate(category){
+    try{
+        //Create new template if choose download
+        const res_create = await fetch(`/reports/${category}/template`)
+
+        if (!res_create.ok) {
+        throw new Error(`HTTP error! Status: ${res_create.status}`);
+        }
+
+        console.log(res_create.statusText);
+        
+        //const check = await res_create.text();
+        //console.log(check);
+
+        //Download created template
+        //console.log(category);
+        const response = await fetch(`/reports/${category}/download`);
+
+        if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+
+        const res_delete = await fetch(`/reports/${category}/delete`);
+
+        console.log("Deleted");
+
+        if (!res_delete.ok) {
+          throw new Error(`HTTP error! Status: ${res_delete.status}`);
+        }
+        const newmodal = document.getElementById('appear');
+        newmodal.style.display = 'none';
+}catch(err){
+    console.log(err);
+}
+//`${category}.xlsx`
+}
+
 // Open modal function
 function openModal(report) {
     document.getElementById('modalFileName').textContent = report.name;
