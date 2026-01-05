@@ -57,6 +57,7 @@ async function createNew(category){
 async function closeNew(){
     const newmodal = document.getElementById('appear');
     newmodal.style.display = 'none';
+    //alert("New File Creation Cancelled!");
 }
 
 function renameTemplate(){

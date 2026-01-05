@@ -135,10 +135,11 @@ async function save(fileBuffer, filename, category, user_id){
         if(sdw){
             await supabase.from('reports').insert({
                 sdw_id: sdw.sdw_id,
-                report_name: filename,
+                report_name: dropboxData.name,
                 file_size: dropboxData.size,
                 upload_date: new Date(),
                 type: categoryOf[category],
+                file_path: `${dropboxData.path_display}`
             });
         }
 }

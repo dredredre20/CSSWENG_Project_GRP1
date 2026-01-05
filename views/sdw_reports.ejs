@@ -56,19 +56,24 @@
 
                 
                 <div class="modal" id="appear">
-                    <div class="modal-content">
-                        <p>New File Creation in Progress...Do you want to:</p>
-                        <button class="modal-buttons" onclick="window.location.href='/reports/<%=currentCategory%>/download'">Download New File</button>
-                        <button class="modal-buttons" onclick="">Edit New File</button>
-                        <button class="modal-buttons" onclick="renameTemplate()">Rename New File</button>
-                        <div hidden id="renameSection">
-                            <form action="/reports/<%=currentCategory%>/rename" method="POST">
-                                <input id="newfilename" type="text">
-                                <input type="submit">
-                            </form>
+                    <div class="modal-body">
+                        <div class="modal-content">
+                            <p class="modal-header">New File Creation in Progress...Do you want to:</p>
+                            <div class="modal-buttons">
+                                <button class="btn-upload-another" onclick="window.location.href='/reports/<%=currentCategory%>/download'">Download New File</button>
+                                <!-- <button class="modal-buttons" onclick="">Edit New File</button> -->
+                                <!-- <button class="modal-buttons" onclick="renameTemplate()">Rename New File</button> -->
+                            
+                                <!-- <div hidden id="renameSection">
+                                    <form action="/reports/<%=currentCategory%>/rename" method="POST">
+                                        <input id="newfilename" type="text">
+                                        <input type="submit">
+                                    </form>
+                                </div> -->
+                                <button class="btn-continue" onclick="createNewClose('<%=currentCategory%>')">Send New File to Storage</button>
+                                <button class="btn-delete" onclick="closeNew()">Exit</button> 
+                            </div>
                         </div>
-                        <button class="modal-buttons" onclick="createNewClose('<%=currentCategory%>')">Send New File to Storage</button>
-                        <button class="modal-buttons" onclick="closeNew()">Exit</button> 
                     </div>
                 </div>
                 
